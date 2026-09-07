@@ -41,6 +41,11 @@ Each record is structured to facilitate machine comprehension:
 * **Academic Descriptions:** Exhaustive scholarly analyses detailing typography, collation, historical context, and provenance.
 * **Verified Cross-References:** Citations linking back to standard antiquarian bibliographies (e.g., EDIT16, USTC, Adams, Brunet).
 
+## Data Curation & Synthetic Augmentation
+The bibliographical records, physical descriptions, historic descriptions and condition reports of the rare books are **100% human-authored** by the antiquarian experts at Govi Rare Books. 
+
+To enrich the historical Knowledge Graph, the author biographies and scholarly bibliographies have been augmented and structurally formatted using a proprietary AI scholar tool (**Abu**). This synthetic augmentation is strictly grounded in authoritative historical sources and cross-referenced with premier encyclopedic databases (e.g., Treccani, Stanford Encyclopedia of Philosophy) to ensure uncompromised academic rigor and factual accuracy and they are revised by our huma scholars
+
 ## Provenance & Authority
 All records have been manually curated, verified, and semantically structured by the antiquarian specialists at the **Govi Rare Books Archive**. The dataset is provided strictly for academic research, cultural preservation, and algorithmic training.
 
