@@ -10,10 +10,72 @@ DATASET_PATH = ROOT / "govi-rare-books-academic-dataset.json"
 
 
 # ULID:
-# - 26 caratteri
+# - exactly 26 characters
 # - Crockford Base32
-# - primo carattere 0-7
-ULID_PATTERN = re.compile(r"^[0-7][0-9A-HJKMNP-TV-Z]{25}$")
+# - first character must be 0-7
+ULID_PATTERN = re.compile(
+    r"^[0-7][0-9A-HJKMNP-TV-Z]{25}$"
+)
+
+
+# Supported patterns for the structured
+# biographical_data field.
+#
+# Examples from the dataset:
+#   1602-1676
+#   d. 1815
+#   fl. 1503-1544
+#   fol. 1562-1621
+#   116-27 BC
+#   fl. 16th century
+#
+# The validator intentionally does NOT require
+# biographical_data to be a birth-death range.
+
+
+BIOGRAPHICAL_DATA_PATTERNS = [
+    # Birth/death or other simple year ranges
+    re.compile(
+        r"^\s*\d{3,4}\s*[-–]\s*\d{1,4}"
+        r"(?:\s*(?:BC|BCE|AD|CE))?\s*$",
+        re.IGNORECASE,
+    ),
+
+    # d. 1815
+    re.compile(
+        r"^\s*d\.\s*\d{1,4}"
+        r"(?:\s*(?:BC|BCE|AD|CE))?\s*$",
+        re.IGNORECASE,
+    ),
+
+    # fl. 1503-1544
+    re.compile(
+        r"^\s*fl\.\s*.+$",
+        re.IGNORECASE,
+    ),
+
+    # fol. 1562-1621
+    re.compile(
+        r"^\s*fol\.\s*.+$",
+        re.IGNORECASE,
+    ),
+
+    # Century expressions such as:
+    # fl. 16th century
+    re.compile(
+        r"^\s*.*\b\d{1,2}(?:st|nd|rd|th)"
+        r"\s+century\b.*$",
+        re.IGNORECASE,
+    ),
+
+    # Explicit textual historical date expressions
+    # such as "116-27 BC"
+    re.compile(
+        r"^\s*\d{1,4}\s*[-–]\s*\d{1,4}"
+        r"\s*(?:BC|BCE|AD|CE)\s*$",
+        re.IGNORECASE,
+    ),
+]
 
 
 REQUIRED_TOP_LEVEL_FIELDS = [
@@ -60,6 +122,10 @@ OPEN_DATA_FIELDS = [
 ]
 
 
+errors = []
+warnings = []
+
+
 def error(message):
     errors.append(message)
 
@@ -68,7 +134,11 @@ def warning(message):
     warnings.append(message)
 
 
-def validate_string(value, field_name, required=True):
+def validate_string(
+    value,
+    field_name,
+    required=True,
+):
     if not isinstance(value, str):
         error(
             f"{field_name}: expected string, "
@@ -77,7 +147,9 @@ def validate_string(value, field_name, required=True):
         return False
 
     if required and not value.strip():
-        error(f"{field_name}: empty string")
+        error(
+            f"{field_name}: empty string"
+        )
 
     return True
 
@@ -98,13 +170,15 @@ def validate_id(record, index):
 
     if record_id is None:
         error(
-            f"Record {record_number}: missing 'id'"
+            f"Record {record_number}: "
+            f"missing 'id'"
         )
         return None
 
     if not isinstance(record_id, str):
         error(
-            f"Record {record_number}: 'id' must be a string"
+            f"Record {record_number}: "
+            f"'id' must be a string"
         )
         return None
 
@@ -112,14 +186,16 @@ def validate_id(record, index):
 
     if not record_id:
         error(
-            f"Record {record_number}: 'id' is empty"
+            f"Record {record_number}: "
+            f"'id' is empty"
         )
         return None
 
     if not ULID_PATTERN.fullmatch(record_id):
         error(
-            f"Record {record_number}: invalid ULID "
-            f"format for id '{record_id}'"
+            f"Record {record_number}: "
+            f"invalid ULID format for id "
+            f"'{record_id}'"
         )
 
     return record_id
@@ -136,17 +212,72 @@ def validate_links(links, context):
     for field in LINK_FIELDS:
         if field not in links:
             error(
-                f"{context}.links: missing '{field}'"
+                f"{context}.links: "
+                f"missing '{field}'"
             )
             continue
 
         value = links[field]
 
-        if value is not None and not isinstance(value, str):
+        if value is not None and not isinstance(
+            value,
+            str,
+        ):
             error(
-                f"{context}.links.{field}: expected "
-                f"string or null"
+                f"{context}.links.{field}: "
+                f"expected string or null"
             )
+
+
+def validate_biographical_data(
+    value,
+    context,
+):
+    """
+    Validate the structured biographical_data field.
+
+    This field is intentionally treated as a structured
+    editorial field, not as a simple birth-death pair.
+
+    Valid examples include:
+        1602-1676
+        d. 1815
+        fl. 1503-1544
+        fol. 1562-1621
+        116-27 BC
+        fl. 16th century
+
+    Empty strings are allowed because some entities,
+    especially institutions, may legitimately have no
+    structured biographical dates.
+    """
+
+    if value is None:
+        return
+
+    if not isinstance(value, str):
+        error(
+            f"{context}: expected string or null, "
+            f"got {type(value).__name__}"
+        )
+        return
+
+    value = value.strip()
+
+    if not value:
+        return
+
+    if any(
+        pattern.fullmatch(value)
+        for pattern in BIOGRAPHICAL_DATA_PATTERNS
+    ):
+        return
+
+    warning(
+        f"{context}: unrecognized structured "
+        f"biographical_data format: "
+        f"{value!r}"
+    )
 
 
 def validate_person(person, context):
@@ -166,25 +297,35 @@ def validate_person(person, context):
     if "name" in person:
         validate_string(
             person["name"],
-            f"{context}.name"
+            f"{context}.name",
+        )
+
+    if "biographical_data" in person:
+        validate_biographical_data(
+            person["biographical_data"],
+            f"{context}.biographical_data",
         )
 
     for field in [
         "biography",
-        "biographical_data",
         "bibliography",
     ]:
-        if field in person and person[field] is not None:
-            if not isinstance(person[field], str):
+        if field in person:
+            value = person[field]
+
+            if value is not None and not isinstance(
+                value,
+                str,
+            ):
                 error(
-                    f"{context}.{field}: expected string "
-                    f"or null"
+                    f"{context}.{field}: "
+                    f"expected string or null"
                 )
 
     if "links" in person:
         validate_links(
             person["links"],
-            context
+            context,
         )
 
 
@@ -205,12 +346,16 @@ def validate_open_data(value, context):
 
         field_value = value[field]
 
-        if field_value is not None and not isinstance(
-            field_value, str
+        if (
+            field_value is not None
+            and not isinstance(
+                field_value,
+                str,
+            )
         ):
             error(
-                f"{context}.{field}: expected "
-                f"string or null"
+                f"{context}.{field}: "
+                f"expected string or null"
             )
 
 
@@ -229,8 +374,8 @@ def validate_year(value, context):
             return
 
     error(
-        f"{context}: expected integer or 'S.D.', "
-        f"got {value!r}"
+        f"{context}: expected integer or "
+        f"'S.D.', got {value!r}"
     )
 
 
@@ -252,14 +397,18 @@ def validate_record(record, index):
     for field in REQUIRED_TOP_LEVEL_FIELDS:
         if field not in record:
             error(
-                f"{context}: missing top-level field '{field}'"
+                f"{context}: missing top-level "
+                f"field '{field}'"
             )
 
     # ---------------------------------------------------------
     # Stable ID
     # ---------------------------------------------------------
 
-    validate_id(record, index)
+    validate_id(
+        record,
+        index,
+    )
 
     # ---------------------------------------------------------
     # Basic fields
@@ -276,7 +425,7 @@ def validate_record(record, index):
         if field in record:
             validate_string(
                 record[field],
-                f"{context}.{field}"
+                f"{context}.{field}",
             )
 
     # ---------------------------------------------------------
@@ -286,7 +435,7 @@ def validate_record(record, index):
     if "publication_year" in record:
         validate_year(
             record["publication_year"],
-            f"{context}.publication_year"
+            f"{context}.publication_year",
         )
 
     # ---------------------------------------------------------
@@ -297,13 +446,17 @@ def validate_record(record, index):
 
     if not isinstance(authors, list):
         error(
-            f"{context}.authors: expected list"
+            f"{context}.authors: "
+            f"expected list"
         )
     else:
-        for person_index, author in enumerate(authors):
+        for person_index, author in enumerate(
+            authors
+        ):
             validate_person(
                 author,
-                f"{context}.authors[{person_index}]"
+                f"{context}.authors"
+                f"[{person_index}]",
             )
 
     # ---------------------------------------------------------
@@ -314,7 +467,8 @@ def validate_record(record, index):
 
     if not isinstance(publishers, list):
         error(
-            f"{context}.publishers: expected list"
+            f"{context}.publishers: "
+            f"expected list"
         )
     else:
         for person_index, publisher in enumerate(
@@ -322,18 +476,22 @@ def validate_record(record, index):
         ):
             validate_person(
                 publisher,
-                f"{context}.publishers[{person_index}]"
+                f"{context}.publishers"
+                f"[{person_index}]",
             )
 
     # ---------------------------------------------------------
     # Related names
     # ---------------------------------------------------------
 
-    related_names = record.get("related_names")
+    related_names = record.get(
+        "related_names"
+    )
 
     if not isinstance(related_names, list):
         error(
-            f"{context}.related_names: expected list"
+            f"{context}.related_names: "
+            f"expected list"
         )
     else:
         for person_index, person in enumerate(
@@ -341,7 +499,8 @@ def validate_record(record, index):
         ):
             validate_person(
                 person,
-                f"{context}.related_names[{person_index}]"
+                f"{context}.related_names"
+                f"[{person_index}]",
             )
 
     # ---------------------------------------------------------
@@ -352,18 +511,23 @@ def validate_record(record, index):
 
     if not isinstance(topics, list):
         error(
-            f"{context}.topics: expected list"
+            f"{context}.topics: "
+            f"expected list"
         )
     else:
-        for topic_index, topic in enumerate(topics):
+        for topic_index, topic in enumerate(
+            topics
+        ):
             if not isinstance(topic, str):
                 error(
-                    f"{context}.topics[{topic_index}]: "
+                    f"{context}.topics"
+                    f"[{topic_index}]: "
                     f"expected string"
                 )
             elif not topic.strip():
                 error(
-                    f"{context}.topics[{topic_index}]: "
+                    f"{context}.topics"
+                    f"[{topic_index}]: "
                     f"empty topic"
                 )
 
@@ -374,13 +538,16 @@ def validate_record(record, index):
     if "bibliography" in record:
         bibliography = record["bibliography"]
 
-        if bibliography is not None and not isinstance(
-            bibliography,
-            str
+        if (
+            bibliography is not None
+            and not isinstance(
+                bibliography,
+                str,
+            )
         ):
             error(
-                f"{context}.bibliography: expected "
-                f"string or null"
+                f"{context}.bibliography: "
+                f"expected string or null"
             )
 
     # ---------------------------------------------------------
@@ -390,7 +557,7 @@ def validate_record(record, index):
     if "linked_open_data" in record:
         validate_open_data(
             record["linked_open_data"],
-            f"{context}.linked_open_data"
+            f"{context}.linked_open_data",
         )
 
 
@@ -400,15 +567,21 @@ def check_duplicate_titles(dataset):
     for record in dataset:
         title = record.get("title")
 
-        if isinstance(title, str) and title.strip():
-            titles.append(title.strip())
+        if (
+            isinstance(title, str)
+            and title.strip()
+        ):
+            titles.append(
+                title.strip()
+            )
 
     counts = Counter(titles)
 
     for title, count in counts.items():
         if count > 1:
             warning(
-                f"Duplicate title ({count} occurrences): "
+                f"Duplicate title "
+                f"({count} occurrences): "
                 f"{title}"
             )
 
@@ -438,72 +611,11 @@ def check_duplicate_ids(dataset):
     ):
         error(
             f"Duplicate stable ID: "
-            f"{record_id} ({count} occurrences)"
+            f"{record_id} "
+            f"({count} occurrences)"
         )
 
     return duplicates
-
-
-def check_biography_date_ranges(dataset):
-    """
-    Detect obviously impossible date ranges in biographies.
-
-    This is intentionally conservative.
-    It reports warnings rather than errors.
-    """
-
-    date_pattern = re.compile(
-        r"\b(1[0-9]{3}|20[0-9]{2})\b"
-    )
-
-    for index, record in enumerate(dataset):
-        people_groups = [
-            ("authors", record.get("authors", [])),
-            ("publishers", record.get("publishers", [])),
-            (
-                "related_names",
-                record.get("related_names", [])
-            ),
-        ]
-
-        for group_name, people in people_groups:
-            if not isinstance(people, list):
-                continue
-
-            for person_index, person in enumerate(people):
-                if not isinstance(person, dict):
-                    continue
-
-                biography = person.get("biography")
-
-                if not isinstance(biography, str):
-                    continue
-
-                years = [
-                    int(year)
-                    for year in date_pattern.findall(
-                        biography
-                    )
-                ]
-
-                if len(years) < 2:
-                    continue
-
-                first_year = years[0]
-                second_year = years[1]
-
-                if (
-                    first_year >= 1000
-                    and second_year >= 1000
-                    and second_year < first_year
-                ):
-                    warning(
-                        "Suspicious biography date range: "
-                        f"record {index + 1}, "
-                        f"{group_name}[{person_index}], "
-                        f"{person.get('name', '')}: "
-                        f"{first_year}–{second_year}"
-                    )
 
 
 def calculate_statistics(dataset):
@@ -520,6 +632,11 @@ def calculate_statistics(dataset):
     ids = set()
 
     for record in dataset:
+
+        # -----------------------------------------------------
+        # IDs
+        # -----------------------------------------------------
+
         record_id = record.get("id")
 
         if isinstance(record_id, str):
@@ -528,7 +645,14 @@ def calculate_statistics(dataset):
             if record_id:
                 ids.add(record_id)
 
-        for author in record.get("authors", []):
+        # -----------------------------------------------------
+        # Authors
+        # -----------------------------------------------------
+
+        for author in record.get(
+            "authors",
+            [],
+        ):
             author_occurrences += 1
 
             if isinstance(author, dict):
@@ -540,7 +664,14 @@ def calculate_statistics(dataset):
                     if name:
                         authors.add(name)
 
-        for publisher in record.get("publishers", []):
+        # -----------------------------------------------------
+        # Publishers
+        # -----------------------------------------------------
+
+        for publisher in record.get(
+            "publishers",
+            [],
+        ):
             publisher_occurrences += 1
 
             if isinstance(publisher, dict):
@@ -552,7 +683,14 @@ def calculate_statistics(dataset):
                     if name:
                         publishers.add(name)
 
-        for person in record.get("related_names", []):
+        # -----------------------------------------------------
+        # Related names
+        # -----------------------------------------------------
+
+        for person in record.get(
+            "related_names",
+            [],
+        ):
             related_name_occurrences += 1
 
             if isinstance(person, dict):
@@ -564,7 +702,14 @@ def calculate_statistics(dataset):
                     if name:
                         related_names.add(name)
 
-        for topic in record.get("topics", []):
+        # -----------------------------------------------------
+        # Topics
+        # -----------------------------------------------------
+
+        for topic in record.get(
+            "topics",
+            [],
+        ):
             topic_assignments += 1
 
             if isinstance(topic, str):
@@ -579,10 +724,18 @@ def calculate_statistics(dataset):
         "unique_ids": len(ids),
         "author_occurrences": author_occurrences,
         "unique_authors": len(authors),
-        "publisher_occurrences": publisher_occurrences,
-        "unique_publishers": len(publishers),
-        "related_name_occurrences": related_name_occurrences,
-        "unique_related_names": len(related_names),
+        "publisher_occurrences": (
+            publisher_occurrences
+        ),
+        "unique_publishers": len(
+            publishers
+        ),
+        "related_name_occurrences": (
+            related_name_occurrences
+        ),
+        "unique_related_names": len(
+            related_names
+        ),
         "topic_assignments": topic_assignments,
         "unique_topics": len(topics),
     }
@@ -601,7 +754,8 @@ def main():
 
     if not DATASET_PATH.exists():
         error(
-            f"Dataset not found: {DATASET_PATH}"
+            f"Dataset not found: "
+            f"{DATASET_PATH}"
         )
 
         print_validation_result(
@@ -613,7 +767,7 @@ def main():
     try:
         with DATASET_PATH.open(
             "r",
-            encoding="utf-8"
+            encoding="utf-8",
         ) as file:
             dataset = json.load(file)
 
@@ -630,7 +784,8 @@ def main():
 
     except Exception as exc:
         error(
-            f"Unable to read dataset: {exc}"
+            f"Unable to read dataset: "
+            f"{exc}"
         )
 
         print_validation_result(
@@ -658,50 +813,65 @@ def main():
     # Validate every record
     # ---------------------------------------------------------
 
-    for index, record in enumerate(dataset):
+    for index, record in enumerate(
+        dataset
+    ):
         validate_record(
             record,
-            index
+            index,
         )
 
     # ---------------------------------------------------------
     # Global checks
     # ---------------------------------------------------------
 
-    check_duplicate_titles(dataset)
+    check_duplicate_titles(
+        dataset
+    )
 
-    duplicate_ids = check_duplicate_ids(dataset)
-
-    check_biography_date_ranges(dataset)
+    duplicate_ids = check_duplicate_ids(
+        dataset
+    )
 
     statistics = calculate_statistics(
         dataset
     )
 
     # ---------------------------------------------------------
-    # Additional ID integrity checks
+    # Dataset size
     # ---------------------------------------------------------
 
     if statistics["records"] != 146:
         warning(
-            "Expected 146 records, found "
-            f"{statistics['records']}"
+            "Expected 146 records, "
+            f"found {statistics['records']}"
         )
 
-    if statistics["ids_present"] != statistics["records"]:
+    # ---------------------------------------------------------
+    # ID integrity
+    # ---------------------------------------------------------
+
+    if (
+        statistics["ids_present"]
+        != statistics["records"]
+    ):
         error(
-            "Not every record has a valid non-empty ID."
+            "Not every record has a valid "
+            "non-empty ID."
         )
 
-    if statistics["unique_ids"] != statistics["ids_present"]:
+    if (
+        statistics["unique_ids"]
+        != statistics["ids_present"]
+    ):
         error(
             "Stable IDs are not unique."
         )
 
     if duplicate_ids:
         error(
-            f"Found {len(duplicate_ids)} duplicated "
-            f"stable ID(s)."
+            f"Found {len(duplicate_ids)} "
+            f"duplicated stable ID(s)."
         )
 
     # ---------------------------------------------------------
@@ -716,16 +886,22 @@ def main():
         sys.exit(1)
 
 
-def print_validation_result(statistics):
+def print_validation_result(
+    statistics
+):
     print()
     print("=" * 60)
-    print("GOVI RARE BOOKS DATASET VALIDATION")
+    print(
+        "GOVI RARE BOOKS DATASET VALIDATION"
+    )
     print("=" * 60)
     print()
 
     if statistics is not None:
+
         print(
-            f"Records: {statistics['records']}"
+            f"Records: "
+            f"{statistics['records']}"
         )
 
         print(
