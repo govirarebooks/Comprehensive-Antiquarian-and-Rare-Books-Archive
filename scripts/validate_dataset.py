@@ -1,20 +1,23 @@
-from pathlib import Path
 import json
 import re
 import sys
-from urllib.parse import urlparse
 from collections import Counter
+from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent.parent
-DATASET_FILE = ROOT / "govi-rare-books-academic-dataset.json"
+DATASET_PATH = ROOT / "govi-rare-books-academic-dataset.json"
 
 
-# ============================================================
-# REQUIRED DATASET STRUCTURE
-# ============================================================
+# ULID:
+# - 26 caratteri
+# - Crockford Base32
+# - primo carattere 0-7
+ULID_PATTERN = re.compile(r"^[0-7][0-9A-HJKMNP-TV-Z]{25}$")
 
-REQUIRED_FIELDS = [
+
+REQUIRED_TOP_LEVEL_FIELDS = [
+    "id",
     "title",
     "authors",
     "publishers",
@@ -31,7 +34,7 @@ REQUIRED_FIELDS = [
 ]
 
 
-PERSON_REQUIRED_FIELDS = [
+PERSON_FIELDS = [
     "name",
     "biography",
     "biographical_data",
@@ -57,1141 +60,779 @@ OPEN_DATA_FIELDS = [
 ]
 
 
-MIN_YEAR = 1000
-MAX_YEAR = 2100
+def error(message):
+    errors.append(message)
 
 
-errors = []
-warnings = []
+def warning(message):
+    warnings.append(message)
 
 
-# ============================================================
-# MESSAGES
-# ============================================================
-
-def error(record_no, message):
-    errors.append(
-        f"[ERROR] Record {record_no}: {message}"
-    )
-
-
-def warning(record_no, message):
-    warnings.append(
-        f"[WARNING] Record {record_no}: {message}"
-    )
-
-
-# ============================================================
-# GENERIC VALIDATION
-# ============================================================
-
-def is_valid_url(value):
-    if not isinstance(value, str) or not value.strip():
-        return False
-
-    try:
-        parsed = urlparse(value)
-
-        return (
-            parsed.scheme in ("http", "https")
-            and bool(parsed.netloc)
-        )
-
-    except Exception:
-        return False
-
-
-def check_string(
-    record_no,
-    field,
-    value,
-    required=True
-):
-    if value is None:
-
-        if required:
-            error(
-                record_no,
-                f"'{field}' is missing"
-            )
-
-        return
-
+def validate_string(value, field_name, required=True):
     if not isinstance(value, str):
-
         error(
-            record_no,
-            f"'{field}' must be a string"
+            f"{field_name}: expected string, "
+            f"got {type(value).__name__}"
         )
-
-        return
+        return False
 
     if required and not value.strip():
+        error(f"{field_name}: empty string")
 
-        warning(
-            record_no,
-            f"'{field}' is empty"
+    return True
+
+
+def validate_id(record, index):
+    """
+    Validate stable stock.id.
+
+    Requirements:
+    - present
+    - string
+    - non-empty
+    - valid ULID format
+    """
+
+    record_number = index + 1
+    record_id = record.get("id")
+
+    if record_id is None:
+        error(
+            f"Record {record_number}: missing 'id'"
+        )
+        return None
+
+    if not isinstance(record_id, str):
+        error(
+            f"Record {record_number}: 'id' must be a string"
+        )
+        return None
+
+    record_id = record_id.strip()
+
+    if not record_id:
+        error(
+            f"Record {record_number}: 'id' is empty"
+        )
+        return None
+
+    if not ULID_PATTERN.fullmatch(record_id):
+        error(
+            f"Record {record_number}: invalid ULID "
+            f"format for id '{record_id}'"
         )
 
+    return record_id
 
-def check_list(
-    record_no,
-    field,
-    value,
-    required=True
-):
-    if value is None:
 
-        if required:
+def validate_links(links, context):
+    if not isinstance(links, dict):
+        error(
+            f"{context}.links: expected object, "
+            f"got {type(links).__name__}"
+        )
+        return
+
+    for field in LINK_FIELDS:
+        if field not in links:
             error(
-                record_no,
-                f"'{field}' is missing"
+                f"{context}.links: missing '{field}'"
             )
-
-        return
-
-    if not isinstance(value, list):
-
-        error(
-            record_no,
-            f"'{field}' must be a list"
-        )
-
-        return
-
-    # An empty list is valid.
-    #
-    # For example:
-    #   publishers: []
-    #   related_names: []
-    #
-    # These are legitimate states in the dataset and
-    # therefore are not reported as warnings.
-
-
-# ============================================================
-# PUBLICATION YEAR
-# ============================================================
-
-def check_publication_year(
-    record_no,
-    value
-):
-    if value is None:
-
-        error(
-            record_no,
-            "'publication_year' is missing"
-        )
-
-        return
-
-    if isinstance(value, int):
-
-        if (
-            value < MIN_YEAR
-            or value > MAX_YEAR
-        ):
-
-            warning(
-                record_no,
-                f"publication year '{value}' "
-                f"is outside expected range "
-                f"{MIN_YEAR}-{MAX_YEAR}"
-            )
-
-        return
-
-    if isinstance(value, str):
-
-        if value.strip().upper() == "S.D.":
-
-            return
-
-        warning(
-            record_no,
-            f"'publication_year' is a string: "
-            f"'{value}'"
-        )
-
-        return
-
-    error(
-        record_no,
-        "'publication_year' must be "
-        "an integer or 'S.D.'"
-    )
-
-
-# ============================================================
-# PERSON / NAME VALIDATION
-# ============================================================
-
-def check_person_list(
-    record_no,
-    field,
-    people
-):
-    if not isinstance(people, list):
-
-        error(
-            record_no,
-            f"'{field}' must be a list"
-        )
-
-        return
-
-    for person_no, person in enumerate(
-        people,
-        start=1
-    ):
-
-        if not isinstance(person, dict):
-
-            error(
-                record_no,
-                f"'{field}' entry #{person_no} "
-                "must be an object"
-            )
-
             continue
 
-        # ----------------------------------------------------
-        # Required person fields
-        # ----------------------------------------------------
+        value = links[field]
 
-        for required_field in PERSON_REQUIRED_FIELDS:
-
-            if required_field not in person:
-
-                error(
-                    record_no,
-                    f"'{field}' entry #{person_no} "
-                    f"missing '{required_field}'"
-                )
-
-        # ----------------------------------------------------
-        # Name
-        # ----------------------------------------------------
-
-        name = person.get("name")
-
-        if not isinstance(name, str):
-
+        if value is not None and not isinstance(value, str):
             error(
-                record_no,
-                f"'{field}' entry #{person_no} "
-                "'name' must be a string"
+                f"{context}.links.{field}: expected "
+                f"string or null"
             )
 
-        elif not name.strip():
 
-            warning(
-                record_no,
-                f"'{field}' entry #{person_no} "
-                "has an empty name"
-            )
-
-        # ----------------------------------------------------
-        # Biography
-        # ----------------------------------------------------
-
-        biography = person.get("biography")
-
-        if biography is None:
-
-            warning(
-                record_no,
-                f"'{field}' entry #{person_no} "
-                "biography is missing"
-            )
-
-        elif not isinstance(biography, str):
-
-            error(
-                record_no,
-                f"'{field}' entry #{person_no} "
-                "biography must be a string"
-            )
-
-        elif biography.strip():
-
-            check_suspicious_biography_dates(
-                record_no,
-                field,
-                person_no,
-                biography
-            )
-
-        # ----------------------------------------------------
-        # Biographical data
-        # ----------------------------------------------------
-
-        biographical_data = person.get(
-            "biographical_data"
-        )
-
-        if biographical_data is None:
-
-            warning(
-                record_no,
-                f"'{field}' entry #{person_no} "
-                "biographical_data is missing"
-            )
-
-        elif not isinstance(
-            biographical_data,
-            str
-        ):
-
-            error(
-                record_no,
-                f"'{field}' entry #{person_no} "
-                "biographical_data must be a string"
-            )
-
-        # ----------------------------------------------------
-        # Bibliography
-        # ----------------------------------------------------
-
-        bibliography = person.get(
-            "bibliography"
-        )
-
-        if bibliography is None:
-
-            warning(
-                record_no,
-                f"'{field}' entry #{person_no} "
-                "bibliography is missing"
-            )
-
-        elif not isinstance(
-            bibliography,
-            str
-        ):
-
-            error(
-                record_no,
-                f"'{field}' entry #{person_no} "
-                "bibliography must be a string"
-            )
-
-        # ----------------------------------------------------
-        # Links
-        # ----------------------------------------------------
-
-        links = person.get("links")
-
-        if links is None:
-
-            error(
-                record_no,
-                f"'{field}' entry #{person_no} "
-                "'links' is missing"
-            )
-
-            continue
-
-        if not isinstance(links, dict):
-
-            error(
-                record_no,
-                f"'{field}' entry #{person_no} "
-                "'links' must be an object"
-            )
-
-            continue
-
-        for link_field in LINK_FIELDS:
-
-            if link_field not in links:
-
-                error(
-                    record_no,
-                    f"'{field}' entry #{person_no} "
-                    f"missing link field "
-                    f"'{link_field}'"
-                )
-
-                continue
-
-            value = links.get(link_field)
-
-            if value is None:
-                continue
-
-            if not isinstance(value, str):
-
-                error(
-                    record_no,
-                    f"'{field}' entry #{person_no} "
-                    f"link '{link_field}' must be "
-                    "a string or null"
-                )
-
-                continue
-
-            if not is_valid_url(value):
-
-                warning(
-                    record_no,
-                    f"'{field}' entry #{person_no} "
-                    f"link '{link_field}' does not "
-                    "appear to be a valid URL"
-                )
-
-
-# ============================================================
-# LINKED OPEN DATA
-# ============================================================
-
-def check_linked_open_data(
-    record_no,
-    value
-):
-    if value is None:
-
+def validate_person(person, context):
+    if not isinstance(person, dict):
         error(
-            record_no,
-            "'linked_open_data' is missing"
+            f"{context}: expected object, "
+            f"got {type(person).__name__}"
         )
-
         return
 
+    for field in PERSON_FIELDS:
+        if field not in person:
+            error(
+                f"{context}: missing '{field}'"
+            )
+
+    if "name" in person:
+        validate_string(
+            person["name"],
+            f"{context}.name"
+        )
+
+    for field in [
+        "biography",
+        "biographical_data",
+        "bibliography",
+    ]:
+        if field in person and person[field] is not None:
+            if not isinstance(person[field], str):
+                error(
+                    f"{context}.{field}: expected string "
+                    f"or null"
+                )
+
+    if "links" in person:
+        validate_links(
+            person["links"],
+            context
+        )
+
+
+def validate_open_data(value, context):
     if not isinstance(value, dict):
-
         error(
-            record_no,
-            "'linked_open_data' must be an object"
+            f"{context}: expected object, "
+            f"got {type(value).__name__}"
         )
-
         return
 
     for field in OPEN_DATA_FIELDS:
-
         if field not in value:
-
             error(
-                record_no,
-                f"linked_open_data missing "
-                f"'{field}'"
+                f"{context}: missing '{field}'"
             )
-
             continue
 
-        url = value.get(field)
+        field_value = value[field]
 
-        if url is None:
-            continue
-
-        if not isinstance(url, str):
-
+        if field_value is not None and not isinstance(
+            field_value, str
+        ):
             error(
-                record_no,
-                f"linked_open_data '{field}' "
-                "must be a string or null"
-            )
-
-            continue
-
-        if not is_valid_url(url):
-
-            warning(
-                record_no,
-                f"linked_open_data '{field}' "
-                "does not appear to be "
-                "a valid URL"
+                f"{context}.{field}: expected "
+                f"string or null"
             )
 
 
-# ============================================================
-# TOPICS
-# ============================================================
-
-def check_topics(
-    record_no,
-    topics
-):
-    if not isinstance(topics, list):
-
+def validate_year(value, context):
+    if value is None:
         error(
-            record_no,
-            "'topics' must be a list"
+            f"{context}: publication year is null"
         )
-
         return
 
-    for topic_no, topic in enumerate(
-        topics,
-        start=1
-    ):
+    if isinstance(value, int):
+        return
 
-        if not isinstance(topic, str):
+    if isinstance(value, str):
+        if value.strip() == "S.D.":
+            return
 
-            error(
-                record_no,
-                f"topic #{topic_no} "
-                "must be a string"
-            )
-
-            continue
-
-        if not topic.strip():
-
-            warning(
-                record_no,
-                f"topic #{topic_no} is empty"
-            )
-
-
-# ============================================================
-# BIOGRAPHY DATE CHECK
-# ============================================================
-
-def check_suspicious_biography_dates(
-    record_no,
-    field,
-    person_no,
-    biography
-):
-    patterns = re.findall(
-        r"\b(\d{3,4})\s*[–-]\s*(\d{3,4})\b",
-        biography
+    error(
+        f"{context}: expected integer or 'S.D.', "
+        f"got {value!r}"
     )
 
-    for birth, death in patterns:
 
-        birth_year = int(birth)
-        death_year = int(death)
+def validate_record(record, index):
+    record_number = index + 1
+    context = f"Record {record_number}"
 
-        if (
-            birth_year < MIN_YEAR
-            or death_year < MIN_YEAR
-        ):
-            continue
-
-        if (
-            birth_year > MAX_YEAR
-            or death_year > MAX_YEAR
-        ):
-            continue
-
-        if death_year < birth_year:
-
-            warning(
-                record_no,
-                f"{field} entry #{person_no} "
-                "biography contains a suspicious "
-                f"date range: {birth}-{death}"
-            )
-
-
-# ============================================================
-# RECORD VALIDATION
-# ============================================================
-
-def check_record(
-    record_no,
-    record
-):
     if not isinstance(record, dict):
-
         error(
-            record_no,
-            "record must be an object"
+            f"{context}: expected object, "
+            f"got {type(record).__name__}"
         )
-
         return
 
-    # --------------------------------------------------------
-    # Required top-level fields
-    # --------------------------------------------------------
+    # ---------------------------------------------------------
+    # Top-level schema
+    # ---------------------------------------------------------
 
-    for field in REQUIRED_FIELDS:
-
+    for field in REQUIRED_TOP_LEVEL_FIELDS:
         if field not in record:
-
             error(
-                record_no,
-                f"missing required field "
-                f"'{field}'"
+                f"{context}: missing top-level field '{field}'"
             )
 
-    # --------------------------------------------------------
-    # Bibliographic fields
-    # --------------------------------------------------------
+    # ---------------------------------------------------------
+    # Stable ID
+    # ---------------------------------------------------------
 
-    check_string(
-        record_no,
+    validate_id(record, index)
+
+    # ---------------------------------------------------------
+    # Basic fields
+    # ---------------------------------------------------------
+
+    for field in [
         "title",
-        record.get("title")
-    )
-
-    check_string(
-        record_no,
         "publication_place",
-        record.get("publication_place")
-    )
-
-    check_string(
-        record_no,
         "publisher_data",
-        record.get("publisher_data")
-    )
-
-    check_string(
-        record_no,
         "academic_description",
-        record.get("academic_description")
-    )
-
-    # Bibliography may legitimately be empty.
-    check_string(
-        record_no,
-        "bibliography",
-        record.get("bibliography"),
-        required=False
-    )
-
-    check_string(
-        record_no,
+        "source_url",
         "institution",
-        record.get("institution")
-    )
+    ]:
+        if field in record:
+            validate_string(
+                record[field],
+                f"{context}.{field}"
+            )
 
-    # --------------------------------------------------------
-    # Collections
-    # --------------------------------------------------------
-
-    check_list(
-        record_no,
-        "authors",
-        record.get("authors")
-    )
-
-    check_list(
-        record_no,
-        "publishers",
-        record.get("publishers")
-    )
-
-    check_list(
-        record_no,
-        "related_names",
-        record.get("related_names")
-    )
-
-    check_topics(
-        record_no,
-        record.get("topics")
-    )
-
-    # --------------------------------------------------------
+    # ---------------------------------------------------------
     # Publication year
-    # --------------------------------------------------------
+    # ---------------------------------------------------------
 
-    check_publication_year(
-        record_no,
-        record.get("publication_year")
-    )
+    if "publication_year" in record:
+        validate_year(
+            record["publication_year"],
+            f"{context}.publication_year"
+        )
 
-    # --------------------------------------------------------
-    # Source URL
-    # --------------------------------------------------------
+    # ---------------------------------------------------------
+    # Authors
+    # ---------------------------------------------------------
 
-    source_url = record.get(
-        "source_url"
-    )
+    authors = record.get("authors")
 
-    if source_url is None:
-
+    if not isinstance(authors, list):
         error(
-            record_no,
-            "'source_url' is missing"
+            f"{context}.authors: expected list"
+        )
+    else:
+        for person_index, author in enumerate(authors):
+            validate_person(
+                author,
+                f"{context}.authors[{person_index}]"
+            )
+
+    # ---------------------------------------------------------
+    # Publishers
+    # ---------------------------------------------------------
+
+    publishers = record.get("publishers")
+
+    if not isinstance(publishers, list):
+        error(
+            f"{context}.publishers: expected list"
+        )
+    else:
+        for person_index, publisher in enumerate(
+            publishers
+        ):
+            validate_person(
+                publisher,
+                f"{context}.publishers[{person_index}]"
+            )
+
+    # ---------------------------------------------------------
+    # Related names
+    # ---------------------------------------------------------
+
+    related_names = record.get("related_names")
+
+    if not isinstance(related_names, list):
+        error(
+            f"{context}.related_names: expected list"
+        )
+    else:
+        for person_index, person in enumerate(
+            related_names
+        ):
+            validate_person(
+                person,
+                f"{context}.related_names[{person_index}]"
+            )
+
+    # ---------------------------------------------------------
+    # Topics
+    # ---------------------------------------------------------
+
+    topics = record.get("topics")
+
+    if not isinstance(topics, list):
+        error(
+            f"{context}.topics: expected list"
+        )
+    else:
+        for topic_index, topic in enumerate(topics):
+            if not isinstance(topic, str):
+                error(
+                    f"{context}.topics[{topic_index}]: "
+                    f"expected string"
+                )
+            elif not topic.strip():
+                error(
+                    f"{context}.topics[{topic_index}]: "
+                    f"empty topic"
+                )
+
+    # ---------------------------------------------------------
+    # Record bibliography
+    # ---------------------------------------------------------
+
+    if "bibliography" in record:
+        bibliography = record["bibliography"]
+
+        if bibliography is not None and not isinstance(
+            bibliography,
+            str
+        ):
+            error(
+                f"{context}.bibliography: expected "
+                f"string or null"
+            )
+
+    # ---------------------------------------------------------
+    # Linked open data
+    # ---------------------------------------------------------
+
+    if "linked_open_data" in record:
+        validate_open_data(
+            record["linked_open_data"],
+            f"{context}.linked_open_data"
         )
 
-    elif not is_valid_url(source_url):
 
-        warning(
-            record_no,
-            "'source_url' does not appear "
-            "to be a valid URL"
-        )
+def check_duplicate_titles(dataset):
+    titles = []
 
-    # --------------------------------------------------------
-    # Linked Open Data
-    # --------------------------------------------------------
-
-    check_linked_open_data(
-        record_no,
-        record.get("linked_open_data")
-    )
-
-    # --------------------------------------------------------
-    # People
-    # --------------------------------------------------------
-
-    check_person_list(
-        record_no,
-        "authors",
-        record.get("authors")
-    )
-
-    check_person_list(
-        record_no,
-        "publishers",
-        record.get("publishers")
-    )
-
-    check_person_list(
-        record_no,
-        "related_names",
-        record.get("related_names")
-    )
-
-
-# ============================================================
-# NORMALIZATION
-# ============================================================
-
-def normalize_text(value):
-    return " ".join(
-        value.lower().split()
-    )
-
-
-# ============================================================
-# DUPLICATE TITLES
-# ============================================================
-
-def check_duplicates(dataset):
-
-    normalized_titles = {}
-
-    for index, record in enumerate(
-        dataset,
-        start=1
-    ):
-
-        if not isinstance(record, dict):
-            continue
-
+    for record in dataset:
         title = record.get("title")
 
-        if not isinstance(title, str):
-            continue
+        if isinstance(title, str) and title.strip():
+            titles.append(title.strip())
 
-        normalized = normalize_text(title)
+    counts = Counter(titles)
 
-        normalized_titles.setdefault(
-            normalized,
-            []
-        ).append(index)
-
-    for title, records in normalized_titles.items():
-
-        if len(records) > 1:
-
+    for title, count in counts.items():
+        if count > 1:
             warning(
-                "GLOBAL",
-                f"duplicate title detected "
-                f"in records {records}: {title}"
+                f"Duplicate title ({count} occurrences): "
+                f"{title}"
             )
 
 
-# ============================================================
-# TOPIC ANALYSIS
-# ============================================================
-
-def analyze_topics(dataset):
-
-    topic_counter = Counter()
+def check_duplicate_ids(dataset):
+    ids = []
 
     for record in dataset:
+        record_id = record.get("id")
 
-        if not isinstance(record, dict):
-            continue
+        if isinstance(record_id, str):
+            record_id = record_id.strip()
 
-        topics = record.get(
-            "topics",
-            []
+            if record_id:
+                ids.append(record_id)
+
+    counts = Counter(ids)
+
+    duplicates = {
+        record_id: count
+        for record_id, count in counts.items()
+        if count > 1
+    }
+
+    for record_id, count in sorted(
+        duplicates.items()
+    ):
+        error(
+            f"Duplicate stable ID: "
+            f"{record_id} ({count} occurrences)"
         )
 
-        if not isinstance(topics, list):
-            continue
-
-        for topic in topics:
-
-            if (
-                isinstance(topic, str)
-                and topic.strip()
-            ):
-
-                topic_counter[
-                    normalize_text(topic)
-                ] += 1
-
-    return topic_counter
+    return duplicates
 
 
-# ============================================================
-# PEOPLE ANALYSIS
-# ============================================================
+def check_biography_date_ranges(dataset):
+    """
+    Detect obviously impossible date ranges in biographies.
 
-def analyze_people(
-    dataset,
-    field
-):
-    names = Counter()
+    This is intentionally conservative.
+    It reports warnings rather than errors.
+    """
 
-    for record in dataset:
+    date_pattern = re.compile(
+        r"\b(1[0-9]{3}|20[0-9]{2})\b"
+    )
 
-        if not isinstance(record, dict):
-            continue
+    for index, record in enumerate(dataset):
+        people_groups = [
+            ("authors", record.get("authors", [])),
+            ("publishers", record.get("publishers", [])),
+            (
+                "related_names",
+                record.get("related_names", [])
+            ),
+        ]
 
-        people = record.get(
-            field,
-            []
-        )
-
-        if not isinstance(people, list):
-            continue
-
-        for person in people:
-
-            if not isinstance(person, dict):
+        for group_name, people in people_groups:
+            if not isinstance(people, list):
                 continue
 
-            name = person.get("name")
+            for person_index, person in enumerate(people):
+                if not isinstance(person, dict):
+                    continue
 
-            if (
-                isinstance(name, str)
-                and name.strip()
-            ):
+                biography = person.get("biography")
 
-                names[
-                    normalize_text(name)
-                ] += 1
+                if not isinstance(biography, str):
+                    continue
 
-    return names
+                years = [
+                    int(year)
+                    for year in date_pattern.findall(
+                        biography
+                    )
+                ]
+
+                if len(years) < 2:
+                    continue
+
+                first_year = years[0]
+                second_year = years[1]
+
+                if (
+                    first_year >= 1000
+                    and second_year >= 1000
+                    and second_year < first_year
+                ):
+                    warning(
+                        "Suspicious biography date range: "
+                        f"record {index + 1}, "
+                        f"{group_name}[{person_index}], "
+                        f"{person.get('name', '')}: "
+                        f"{first_year}–{second_year}"
+                    )
 
 
-# ============================================================
-# MAIN
-# ============================================================
+def calculate_statistics(dataset):
+    author_occurrences = 0
+    publisher_occurrences = 0
+    related_name_occurrences = 0
+    topic_assignments = 0
+
+    authors = set()
+    publishers = set()
+    related_names = set()
+    topics = set()
+
+    ids = set()
+
+    for record in dataset:
+        record_id = record.get("id")
+
+        if isinstance(record_id, str):
+            record_id = record_id.strip()
+
+            if record_id:
+                ids.add(record_id)
+
+        for author in record.get("authors", []):
+            author_occurrences += 1
+
+            if isinstance(author, dict):
+                name = author.get("name")
+
+                if isinstance(name, str):
+                    name = name.strip()
+
+                    if name:
+                        authors.add(name)
+
+        for publisher in record.get("publishers", []):
+            publisher_occurrences += 1
+
+            if isinstance(publisher, dict):
+                name = publisher.get("name")
+
+                if isinstance(name, str):
+                    name = name.strip()
+
+                    if name:
+                        publishers.add(name)
+
+        for person in record.get("related_names", []):
+            related_name_occurrences += 1
+
+            if isinstance(person, dict):
+                name = person.get("name")
+
+                if isinstance(name, str):
+                    name = name.strip()
+
+                    if name:
+                        related_names.add(name)
+
+        for topic in record.get("topics", []):
+            topic_assignments += 1
+
+            if isinstance(topic, str):
+                topic = topic.strip()
+
+                if topic:
+                    topics.add(topic)
+
+    return {
+        "records": len(dataset),
+        "ids_present": len(ids),
+        "unique_ids": len(ids),
+        "author_occurrences": author_occurrences,
+        "unique_authors": len(authors),
+        "publisher_occurrences": publisher_occurrences,
+        "unique_publishers": len(publishers),
+        "related_name_occurrences": related_name_occurrences,
+        "unique_related_names": len(related_names),
+        "topic_assignments": topic_assignments,
+        "unique_topics": len(topics),
+    }
+
 
 def main():
+    global errors
+    global warnings
 
-    print("=" * 70)
-    print(
-        "GOVI RARE BOOKS ARCHIVE — DATASET VALIDATOR"
-    )
-    print("=" * 70)
-    print()
+    errors = []
+    warnings = []
 
-    # --------------------------------------------------------
-    # Dataset existence
-    # --------------------------------------------------------
+    # ---------------------------------------------------------
+    # Load dataset
+    # ---------------------------------------------------------
 
-    if not DATASET_FILE.exists():
-
-        print(
-            "[ERROR] Dataset file not found:"
+    if not DATASET_PATH.exists():
+        error(
+            f"Dataset not found: {DATASET_PATH}"
         )
 
-        print(
-            DATASET_FILE
+        print_validation_result(
+            statistics=None
         )
 
         sys.exit(1)
 
-    print(
-        f"Dataset: {DATASET_FILE}"
-    )
-
-    print()
-
-    # --------------------------------------------------------
-    # Load JSON
-    # --------------------------------------------------------
-
     try:
-
-        with DATASET_FILE.open(
+        with DATASET_PATH.open(
             "r",
             encoding="utf-8"
-        ) as f:
-
-            dataset = json.load(f)
+        ) as file:
+            dataset = json.load(file)
 
     except json.JSONDecodeError as exc:
-
-        print(
-            "[ERROR] Invalid JSON"
+        error(
+            f"Invalid JSON: {exc}"
         )
 
-        print(exc)
+        print_validation_result(
+            statistics=None
+        )
 
         sys.exit(1)
 
     except Exception as exc:
-
-        print(
-            "[ERROR] Could not read dataset"
+        error(
+            f"Unable to read dataset: {exc}"
         )
 
-        print(exc)
+        print_validation_result(
+            statistics=None
+        )
 
         sys.exit(1)
 
-    # --------------------------------------------------------
-    # Root structure
-    # --------------------------------------------------------
+    # ---------------------------------------------------------
+    # Dataset must be a list
+    # ---------------------------------------------------------
 
     if not isinstance(dataset, list):
+        error(
+            "Top-level dataset must be a list"
+        )
 
-        print(
-            "[ERROR] Dataset root must be a list."
+        print_validation_result(
+            statistics=None
         )
 
         sys.exit(1)
 
-    print(
-        f"Records found: {len(dataset)}"
-    )
+    # ---------------------------------------------------------
+    # Validate every record
+    # ---------------------------------------------------------
 
-    print()
-
-    # --------------------------------------------------------
-    # Validate records
-    # --------------------------------------------------------
-
-    for record_no, record in enumerate(
-        dataset,
-        start=1
-    ):
-
-        check_record(
-            record_no,
-            record
+    for index, record in enumerate(dataset):
+        validate_record(
+            record,
+            index
         )
 
-    # --------------------------------------------------------
+    # ---------------------------------------------------------
     # Global checks
-    # --------------------------------------------------------
+    # ---------------------------------------------------------
 
-    check_duplicates(
+    check_duplicate_titles(dataset)
+
+    duplicate_ids = check_duplicate_ids(dataset)
+
+    check_biography_date_ranges(dataset)
+
+    statistics = calculate_statistics(
         dataset
     )
 
-    # --------------------------------------------------------
-    # Statistics
-    # --------------------------------------------------------
+    # ---------------------------------------------------------
+    # Additional ID integrity checks
+    # ---------------------------------------------------------
 
-    topic_counter = analyze_topics(
-        dataset
-    )
-
-    author_counter = analyze_people(
-        dataset,
-        "authors"
-    )
-
-    publisher_counter = analyze_people(
-        dataset,
-        "publishers"
-    )
-
-    related_counter = analyze_people(
-        dataset,
-        "related_names"
-    )
-
-    author_count = sum(
-        author_counter.values()
-    )
-
-    publisher_count = sum(
-        publisher_counter.values()
-    )
-
-    related_count = sum(
-        related_counter.values()
-    )
-
-    topic_assignment_count = sum(
-        topic_counter.values()
-    )
-
-    # ========================================================
-    # SUMMARY
-    # ========================================================
-
-    print("-" * 70)
-    print("SUMMARY")
-    print("-" * 70)
-
-    print(
-        f"Records:                       "
-        f"{len(dataset)}"
-    )
-
-    print(
-        f"Author occurrences:            "
-        f"{author_count}"
-    )
-
-    print(
-        f"Unique authors:                "
-        f"{len(author_counter)}"
-    )
-
-    print(
-        f"Publisher occurrences:         "
-        f"{publisher_count}"
-    )
-
-    print(
-        f"Unique publishers:             "
-        f"{len(publisher_counter)}"
-    )
-
-    print(
-        f"Related-name occurrences:      "
-        f"{related_count}"
-    )
-
-    print(
-        f"Unique related names:          "
-        f"{len(related_counter)}"
-    )
-
-    print(
-        f"Topic assignments:             "
-        f"{topic_assignment_count}"
-    )
-
-    print(
-        f"Unique topics:                 "
-        f"{len(topic_counter)}"
-    )
-
-    if len(dataset) > 0:
-
-        average_topics = (
-            topic_assignment_count
-            / len(dataset)
+    if statistics["records"] != 146:
+        warning(
+            "Expected 146 records, found "
+            f"{statistics['records']}"
         )
 
-        print(
-            f"Average topics per record:     "
-            f"{average_topics:.2f}"
+    if statistics["ids_present"] != statistics["records"]:
+        error(
+            "Not every record has a valid non-empty ID."
         )
 
-    print(
-        f"Errors:                        "
-        f"{len(errors)}"
-    )
-
-    print(
-        f"Warnings:                      "
-        f"{len(warnings)}"
-    )
-
-    print()
-
-    # ========================================================
-    # TOP TOPICS
-    # ========================================================
-
-    print("-" * 70)
-    print("TOP TOPICS")
-    print("-" * 70)
-
-    for topic, count in topic_counter.most_common(
-        15
-    ):
-
-        print(
-            f"{count:>4}  {topic}"
+    if statistics["unique_ids"] != statistics["ids_present"]:
+        error(
+            "Stable IDs are not unique."
         )
 
-    print()
+    if duplicate_ids:
+        error(
+            f"Found {len(duplicate_ids)} duplicated "
+            f"stable ID(s)."
+        )
 
-    # ========================================================
-    # ERRORS
-    # ========================================================
+    # ---------------------------------------------------------
+    # Print result
+    # ---------------------------------------------------------
+
+    print_validation_result(
+        statistics=statistics
+    )
 
     if errors:
+        sys.exit(1)
 
-        print("-" * 70)
-        print("ERRORS")
-        print("-" * 70)
+
+def print_validation_result(statistics):
+    print()
+    print("=" * 60)
+    print("GOVI RARE BOOKS DATASET VALIDATION")
+    print("=" * 60)
+    print()
+
+    if statistics is not None:
+        print(
+            f"Records: {statistics['records']}"
+        )
+
+        print(
+            f"IDs present: "
+            f"{statistics['ids_present']}"
+        )
+
+        print(
+            f"Unique IDs: "
+            f"{statistics['unique_ids']}"
+        )
+
+        print(
+            f"Author occurrences: "
+            f"{statistics['author_occurrences']}"
+        )
+
+        print(
+            f"Unique authors: "
+            f"{statistics['unique_authors']}"
+        )
+
+        print(
+            f"Publisher occurrences: "
+            f"{statistics['publisher_occurrences']}"
+        )
+
+        print(
+            f"Unique publishers: "
+            f"{statistics['unique_publishers']}"
+        )
+
+        print(
+            f"Related-name occurrences: "
+            f"{statistics['related_name_occurrences']}"
+        )
+
+        print(
+            f"Unique related names: "
+            f"{statistics['unique_related_names']}"
+        )
+
+        print(
+            f"Topic assignments: "
+            f"{statistics['topic_assignments']}"
+        )
+
+        print(
+            f"Unique topics: "
+            f"{statistics['unique_topics']}"
+        )
+
+        if statistics["records"] > 0:
+            average_topics = (
+                statistics["topic_assignments"]
+                / statistics["records"]
+            )
+
+            print(
+                f"Average topics per record: "
+                f"{average_topics:.2f}"
+            )
+
+    print()
+
+    print(
+        f"Errors: {len(errors)}"
+    )
+
+    print(
+        f"Warnings: {len(warnings)}"
+    )
+
+    if errors:
+        print()
+        print("ERRORS:")
 
         for message in errors:
-
-            print(message)
-
-        print()
-
-    # ========================================================
-    # WARNINGS
-    # ========================================================
+            print(
+                f"  ✗ {message}"
+            )
 
     if warnings:
-
-        print("-" * 70)
-        print("WARNINGS")
-        print("-" * 70)
+        print()
+        print("WARNINGS:")
 
         for message in warnings:
+            print(
+                f"  ⚠ {message}"
+            )
 
-            print(message)
+    print()
 
-        print()
-
-    # ========================================================
-    # FINAL RESULT
-    # ========================================================
-
-    if not errors and not warnings:
-
+    if errors:
+        print(
+            "✗ Dataset FAILED validation."
+        )
+    else:
         print(
             "✓ Dataset passed all validation checks."
         )
 
-        print()
-
-    elif not errors:
-
-        print(
-            "✓ No structural errors found."
-        )
-
-        print(
-            "⚠ Review the warnings above."
-        )
-
-        print()
-
-    else:
-
-        print(
-            "✗ Dataset contains errors "
-            "that should be fixed."
-        )
-
-        print()
-
-    print("=" * 70)
-
-    # GitHub Actions fails only on real errors.
-    if errors:
-        return 1
-
-    return 0
+    print(
+        "=" * 60
+    )
+    print()
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
