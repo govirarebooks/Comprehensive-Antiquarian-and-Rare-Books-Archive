@@ -7,12 +7,14 @@ on:
     paths:
       - "govi-rare-books-academic-dataset.json"
       - "scripts/**"
+      - "rag/**"
       - ".github/workflows/validate.yml"
 
   pull_request:
     paths:
       - "govi-rare-books-academic-dataset.json"
       - "scripts/**"
+      - "rag/**"
       - ".github/workflows/validate.yml"
 
 jobs:
@@ -30,3 +32,6 @@ jobs:
 
       - name: Validate dataset
         run: python scripts/validate_dataset.py
+
+      - name: Prepare RAG documents
+        run: python rag/prepare_documents.py
