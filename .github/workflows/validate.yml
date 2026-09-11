@@ -36,6 +36,12 @@ jobs:
       - name: Prepare RAG documents
         run: python rag/prepare_documents.py
 
+      - name: Test RAG search
+        run: |
+          python rag/search.py "astrologia"
+          python rag/search.py "astrologia XVI secolo"
+          python rag/search.py "libri medicina cinquecento"
+
       - name: Upload RAG documents
         uses: actions/upload-artifact@v4
         with:
