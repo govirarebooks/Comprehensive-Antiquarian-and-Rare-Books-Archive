@@ -125,12 +125,33 @@ def main():
     documents = []
 
     for index, record in enumerate(dataset):
+
+        # The stable identifier must come from the
+        # original stock.id in the management system.
+        record_id = record.get("id")
+
+        if record_id is None:
+            raise ValueError(
+                f"Record {index + 1} has no stable 'id' field."
+            )
+
+        document_id = f"work-{record_id}"
+
         documents.append({
-            "id": f"work-{index + 1:04d}",
+            "id": document_id,
+
             "type": "work",
-            "title": record.get("title", ""),
-            "text": build_work_document(record),
+
+            "title":
+                record.get("title", ""),
+
+            "text":
+                build_work_document(record),
+
             "metadata": {
+                "source_id":
+                    record_id,
+
                 "publication_year":
                     record.get("publication_year"),
 
