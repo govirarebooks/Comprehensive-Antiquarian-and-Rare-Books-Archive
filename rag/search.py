@@ -1,559 +1,1507 @@
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
-from collections import Counter
+
+
+# ============================================================
+# CONFIGURATION
+# ============================================================
 
 ROOT = Path(__file__).resolve().parent.parent
 DOCUMENTS_PATH = ROOT / "rag" / "documents.json"
 
-# Parole troppo generiche per essere utili nel ranking.
+DEFAULT_LIMIT = 10
+
+
+# ============================================================
+# GENERIC STOPWORDS
+# ============================================================
+
 STOPWORDS = {
-    "a", "ad", "al", "alla", "alle", "allo", "ai", "agli",
-    "da", "dal", "dalla", "dalle", "dallo", "dai", "dagli",
-    "di", "del", "della", "delle", "dello", "dei", "degli",
-    "e", "ed", "in", "nel", "nella", "nelle", "nello",
-    "nei", "negli", "su", "sul", "sulla", "sulle", "sullo",
-    "per", "con", "tra", "fra",
-    "il", "lo", "la", "i", "gli", "le",
-    "un", "uno", "una",
-    "the", "a", "an", "of", "and", "in", "on", "for", "with",
-    "from", "to", "by",
-    "libro", "libri", "book", "books",
-    "secolo", "secoli", "century", "centuries",
+    # English
+    "a",
+    "an",
+    "and",
+    "are",
+    "as",
+    "at",
+    "by",
+    "for",
+    "from",
+    "in",
+    "into",
+    "is",
+    "of",
+    "on",
+    "or",
+    "the",
+    "to",
+    "with",
+    "without",
+
+    # Italian
+    "a",
+    "ad",
+    "al",
+    "alla",
+    "alle",
+    "allo",
+    "ai",
+    "agli",
+    "da",
+    "dal",
+    "dalla",
+    "dalle",
+    "dello",
+    "dei",
+    "degli",
+    "di",
+    "e",
+    "ed",
+    "in",
+    "nel",
+    "nella",
+    "nelle",
+    "nello",
+    "nei",
+    "negli",
+    "o",
+    "per",
+    "su",
+    "sul",
+    "sulla",
+    "sulle",
+    "sullo",
+    "con",
+    "tra",
+    "fra",
+    "il",
+    "lo",
+    "la",
+    "i",
+    "gli",
+    "le",
+    "un",
+    "uno",
+    "una",
+
+    # French
+    "le",
+    "la",
+    "les",
+    "un",
+    "une",
+    "des",
+    "du",
+    "de",
+    "et",
+    "en",
+    "dans",
+    "sur",
+    "pour",
+    "avec",
+    "sans",
+
+    # Spanish
+    "el",
+    "la",
+    "los",
+    "las",
+    "un",
+    "una",
+    "unos",
+    "unas",
+    "de",
+    "del",
+    "y",
+    "en",
+    "para",
+    "con",
+    "sin",
+
+    # German
+    "der",
+    "die",
+    "das",
+    "den",
+    "dem",
+    "des",
+    "ein",
+    "eine",
+    "und",
+    "von",
+    "zu",
+    "mit",
+    "für",
+    "im",
+    "in",
+    "auf",
+
+    # Generic bibliographic words
+    "book",
+    "books",
+    "libro",
+    "libri",
+    "livre",
+    "livres",
+    "libro",
+    "libros",
+    "buch",
+    "bücher",
+
+    # Generic period words
+    "century",
+    "centuries",
+    "secolo",
+    "secoli",
+    "siècle",
+    "siècles",
+    "siglo",
+    "siglos",
+    "jahrhundert",
+    "jahrhunderte",
 }
 
-# Traduzioni/varianti italiane delle categorie bibliografiche.
-# Le categorie ufficiali vengono comunque ricavate direttamente
-# dai documenti: questa mappa serve solo per capire la query italiana.
-ITALIAN_ALIASES = {
-    "astrologia": "astrology",
-    "astronomia": "astronomy",
-    "medicina": "medicine",
-    "farmacia": "pharmacy",
-    "chirurgia": "surgery",
-    "anatomia": "anatomy",
-    "filosofia": "philosophy",
-    "teologia": "theology",
-    "religione": "religion",
-    "letteratura": "literature",
-    "poesia": "poetry",
-    "poetica": "poetics",
-    "storia": "history",
-    "geografia": "geography",
-    "matematica": "mathematics",
-    "algebra": "algebra",
-    "geometria": "geometry",
-    "fisica": "physics",
-    "chimica": "chemistry",
-    "botanica": "botany",
-    "zoologia": "zoology",
-    "agricoltura": "agriculture",
-    "diritto": "law",
-    "giurisprudenza": "law",
-    "politica": "politics",
-    "arte": "art",
-    "architettura": "architecture",
-    "musica": "music",
-    "linguistica": "linguistics",
-    "grammatica": "grammar",
-    "filologia": "philology",
-    "bibliografia": "bibliography",
-    "stampa": "printing",
-    "tipografia": "typography",
-    "esoterismo": "esoterica",
-    "stregoneria": "witchcraft",
+
+# ============================================================
+# MULTILINGUAL ALIASES
+#
+# Canonical vocabulary = English dataset taxonomy.
+#
+# Queries may arrive in several languages and are mapped
+# toward the English taxonomy.
+# ============================================================
+
+MULTILINGUAL_ALIASES = {
+
+    # --------------------------------------------------------
+    # ASTROLOGY
+    # --------------------------------------------------------
+
+    "astrology": "Astrology",
+    "astrologia": "Astrology",
+    "astrologie": "Astrology",
+    "astrología": "Astrology",
+    "astrologie": "Astrology",
+
+    # --------------------------------------------------------
+    # ASTRONOMY
+    # --------------------------------------------------------
+
+    "astronomy": "Astronomy",
+    "astronomia": "Astronomy",
+    "astronomie": "Astronomy",
+    "astronomía": "Astronomy",
+    "astronomie": "Astronomy",
+
+    # --------------------------------------------------------
+    # MEDICINE
+    # --------------------------------------------------------
+
+    "medicine": "Medicine",
+    "medicina": "Medicine",
+    "médecine": "Medicine",
+    "medicina": "Medicine",
+    "medizin": "Medicine",
+
+    # --------------------------------------------------------
+    # PHILOSOPHY
+    # --------------------------------------------------------
+
+    "philosophy": "Philosophy",
+    "filosofia": "Philosophy",
+    "philosophie": "Philosophy",
+    "filosofía": "Philosophy",
+    "philosophie": "Philosophy",
+
+    # --------------------------------------------------------
+    # THEOLOGY
+    # --------------------------------------------------------
+
+    "theology": "Theology",
+    "teologia": "Theology",
+    "théologie": "Theology",
+    "teología": "Theology",
+    "theologie": "Theology",
+
+    # --------------------------------------------------------
+    # HISTORY
+    # --------------------------------------------------------
+
+    "history": "History",
+    "storia": "History",
+    "histoire": "History",
+    "historia": "History",
+    "geschichte": "History",
+
+    # --------------------------------------------------------
+    # LITERATURE
+    # --------------------------------------------------------
+
+    "literature": "Literature",
+    "letteratura": "Literature",
+    "littérature": "Literature",
+    "literatura": "Literature",
+    "literatur": "Literature",
+
+    # --------------------------------------------------------
+    # POETRY
+    # --------------------------------------------------------
+
+    "poetry": "Poetry",
+    "poesia": "Poetry",
+    "poésie": "Poetry",
+    "poesía": "Poetry",
+    "lyrik": "Poetry",
+
+    # --------------------------------------------------------
+    # PHILOLOGY
+    # --------------------------------------------------------
+
+    "philology": "Philology",
+    "filologia": "Philology",
+    "philologie": "Philology",
+    "filología": "Philology",
+    "philologie": "Philology",
+
+    # --------------------------------------------------------
+    # MATHEMATICS
+    # --------------------------------------------------------
+
+    "mathematics": "Mathematics",
+    "matematica": "Mathematics",
+    "mathématiques": "Mathematics",
+    "matemáticas": "Mathematics",
+    "mathematik": "Mathematics",
+
+    # --------------------------------------------------------
+    # GEOMETRY
+    # --------------------------------------------------------
+
+    "geometry": "Geometry",
+    "geometria": "Geometry",
+    "géométrie": "Geometry",
+    "geometría": "Geometry",
+    "geometrie": "Geometry",
+
+    # --------------------------------------------------------
+    # ALGEBRA
+    # --------------------------------------------------------
+
+    "algebra": "Algebra",
+    "algèbre": "Algebra",
+    "álgebra": "Algebra",
+
+    # --------------------------------------------------------
+    # PHYSICS
+    # --------------------------------------------------------
+
+    "physics": "Physics",
+    "fisica": "Physics",
+    "physique": "Physics",
+    "física": "Physics",
+    "physik": "Physics",
+
+    # --------------------------------------------------------
+    # CHEMISTRY
+    # --------------------------------------------------------
+
+    "chemistry": "Chemistry",
+    "chimica": "Chemistry",
+    "chimie": "Chemistry",
+    "química": "Chemistry",
+    "chemie": "Chemistry",
+
+    # --------------------------------------------------------
+    # BOTANY
+    # --------------------------------------------------------
+
+    "botany": "Botany",
+    "botanica": "Botany",
+    "botanique": "Botany",
+    "botánica": "Botany",
+    "botanik": "Botany",
+
+    # --------------------------------------------------------
+    # ZOOLOGY
+    # --------------------------------------------------------
+
+    "zoology": "Zoology",
+    "zoologia": "Zoology",
+    "zoologie": "Zoology",
+    "zoología": "Zoology",
+    "zoologie": "Zoology",
+
+    # --------------------------------------------------------
+    # AGRICULTURE
+    # --------------------------------------------------------
+
+    "agriculture": "Agriculture",
+    "agricoltura": "Agriculture",
+    "agriculture": "Agriculture",
+    "agricultura": "Agriculture",
+    "landwirtschaft": "Agriculture",
+
+    # --------------------------------------------------------
+    # ARCHITECTURE
+    # --------------------------------------------------------
+
+    "architecture": "Architecture",
+    "architettura": "Architecture",
+    "architecture": "Architecture",
+    "arquitectura": "Architecture",
+    "architektur": "Architecture",
+
+    # --------------------------------------------------------
+    # ART
+    # --------------------------------------------------------
+
+    "art": "Art",
+    "arte": "Art",
+    "art": "Art",
+    "arte": "Art",
+    "kunst": "Art",
+
+    # --------------------------------------------------------
+    # MUSIC
+    # --------------------------------------------------------
+
+    "music": "Music",
+    "musica": "Music",
+    "musique": "Music",
+    "música": "Music",
+    "musik": "Music",
+
+    # --------------------------------------------------------
+    # LAW
+    # --------------------------------------------------------
+
+    "law": "Law",
+    "diritto": "Law",
+    "droit": "Law",
+    "derecho": "Law",
+    "recht": "Law",
+
+    # --------------------------------------------------------
+    # POLITICS
+    # --------------------------------------------------------
+
+    "politics": "Politics",
+    "politica": "Politics",
+    "politique": "Politics",
+    "política": "Politics",
+    "politik": "Politics",
+
+    # --------------------------------------------------------
+    # RELIGION
+    # --------------------------------------------------------
+
+    "religion": "Religion",
+    "religione": "Religion",
+    "religión": "Religion",
+    "religion": "Religion",
+
+    # --------------------------------------------------------
+    # GRAMMAR
+    # --------------------------------------------------------
+
+    "grammar": "Grammar",
+    "grammatica": "Grammar",
+    "grammaire": "Grammar",
+    "gramática": "Grammar",
+    "grammatik": "Grammar",
+
+    # --------------------------------------------------------
+    # LINGUISTICS
+    # --------------------------------------------------------
+
+    "linguistics": "Linguistics",
+    "linguistica": "Linguistics",
+    "linguistique": "Linguistics",
+    "lingüística": "Linguistics",
+    "linguistik": "Linguistics",
+
+    # --------------------------------------------------------
+    # BIBLIOGRAPHY
+    # --------------------------------------------------------
+
+    "bibliography": "Bibliography",
+    "bibliografia": "Bibliography",
+    "bibliographie": "Bibliography",
+    "bibliografía": "Bibliography",
+    "bibliografie": "Bibliography",
+
+    # --------------------------------------------------------
+    # PRINTING
+    # --------------------------------------------------------
+
+    "printing": "Printing",
+    "stampa": "Printing",
+    "impression": "Printing",
+    "imprenta": "Printing",
+    "druck": "Printing",
+
+    # --------------------------------------------------------
+    # TYPOGRAPHY
+    # --------------------------------------------------------
+
+    "typography": "Typography",
+    "tipografia": "Typography",
+    "typographie": "Typography",
+    "tipografía": "Typography",
+    "typografie": "Typography",
+
+    # --------------------------------------------------------
+    # ALCHEMY
+    # --------------------------------------------------------
+
+    "alchemy": "Alchemy",
+    "alchimia": "Alchemy",
+    "alchimie": "Alchemy",
+    "alquimia": "Alchemy",
+    "alchemie": "Alchemy",
+
+    # --------------------------------------------------------
+    # WITCHCRAFT
+    # --------------------------------------------------------
+
+    "witchcraft": "Witchcraft",
+    "stregoneria": "Witchcraft",
+    "sorcellerie": "Witchcraft",
+    "brujería": "Witchcraft",
+    "hexerei": "Witchcraft",
+
+    # --------------------------------------------------------
+    # ESOTERICA
+    # --------------------------------------------------------
+
+    "esoterica": "Esoterica Books",
+    "esoterismo": "Esoterica Books",
+    "ésotérisme": "Esoterica Books",
+    "esoterismo": "Esoterica Books",
+    "esoterik": "Esoterica Books",
+
+    # --------------------------------------------------------
+    # HUMANISM
+    # --------------------------------------------------------
+
+    "humanism": "Humanism",
+    "umanesimo": "Humanism",
+    "humanisme": "Humanism",
+    "humanismo": "Humanism",
+    "humanismus": "Humanism",
+
+    # --------------------------------------------------------
+    # REFORMATION
+    # --------------------------------------------------------
+
+    "reformation": "Reformation",
+    "riforma": "Reformation",
+    "réforme": "Reformation",
+    "reforma": "Reformation",
+    "reformation": "Reformation",
 }
 
-# Periodi: vengono trasformati nel nome della categoria ufficiale.
+
+# ============================================================
+# HISTORICAL PERIOD ALIASES
+# ============================================================
+
 PERIOD_ALIASES = {
+
+    # Incunabula
+    "incunabula": "Incunabula",
+    "incunable": "Incunabula",
+    "incunables": "Incunabula",
     "incunaboli": "Incunabula",
     "incunabolo": "Incunabula",
-    "incunabula": "Incunabula",
+    "incunables": "Incunabula",
+    "incunables": "Incunabula",
 
-    "cinquecento": "Sixteenth Century",
-    "xvi secolo": "Sixteenth Century",
-    "16 secolo": "Sixteenth Century",
-    "16° secolo": "Sixteenth Century",
-    "sedicesimo secolo": "Sixteenth Century",
+    # Fifteenth century
+    "fifteenth century": "Fifteenth Century",
+    "15th century": "Fifteenth Century",
+    "15th c": "Fifteenth Century",
+    "xv century": "Fifteenth Century",
+    "xv secolo": "Fifteenth Century",
+    "quattrocento": "Fifteenth Century",
+    "quinzième siècle": "Fifteenth Century",
+    "siglo xv": "Fifteenth Century",
+
+    # Sixteenth century
     "sixteenth century": "Sixteenth Century",
+    "16th century": "Sixteenth Century",
+    "16th c": "Sixteenth Century",
+    "xvi century": "Sixteenth Century",
+    "xvi secolo": "Sixteenth Century",
+    "cinquecento": "Sixteenth Century",
+    "seizième siècle": "Sixteenth Century",
+    "siglo xvi": "Sixteenth Century",
+    "sechzehntes jahrhundert": "Sixteenth Century",
 
-    "seicento": "Seventeenth Century",
-    "xvii secolo": "Seventeenth Century",
-    "17 secolo": "Seventeenth Century",
-    "17° secolo": "Seventeenth Century",
-    "diciassettesimo secolo": "Seventeenth Century",
+    # Seventeenth century
     "seventeenth century": "Seventeenth Century",
+    "17th century": "Seventeenth Century",
+    "17th c": "Seventeenth Century",
+    "xvii century": "Seventeenth Century",
+    "xvii secolo": "Seventeenth Century",
+    "seicento": "Seventeenth Century",
+    "dix-septième siècle": "Seventeenth Century",
+    "siglo xvii": "Seventeenth Century",
+    "siebzehntes jahrhundert": "Seventeenth Century",
 
-    "settecento": "Eighteenth Century",
-    "xviii secolo": "Eighteenth Century",
-    "18 secolo": "Eighteenth Century",
-    "18° secolo": "Eighteenth Century",
-    "diciottesimo secolo": "Eighteenth Century",
+    # Eighteenth century
     "eighteenth century": "Eighteenth Century",
+    "18th century": "Eighteenth Century",
+    "18th c": "Eighteenth Century",
+    "xviii century": "Eighteenth Century",
+    "xviii secolo": "Eighteenth Century",
+    "settecento": "Eighteenth Century",
+    "dix-huitième siècle": "Eighteenth Century",
+    "siglo xviii": "Eighteenth Century",
+    "achtzehntes jahrhundert": "Eighteenth Century",
 
-    "ottocento": "Nineteenth Century",
-    "xix secolo": "Nineteenth Century",
-    "19 secolo": "Nineteenth Century",
-    "19° secolo": "Nineteenth Century",
-    "diciannovesimo secolo": "Nineteenth Century",
+    # Nineteenth century
     "nineteenth century": "Nineteenth Century",
+    "19th century": "Nineteenth Century",
+    "19th c": "Nineteenth Century",
+    "xix century": "Nineteenth Century",
+    "xix secolo": "Nineteenth Century",
+    "ottocento": "Nineteenth Century",
+    "dix-neuvième siècle": "Nineteenth Century",
+    "siglo xix": "Nineteenth Century",
+    "neunzehntes jahrhundert": "Nineteenth Century",
 
-    "novecento": "Twentieth Century",
-    "xx secolo": "Twentieth Century",
-    "20 secolo": "Twentieth Century",
-    "20° secolo": "Twentieth Century",
-    "ventesimo secolo": "Twentieth Century",
+    # Twentieth century
     "twentieth century": "Twentieth Century",
+    "20th century": "Twentieth Century",
+    "20th c": "Twentieth Century",
+    "xx century": "Twentieth Century",
+    "xx secolo": "Twentieth Century",
+    "novecento": "Twentieth Century",
+    "vingtième siècle": "Twentieth Century",
+    "siglo xx": "Twentieth Century",
+    "zwanzigstes jahrhundert": "Twentieth Century",
 }
 
 
+# ============================================================
+# NORMALIZATION
+# ============================================================
+
 def normalize(text):
-    """Normalizza il testo per confronti robusti."""
-    text = str(text or "").lower()
+    """
+    Lowercase, remove accents, punctuation and duplicate spaces.
+    """
+
+    if text is None:
+        return ""
+
+    text = str(text).lower()
+
+    # Normalize Unicode accents.
+    text = unicodedata.normalize("NFKD", text)
+    text = "".join(
+        char
+        for char in text
+        if not unicodedata.combining(char)
+    )
+
+    # Normalize apostrophes.
     text = text.replace("’", "'")
+
+    # Keep letters/numbers/spaces.
     text = re.sub(r"[^\w\s]", " ", text, flags=re.UNICODE)
+
+    # Collapse whitespace.
     text = re.sub(r"\s+", " ", text).strip()
+
     return text
 
 
 def tokenize(text):
+    """
+    Return normalized tokens.
+    """
+
     return set(normalize(text).split())
 
 
-def topic_key(topic):
-    return normalize(topic)
-
+# ============================================================
+# DATASET TOPIC TAXONOMY
+# ============================================================
 
 def build_topic_index(documents):
     """
-    Ricava la tassonomia direttamente dai documenti RAG.
+    Extract the canonical topic taxonomy directly from the
+    RAG documents.
 
-    Questo è importante: search.py non contiene una lista chiusa
-    dei 97 topic. Se la tassonomia cambia, il motore la vede
-    automaticamente.
+    Returns:
+        {
+            normalized_topic: original_topic
+        }
     """
+
     topics = {}
 
-    for doc in documents:
-        for topic in doc.get("metadata", {}).get("topics", []):
-            key = topic_key(topic)
+    for document in documents:
+
+        metadata = document.get("metadata", {})
+
+        for topic in metadata.get("topics", []):
+
+            if not topic:
+                continue
+
+            key = normalize(topic)
+
             if key:
                 topics[key] = topic
 
     return topics
 
 
-def detect_periods(query):
+# ============================================================
+# TOPIC LOOKUP
+# ============================================================
+
+def find_canonical_topic(candidate, official_topics):
     """
-    Riconosce i periodi storici prima del normale token matching.
+    Find a canonical dataset topic.
+
+    First tries exact matching, then a conservative partial
+    match for cases such as:
+
+        Medicine -> Medicine Books
+        Philology -> Philology Books
     """
-    normalized = normalize(query)
+
+    candidate_key = normalize(candidate)
+
+    if not candidate_key:
+        return None
+
+    # Exact match.
+    if candidate_key in official_topics:
+        return official_topics[candidate_key]
+
+    candidate_tokens = set(candidate_key.split())
+
+    # Conservative partial match.
+    possible = []
+
+    for official_key, official_topic in official_topics.items():
+
+        official_tokens = set(official_key.split())
+
+        if not candidate_tokens:
+            continue
+
+        if candidate_tokens.issubset(official_tokens):
+
+            # Prefer the shortest/closest topic.
+            possible.append(
+                (
+                    len(official_tokens),
+                    official_topic,
+                )
+            )
+
+    if possible:
+
+        possible.sort(key=lambda item: item[0])
+
+        return possible[0][1]
+
+    return None
+
+
+# ============================================================
+# DETECT HISTORICAL PERIODS
+# ============================================================
+
+def detect_period_topics(query, official_topics):
+    """
+    Detect historical periods in multilingual queries.
+    """
+
+    normalized_query = normalize(query)
+
     detected = []
 
-    # Prima le espressioni più lunghe.
     aliases = sorted(
         PERIOD_ALIASES.items(),
-        key=lambda item: len(item[0]),
+        key=lambda item: len(normalize(item[0])),
         reverse=True,
     )
 
-    for alias, official_topic in aliases:
-        if normalize(alias) in normalized:
-            if official_topic not in detected:
-                detected.append(official_topic)
+    for alias, canonical in aliases:
+
+        normalized_alias = normalize(alias)
+
+        if normalized_alias in normalized_query:
+
+            topic = find_canonical_topic(
+                canonical,
+                official_topics,
+            )
+
+            if topic and topic not in detected:
+                detected.append(topic)
 
     return detected
 
 
-def detect_topics(query, official_topics):
-    """
-    Individua i topic richiesti dall'utente.
+# ============================================================
+# DETECT SUBJECT TOPICS
+# ============================================================
 
-    Strategia:
-    1. periodi storici;
-    2. alias italiani;
-    3. match diretto con i topic ufficiali;
-    4. match per parole significative dei topic.
+def detect_subject_topics(query, official_topics):
     """
+    Detect subject topics from multilingual queries.
+
+    The dataset taxonomy remains authoritative.
+    """
+
     normalized_query = normalize(query)
     query_tokens = tokenize(query)
 
     detected = []
 
-    # ---------------------------------------------------------
-    # 1. PERIODI
-    # ---------------------------------------------------------
-    for topic in detect_periods(query):
-        # Accetta il topic solo se esiste realmente nella tassonomia.
-        key = topic_key(topic)
-        if key in official_topics:
-            detected.append(official_topics[key])
-        else:
-            # fallback case-insensitive
-            for official_key, official_topic in official_topics.items():
-                if official_key == key:
-                    detected.append(official_topic)
-                    break
+    # --------------------------------------------------------
+    # Explicit multilingual aliases.
+    # --------------------------------------------------------
 
-    # ---------------------------------------------------------
-    # 2. ALIAS ITALIANI
-    # ---------------------------------------------------------
-    for italian, english in ITALIAN_ALIASES.items():
-        if italian in query_tokens:
-            english_key = normalize(english)
+    for alias, canonical in MULTILINGUAL_ALIASES.items():
 
-            # Cerca il topic ufficiale più pertinente.
-            exact = official_topics.get(english_key)
-            if exact and exact not in detected:
-                detected.append(exact)
+        alias_normalized = normalize(alias)
+
+        if " " in alias_normalized:
+
+            if alias_normalized not in normalized_query:
                 continue
 
-            # Esempio:
-            # medicina -> "Medicine Books"
-            english_tokens = set(english_key.split())
+        else:
 
-            for official_key, official_topic in official_topics.items():
-                official_tokens = set(official_key.split())
+            if alias_normalized not in query_tokens:
+                continue
 
-                if english_tokens and english_tokens.issubset(official_tokens):
-                    if official_topic not in detected:
-                        detected.append(official_topic)
-                    break
+        topic = find_canonical_topic(
+            canonical,
+            official_topics,
+        )
 
-    # ---------------------------------------------------------
-    # 3. MATCH DIRETTO DI UN TOPIC UFFICIALE
-    # ---------------------------------------------------------
-    # Prima proviamo frasi intere.
+        if topic and topic not in detected:
+            detected.append(topic)
+
+    # --------------------------------------------------------
+    # Direct match against official English taxonomy.
+    # --------------------------------------------------------
+
     for official_key, official_topic in official_topics.items():
+
         if official_topic in detected:
             continue
 
         if official_key in normalized_query:
             detected.append(official_topic)
 
-    # ---------------------------------------------------------
-    # 4. MATCH PER PAROLE SIGNIFICATIVE
-    # ---------------------------------------------------------
-    # Evitiamo che "libri", "secolo", ecc. generino falsi topic.
+    # --------------------------------------------------------
+    # Conservative single-token matching.
+    #
+    # Example:
+    #     "astronomy" -> Astronomy
+    #
+    # But generic words such as "books" are excluded.
+    # --------------------------------------------------------
+
     meaningful_query_tokens = {
         token
         for token in query_tokens
-        if token not in STOPWORDS and len(token) >= 4
+        if token not in STOPWORDS
+        and len(token) >= 4
     }
 
     for official_key, official_topic in official_topics.items():
+
         if official_topic in detected:
             continue
 
         topic_tokens = {
             token
             for token in official_key.split()
-            if token not in STOPWORDS and len(token) >= 4
+            if token not in STOPWORDS
+            and len(token) >= 4
         }
 
         if not topic_tokens:
             continue
 
-        # Match forte: tutte le parole significative del topic
-        # sono presenti nella query.
-        if topic_tokens.issubset(meaningful_query_tokens):
-            detected.append(official_topic)
-            continue
+        # Single-word canonical topics.
+        if len(topic_tokens) == 1:
 
-        # Match per singola parola importante, ma solo se il topic
-        # non è composto da una parola troppo generica.
-        if len(topic_tokens) == 1 and topic_tokens & meaningful_query_tokens:
-            detected.append(official_topic)
+            topic_token = next(iter(topic_tokens))
 
-    # Mantieni l'ordine e rimuovi duplicati.
-    result = []
-    seen = set()
+            if topic_token in meaningful_query_tokens:
+                detected.append(official_topic)
 
-    for topic in detected:
-        key = topic_key(topic)
-        if key not in seen:
-            result.append(topic)
-            seen.add(key)
-
-    return result
+    return detected
 
 
-def meaningful_query_tokens(query, detected_topics):
-    """
-    Restituisce le parole della query che NON sono già state
-    interpretate come topic/periodi.
-    """
+# ============================================================
+# DETECT ALL TOPICS
+# ============================================================
+
+def detect_topics(query, official_topics):
+
+    detected = []
+
+    # Historical periods first.
+    for topic in detect_period_topics(
+        query,
+        official_topics,
+    ):
+        if topic not in detected:
+            detected.append(topic)
+
+    # Subjects.
+    for topic in detect_subject_topics(
+        query,
+        official_topics,
+    ):
+        if topic not in detected:
+            detected.append(topic)
+
+    return detected
+
+
+# ============================================================
+# REMOVE RECOGNIZED TOPICS FROM FREE QUERY
+# ============================================================
+
+def get_free_query_tokens(query, recognized_topics):
+
+    normalized_query = normalize(query)
+
+    # Remove period aliases.
+    aliases = list(PERIOD_ALIASES.keys())
+
+    # Remove subject aliases.
+    aliases.extend(MULTILINGUAL_ALIASES.keys())
+
+    # Longest first prevents partial leftovers.
+    aliases = sorted(
+        aliases,
+        key=lambda value: len(normalize(value)),
+        reverse=True,
+    )
+
+    for alias in aliases:
+
+        normalized_alias = normalize(alias)
+
+        if normalized_alias:
+            normalized_query = normalized_query.replace(
+                normalized_alias,
+                " ",
+            )
+
+    # Remove canonical topic names too.
+    for topic in recognized_topics:
+
+        normalized_topic = normalize(topic)
+
+        if normalized_topic:
+            normalized_query = normalized_query.replace(
+                normalized_topic,
+                " ",
+            )
+
     tokens = [
         token
-        for token in tokenize(query)
-        if token not in STOPWORDS and len(token) >= 3
+        for token in normalized_query.split()
+        if token
+        and token not in STOPWORDS
+        and len(token) >= 3
     ]
 
-    topic_tokens = set()
-
-    for topic in detected_topics:
-        topic_tokens.update(
-            token
-            for token in tokenize(topic)
-            if token not in STOPWORDS
-        )
-
-    return [
-        token
-        for token in tokens
-        if token not in topic_tokens
-    ]
+    return tokens
 
 
-def get_doc_topics(doc):
-    return doc.get("metadata", {}).get("topics", [])
+# ============================================================
+# DOCUMENT TOPICS
+# ============================================================
 
+def get_document_topics(document):
 
-def topic_matches(doc_topics, requested_topic):
-    """
-    Confronto case-insensitive con la tassonomia ufficiale.
-    """
-    requested_key = topic_key(requested_topic)
-
-    return any(
-        topic_key(topic) == requested_key
-        for topic in doc_topics
+    return document.get(
+        "metadata",
+        {},
+    ).get(
+        "topics",
+        [],
     )
 
 
-def score_document(doc, requested_topics, free_tokens):
-    """
-    Ranking bibliografico.
+def document_has_topic(document, requested_topic):
 
-    I topic sono il segnale principale.
-    Il testo libero serve come segnale secondario.
+    requested_key = normalize(requested_topic)
+
+    for topic in get_document_topics(document):
+
+        if normalize(topic) == requested_key:
+            return True
+
+    return False
+
+
+# ============================================================
+# TEXT EXTRACTION
+# ============================================================
+
+def get_document_text(document):
+
+    return normalize(
+        document.get("text", "")
+    )
+
+
+def get_document_title(document):
+
+    return normalize(
+        document.get("title", "")
+    )
+
+
+# ============================================================
+# SCORING
+# ============================================================
+
+def score_document(
+    document,
+    requested_topics,
+    free_tokens,
+):
     """
-    title = doc.get("title", "")
-    text = doc.get("text", "")
-    doc_topics = get_doc_topics(doc)
+    Score a document.
+
+    Topic matches are the strongest signal.
+    Text/title matches are secondary.
+    """
 
     score = 0.0
+
     reasons = []
+
     matched_topics = []
 
-    # ---------------------------------------------------------
+    missing_topics = []
+
+    # --------------------------------------------------------
     # TOPIC MATCH
-    # ---------------------------------------------------------
+    # --------------------------------------------------------
+
     for requested_topic in requested_topics:
-        if topic_matches(doc_topics, requested_topic):
-            score += 15.0
-            matched_topics.append(requested_topic)
-            reasons.append(f"topic: {requested_topic}")
 
-    # Bonus forte se il documento contiene TUTTI i topic richiesti.
-    if requested_topics and len(matched_topics) == len(requested_topics):
-        score += 25.0
-        reasons.append("all requested topics matched")
+        if document_has_topic(
+            document,
+            requested_topic,
+        ):
 
-    # ---------------------------------------------------------
-    # TITLE
-    # ---------------------------------------------------------
-    title_tokens = tokenize(title)
+            score += 20.0
+
+            matched_topics.append(
+                requested_topic
+            )
+
+            reasons.append(
+                f"topic: {requested_topic}"
+            )
+
+        else:
+
+            missing_topics.append(
+                requested_topic
+            )
+
+    # Strong conjunction bonus.
+    if requested_topics:
+
+        if len(matched_topics) == len(
+            requested_topics
+        ):
+
+            score += 30.0
+
+            reasons.append(
+                "all requested topics matched"
+            )
+
+    # --------------------------------------------------------
+    # TITLE MATCH
+    # --------------------------------------------------------
+
+    title = get_document_title(document)
 
     for token in free_tokens:
-        if token in title_tokens:
-            score += 4.0
-            reasons.append(f"title: {token}")
 
-    # ---------------------------------------------------------
-    # FULL TEXT
-    # ---------------------------------------------------------
-    normalized_text = normalize(text)
+        if token in title:
+
+            score += 3.0
+
+            reasons.append(
+                f"title: {token}"
+            )
+
+    # --------------------------------------------------------
+    # FULL TEXT MATCH
+    # --------------------------------------------------------
+
+    text = get_document_text(document)
 
     for token in free_tokens:
-        if token in normalized_text:
+
+        if token in text:
+
             score += 1.0
 
-    # ---------------------------------------------------------
-    # PENALTY PER TOPIC MANCANTE
-    # ---------------------------------------------------------
-    missing_topics = [
-        topic
-        for topic in requested_topics
-        if topic not in matched_topics
-    ]
+    # --------------------------------------------------------
+    # PENALTY FOR MISSING TOPICS
+    # --------------------------------------------------------
 
-    if requested_topics and missing_topics:
-        score -= 12.0 * len(missing_topics)
+    if requested_topics:
 
-    return score, reasons, matched_topics, missing_topics
+        score -= (
+            len(missing_topics) * 15.0
+        )
+
+    return (
+        score,
+        reasons,
+        matched_topics,
+        missing_topics,
+    )
 
 
-def search(documents, query, limit=10):
-    official_topics = build_topic_index(documents)
+# ============================================================
+# SEARCH
+# ============================================================
 
-    requested_topics = detect_topics(query, official_topics)
-    free_tokens = meaningful_query_tokens(query, requested_topics)
+def search(
+    documents,
+    query,
+    limit=DEFAULT_LIMIT,
+):
 
-    results = []
+    official_topics = build_topic_index(
+        documents
+    )
 
-    for doc in documents:
-        score, reasons, matched_topics, missing_topics = score_document(
-            doc,
-            requested_topics,
+    recognized_topics = detect_topics(
+        query,
+        official_topics,
+    )
+
+    free_tokens = get_free_query_tokens(
+        query,
+        recognized_topics,
+    )
+
+    candidates = []
+
+    # --------------------------------------------------------
+    # SCORE DOCUMENTS
+    # --------------------------------------------------------
+
+    for document in documents:
+
+        (
+            score,
+            reasons,
+            matched_topics,
+            missing_topics,
+        ) = score_document(
+            document,
+            recognized_topics,
             free_tokens,
         )
 
-        # Se ci sono topic richiesti, il documento deve avere almeno
-        # un segnale pertinente per entrare nella classifica.
-        if requested_topics:
-            if not matched_topics and not free_tokens:
+        # --------------------------------------------
+        # Topic search
+        # --------------------------------------------
+
+        if recognized_topics:
+
+            # If the document has no requested topic
+            # and there are no free terms, ignore it.
+            if (
+                not matched_topics
+                and not free_tokens
+            ):
                 continue
 
+        # --------------------------------------------
+        # Free-text search
+        # --------------------------------------------
+
         else:
-            # Ricerca libera: almeno una parola deve comparire.
+
             if not free_tokens:
                 continue
 
-            normalized_text = normalize(doc.get("text", ""))
-            normalized_title = normalize(doc.get("title", ""))
+            title = get_document_title(
+                document
+            )
+
+            text = get_document_text(
+                document
+            )
 
             if not any(
-                token in normalized_text or token in normalized_title
+                token in title
+                or token in text
                 for token in free_tokens
             ):
                 continue
 
-        results.append({
-            "doc": doc,
-            "score": score,
-            "reasons": reasons,
-            "matched_topics": matched_topics,
-            "missing_topics": missing_topics,
-        })
+        candidates.append(
+            {
+                "document": document,
+                "score": score,
+                "reasons": reasons,
+                "matched_topics": matched_topics,
+                "missing_topics": missing_topics,
+            }
+        )
 
-    # ---------------------------------------------------------
-    # SE ESISTONO RISULTATI CHE MATCHANO TUTTI I TOPIC,
-    # NON INQUINARE LA LISTA CON RISULTATI PARZIALI.
-    # ---------------------------------------------------------
-    if requested_topics:
-        complete_results = [
+    # --------------------------------------------------------
+    # CONJUNCTIVE SEARCH
+    #
+    # If documents exist that match ALL requested topics,
+    # discard partial matches.
+    # --------------------------------------------------------
+
+    if recognized_topics:
+
+        complete = [
             result
-            for result in results
-            if len(result["matched_topics"]) == len(requested_topics)
+            for result in candidates
+            if len(
+                result["matched_topics"]
+            ) == len(recognized_topics)
         ]
 
-        if complete_results:
-            results = complete_results
+        if complete:
+            candidates = complete
 
-    # Ordinamento:
-    # 1. score
-    # 2. numero di topic corrispondenti
-    # 3. anno più antico prima, come tie-break bibliografico
-    results.sort(
-        key=lambda result: (
+    # --------------------------------------------------------
+    # SORT
+    # --------------------------------------------------------
+
+    def sort_key(result):
+
+        document = result["document"]
+
+        year = (
+            document
+            .get("metadata", {})
+            .get("publication_year")
+        )
+
+        if year is None:
+            year = 9999
+
+        return (
             result["score"],
             len(result["matched_topics"]),
-            -(result["doc"].get("metadata", {}).get("publication_year") or 9999),
-        ),
+            -year,
+        )
+
+    candidates.sort(
+        key=sort_key,
         reverse=True,
     )
 
-    return results[:limit], requested_topics, free_tokens
+    total_candidates = len(candidates)
+
+    return (
+        candidates[:limit],
+        total_candidates,
+        recognized_topics,
+        free_tokens,
+    )
 
 
-def print_results(query, results, requested_topics, free_tokens):
+# ============================================================
+# OUTPUT
+# ============================================================
+
+def print_results(
+    query,
+    results,
+    total_candidates,
+    recognized_topics,
+    free_tokens,
+):
+
     print()
     print("=" * 80)
-    print(f"QUERY: {query}")
+    print("GOVI RARE BOOKS — INTERNATIONAL SEARCH")
     print("=" * 80)
 
     print()
-    print("Topic riconosciuti:")
+    print(f'Query: "{query}"')
 
-    if requested_topics:
-        for topic in requested_topics:
+    print()
+    print("Recognized topics:")
+
+    if recognized_topics:
+
+        for topic in recognized_topics:
             print(f"  - {topic}")
+
     else:
-        print("  - nessuno")
+
+        print("  - none")
 
     print()
-    print("Termini liberi:")
+    print("Free-text terms:")
+
     if free_tokens:
-        print("  - " + ", ".join(free_tokens))
+
+        print(
+            "  - "
+            + ", ".join(free_tokens)
+        )
+
     else:
-        print("  - nessuno")
+
+        print("  - none")
 
     print()
-    print(f"Risultati: {len(results)}")
+    print(
+        f"Candidates: {total_candidates}"
+    )
+
+    print(
+        f"Results displayed: {len(results)}"
+    )
+
     print()
 
     if not results:
-        print("Nessun risultato.")
+
+        print("No results found.")
+        print()
+
         return
 
-    for index, result in enumerate(results, start=1):
-        doc = result["doc"]
-        metadata = doc.get("metadata", {})
+    # --------------------------------------------------------
+    # RESULTS
+    # --------------------------------------------------------
 
-        print(f"{index}. {doc.get('title', '')}")
-        print(f"   Score: {result['score']:.2f}")
+    for index, result in enumerate(
+        results,
+        start=1,
+    ):
+
+        document = result["document"]
+
+        metadata = document.get(
+            "metadata",
+            {},
+        )
+
+        title = document.get(
+            "title",
+            "",
+        )
+
+        year = metadata.get(
+            "publication_year"
+        )
+
+        place = metadata.get(
+            "publication_place"
+        )
+
+        topics = metadata.get(
+            "topics",
+            [],
+        )
+
+        source_id = metadata.get(
+            "source_id"
+        )
+
+        source_url = metadata.get(
+            "source_url"
+        )
+
+        print(
+            f"{index}. {title}"
+        )
+
+        print(
+            f"   Score: {result['score']:.2f}"
+        )
 
         if result["matched_topics"]:
+
             print(
-                "   Topic matched: "
-                + ", ".join(result["matched_topics"])
+                "   Matched topics: "
+                + ", ".join(
+                    result["matched_topics"]
+                )
             )
 
         if result["missing_topics"]:
+
             print(
-                "   Topic mancanti: "
-                + ", ".join(result["missing_topics"])
+                "   Missing topics: "
+                + ", ".join(
+                    result["missing_topics"]
+                )
             )
 
         if result["reasons"]:
+
             print("   Match:")
+
             for reason in result["reasons"]:
-                print(f"     - {reason}")
+
+                print(
+                    f"     - {reason}"
+                )
 
         print(
-            f"   Anno: {metadata.get('publication_year')}"
-        )
-        print(
-            f"   Luogo: {metadata.get('publication_place')}"
+            f"   Year: {year}"
         )
 
-        topics = metadata.get("topics", [])
+        print(
+            f"   Place: {place}"
+        )
+
         if topics:
-            print("   Topics: " + ", ".join(topics))
+
+            print(
+                "   Topics: "
+                + ", ".join(topics)
+            )
 
         print(
-            f"   ID: {metadata.get('source_id')}"
+            f"   ID: {source_id}"
         )
+
         print(
-            f"   Source: {metadata.get('source_url')}"
+            f"   Source: {source_url}"
         )
+
         print()
 
 
+# ============================================================
+# MAIN
+# ============================================================
+
 def main():
+
     if len(sys.argv) < 2:
+
         print(
-            'Uso: python rag/search.py "testo della ricerca"'
+            'Usage: python rag/search.py "your query"'
         )
+
+        print()
+
+        print("Examples:")
+
+        print(
+            '  python rag/search.py "astrology"'
+        )
+
+        print(
+            '  python rag/search.py "astrology sixteenth century"'
+        )
+
+        print(
+            '  python rag/search.py "medicine sixteenth century"'
+        )
+
+        print(
+            '  python rag/search.py "astronomy seventeenth century"'
+        )
+
+        print(
+            '  python rag/search.py "incunabula"'
+        )
+
+        print(
+            '  python rag/search.py "witchcraft"'
+        )
+
+        print()
+
         sys.exit(1)
 
-    query = " ".join(sys.argv[1:])
+    query = " ".join(
+        sys.argv[1:]
+    ).strip()
 
-    with DOCUMENTS_PATH.open("r", encoding="utf-8") as file:
+    if not query:
+
+        print("Query cannot be empty.")
+        sys.exit(1)
+
+    # --------------------------------------------------------
+    # LOAD RAG DOCUMENTS
+    # --------------------------------------------------------
+
+    if not DOCUMENTS_PATH.exists():
+
+        print(
+            f"ERROR: {DOCUMENTS_PATH} not found."
+        )
+
+        print(
+            "Run rag/prepare_documents.py first."
+        )
+
+        sys.exit(1)
+
+    with DOCUMENTS_PATH.open(
+        "r",
+        encoding="utf-8",
+    ) as file:
+
         documents = json.load(file)
 
-    results, requested_topics, free_tokens = search(
+    # --------------------------------------------------------
+    # SEARCH
+    # --------------------------------------------------------
+
+    (
+        results,
+        total_candidates,
+        recognized_topics,
+        free_tokens,
+    ) = search(
         documents,
         query,
-        limit=10,
+        limit=DEFAULT_LIMIT,
     )
+
+    # --------------------------------------------------------
+    # OUTPUT
+    # --------------------------------------------------------
 
     print_results(
         query,
         results,
-        requested_topics,
+        total_candidates,
+        recognized_topics,
         free_tokens,
     )
 
