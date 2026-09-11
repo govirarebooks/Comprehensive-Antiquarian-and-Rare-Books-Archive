@@ -67,6 +67,22 @@ def add_warning(warnings, message):
     warnings.append(message)
 
 
+def validate_optional_string(value, path, errors):
+    """
+    Validate fields which may legitimately contain:
+      - null
+      - empty string
+      - non-empty string
+
+    Any other type is considered invalid.
+    """
+    if value is not None and not isinstance(value, str):
+        add_error(
+            errors,
+            f"{path}: expected string or null",
+        )
+
+
 def validate_person(person, path, errors):
     if not isinstance(person, dict):
         add_error(errors, f"{path}: expected object")
@@ -77,12 +93,20 @@ def validate_person(person, path, errors):
             add_error(errors, f"{path}: missing field '{field}'")
 
     # name
-    if "name" in person and not isinstance(person["name"], str):
-        add_error(errors, f"{path}.name: expected string")
+    if "name" in person:
+        if not isinstance(person["name"], str):
+            add_error(
+                errors,
+                f"{path}.name: expected string",
+            )
 
     # biography
-    if "biography" in person and not isinstance(person["biography"], str):
-        add_error(errors, f"{path}.biography: expected string")
+    if "biography" in person:
+        if not isinstance(person["biography"], str):
+            add_error(
+                errors,
+                f"{path}.biography: expected string",
+            )
 
     # biographical_data
     #
@@ -97,32 +121,45 @@ def validate_person(person, path, errors):
     #   43 BC - 17/18 AD
     #   Salerno, 1700 - Napoli, 1740
     #
-    # Therefore we deliberately validate only the type here and do not
-    # impose a single date syntax.
+    # We therefore validate only the type here.
     if "biographical_data" in person:
         if not isinstance(person["biographical_data"], str):
-            add_error(errors, f"{path}.biographical_data: expected string")
+            add_error(
+                errors,
+                f"{path}.biographical_data: expected string",
+            )
 
     # bibliography
-    if "bibliography" in person and not isinstance(person["bibliography"], str):
-        add_error(errors, f"{path}.bibliography: expected string")
+    if "bibliography" in person:
+        if not isinstance(person["bibliography"], str):
+            add_error(
+                errors,
+                f"{path}.bibliography: expected string",
+            )
 
     # links
     if "links" in person:
         links = person["links"]
 
         if not isinstance(links, dict):
-            add_error(errors, f"{path}.links: expected object")
+            add_error(
+                errors,
+                f"{path}.links: expected object",
+            )
         else:
             for field in LINK_FIELDS:
                 if field not in links:
-                    add_error(errors, f"{path}.links: missing field '{field}'")
-
-            for field in LINK_FIELDS:
-                if field in links and not isinstance(links[field], str):
                     add_error(
                         errors,
-                        f"{path}.links.{field}: expected string",
+                        f"{path}.links: missing field '{field}'",
+                    )
+
+            for field in LINK_FIELDS:
+                if field in links:
+                    validate_optional_string(
+                        links[field],
+                        f"{path}.links.{field}",
+                        errors,
                     )
 
 
@@ -139,7 +176,10 @@ def validate_record(record, index, errors, warnings):
 
     for field in REQUIRED_RECORD_FIELDS:
         if field not in record:
-            add_error(errors, f"{path}: missing field '{field}'")
+            add_error(
+                errors,
+                f"{path}: missing field '{field}'",
+            )
 
     # ------------------------------------------------------------------
     # Stable ID
@@ -149,10 +189,16 @@ def validate_record(record, index, errors, warnings):
         record_id = record["id"]
 
         if not isinstance(record_id, str):
-            add_error(errors, f"{path}.id: expected string")
+            add_error(
+                errors,
+                f"{path}.id: expected string",
+            )
 
         elif not record_id.strip():
-            add_error(errors, f"{path}.id: ID is empty")
+            add_error(
+                errors,
+                f"{path}.id: ID is empty",
+            )
 
         elif not ULID_PATTERN.fullmatch(record_id):
             add_error(
@@ -175,8 +221,12 @@ def validate_record(record, index, errors, warnings):
     ]
 
     for field in string_fields:
-        if field in record and not isinstance(record[field], str):
-            add_error(errors, f"{path}.{field}: expected string")
+        if field in record:
+            if not isinstance(record[field], str):
+                add_error(
+                    errors,
+                    f"{path}.{field}: expected string",
+                )
 
     # ------------------------------------------------------------------
     # Publication year
@@ -199,7 +249,10 @@ def validate_record(record, index, errors, warnings):
         authors = record["authors"]
 
         if not isinstance(authors, list):
-            add_error(errors, f"{path}.authors: expected list")
+            add_error(
+                errors,
+                f"{path}.authors: expected list",
+            )
         else:
             for author_index, author in enumerate(authors):
                 validate_person(
@@ -216,7 +269,10 @@ def validate_record(record, index, errors, warnings):
         publishers = record["publishers"]
 
         if not isinstance(publishers, list):
-            add_error(errors, f"{path}.publishers: expected list")
+            add_error(
+                errors,
+                f"{path}.publishers: expected list",
+            )
         else:
             for publisher_index, publisher in enumerate(publishers):
                 validate_person(
@@ -233,7 +289,10 @@ def validate_record(record, index, errors, warnings):
         related_names = record["related_names"]
 
         if not isinstance(related_names, list):
-            add_error(errors, f"{path}.related_names: expected list")
+            add_error(
+                errors,
+                f"{path}.related_names: expected list",
+            )
         else:
             for related_index, related_name in enumerate(related_names):
                 validate_person(
@@ -250,7 +309,10 @@ def validate_record(record, index, errors, warnings):
         topics = record["topics"]
 
         if not isinstance(topics, list):
-            add_error(errors, f"{path}.topics: expected list")
+            add_error(
+                errors,
+                f"{path}.topics: expected list",
+            )
         else:
             for topic_index, topic in enumerate(topics):
                 if not isinstance(topic, str):
@@ -280,19 +342,17 @@ def validate_record(record, index, errors, warnings):
                     )
 
             for field in OPEN_DATA_FIELDS:
-                if field in linked_data and not isinstance(
-                    linked_data[field], str
-                ):
-                    add_error(
+                if field in linked_data:
+                    validate_optional_string(
+                        linked_data[field],
+                        f"{path}.linked_open_data.{field}",
                         errors,
-                        f"{path}.linked_open_data.{field}: expected string",
                     )
 
     # ------------------------------------------------------------------
     # Warnings
     # ------------------------------------------------------------------
 
-    # Empty title is a warning rather than a hard schema error.
     if isinstance(record.get("title"), str):
         if not record["title"].strip():
             add_warning(
@@ -321,9 +381,11 @@ def main():
     try:
         with DATASET_PATH.open("r", encoding="utf-8") as file:
             dataset = json.load(file)
+
     except json.JSONDecodeError as exc:
         print(f"ERROR: Invalid JSON: {exc}")
         sys.exit(1)
+
     except Exception as exc:
         print(f"ERROR: Could not read dataset: {exc}")
         sys.exit(1)
@@ -365,6 +427,7 @@ def main():
     # ------------------------------------------------------------------
 
     for index, record in enumerate(dataset, start=1):
+
         validate_record(
             record,
             index,
@@ -375,58 +438,84 @@ def main():
         if not isinstance(record, dict):
             continue
 
+        # --------------------------------------------------------------
         # IDs
+        # --------------------------------------------------------------
+
         record_id = record.get("id")
 
         if isinstance(record_id, str) and record_id.strip():
             ids.append(record_id)
 
+        # --------------------------------------------------------------
         # Authors
+        # --------------------------------------------------------------
+
         record_authors = record.get("authors", [])
 
         if isinstance(record_authors, list):
+
             author_occurrences += len(record_authors)
 
             for author in record_authors:
+
                 if isinstance(author, dict):
+
                     name = author.get("name")
 
                     if isinstance(name, str) and name.strip():
                         authors.append(name.strip())
 
+        # --------------------------------------------------------------
         # Publishers
+        # --------------------------------------------------------------
+
         record_publishers = record.get("publishers", [])
 
         if isinstance(record_publishers, list):
+
             publisher_occurrences += len(record_publishers)
 
             for publisher in record_publishers:
+
                 if isinstance(publisher, dict):
+
                     name = publisher.get("name")
 
                     if isinstance(name, str) and name.strip():
                         publishers.append(name.strip())
 
+        # --------------------------------------------------------------
         # Related names
+        # --------------------------------------------------------------
+
         record_related_names = record.get("related_names", [])
 
         if isinstance(record_related_names, list):
+
             related_name_occurrences += len(record_related_names)
 
             for related_name in record_related_names:
+
                 if isinstance(related_name, dict):
+
                     name = related_name.get("name")
 
                     if isinstance(name, str) and name.strip():
                         related_names.append(name.strip())
 
+        # --------------------------------------------------------------
         # Topics
+        # --------------------------------------------------------------
+
         record_topics = record.get("topics", [])
 
         if isinstance(record_topics, list):
+
             topic_assignments += len(record_topics)
 
             for topic in record_topics:
+
                 if isinstance(topic, str) and topic.strip():
                     topics.append(topic.strip())
 
@@ -443,6 +532,7 @@ def main():
     }
 
     for record_id, count in duplicate_ids.items():
+
         add_error(
             errors,
             f"Duplicate stable ID '{record_id}' appears {count} times",
@@ -455,7 +545,9 @@ def main():
     titles = []
 
     for record in dataset:
+
         if isinstance(record, dict):
+
             title = record.get("title")
 
             if isinstance(title, str) and title.strip():
@@ -470,6 +562,7 @@ def main():
     }
 
     for title, count in duplicate_titles.items():
+
         add_warning(
             warnings,
             f"Duplicate title appears {count} times: {title}",
@@ -516,9 +609,12 @@ def main():
     # ------------------------------------------------------------------
 
     if errors:
+
         print("ERRORS:")
+
         for error in errors:
             print(f"  ✗ {error}")
+
         print()
 
     # ------------------------------------------------------------------
@@ -526,9 +622,12 @@ def main():
     # ------------------------------------------------------------------
 
     if warnings:
+
         print("WARNINGS:")
+
         for warning in warnings:
             print(f"  ⚠ {warning}")
+
         print()
 
     # ------------------------------------------------------------------
@@ -536,6 +635,7 @@ def main():
     # ------------------------------------------------------------------
 
     if errors:
+
         print("✗ Dataset validation failed.")
         sys.exit(1)
 
