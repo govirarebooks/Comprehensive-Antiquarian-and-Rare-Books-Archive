@@ -35,3 +35,9 @@ jobs:
 
       - name: Prepare RAG documents
         run: python rag/prepare_documents.py
+
+      - name: Upload RAG documents
+        uses: actions/upload-artifact@v4
+        with:
+          name: rag-documents
+          path: rag/documents.json
