@@ -5,18 +5,14 @@ import sys
 from urllib.parse import urlparse
 from collections import Counter
 
-
-# ============================================================
-# Govi Rare Books Archive
-# Dataset validator
-# ============================================================
-
 ROOT = Path(__file__).resolve().parent.parent
 DATASET_FILE = ROOT / "govi-rare-books-academic-dataset.json"
 
 REQUIRED_FIELDS = [
     "title",
     "authors",
+    "publishers",
+    "related_names",
     "publication_year",
     "publication_place",
     "publisher_data",
@@ -28,9 +24,11 @@ REQUIRED_FIELDS = [
     "linked_open_data",
 ]
 
-AUTHOR_REQUIRED_FIELDS = [
+PERSON_REQUIRED_FIELDS = [
     "name",
     "biography",
+    "biographical_data",
+    "bibliography",
     "links",
 ]
 
@@ -39,6 +37,14 @@ LINK_FIELDS = [
     "treccani",
     "sep",
     "viaf",
+]
+
+OPEN_DATA_FIELDS = [
+    "sbn",
+    "oclc",
+    "edit16",
+    "ustc",
+    "wikidata",
 ]
 
 MIN_YEAR = 1000
@@ -100,105 +106,133 @@ def check_publication_year(record_no, value):
         error(record_no, "'publication_year' is missing")
         return
 
-    if not isinstance(value, int):
-        error(record_no, "'publication_year' must be an integer")
+    if isinstance(value, int):
+        if value < MIN_YEAR or value > MAX_YEAR:
+            warning(
+                record_no,
+                f"publication year '{value}' is outside expected range "
+                f"{MIN_YEAR}-{MAX_YEAR}"
+            )
         return
 
-    if value < MIN_YEAR or value > MAX_YEAR:
+    if isinstance(value, str):
+        if value.strip().upper() == "S.D.":
+            return
+
         warning(
             record_no,
-            f"publication year '{value}' is outside expected range "
-            f"{MIN_YEAR}-{MAX_YEAR}",
+            f"'publication_year' is a string: '{value}'"
         )
-
-
-def check_authors(record_no, authors):
-    if not isinstance(authors, list):
-        error(record_no, "'authors' must be a list")
         return
 
-    if len(authors) == 0:
-        warning(record_no, "'authors' is empty")
+    error(
+        record_no,
+        "'publication_year' must be an integer or 'S.D.'"
+    )
+
+
+def check_person_list(record_no, field, people):
+    if not isinstance(people, list):
+        error(record_no, f"'{field}' must be a list")
         return
 
-    for author_no, author in enumerate(authors, start=1):
+    for person_no, person in enumerate(people, start=1):
 
-        if not isinstance(author, dict):
+        if not isinstance(person, dict):
             error(
                 record_no,
-                f"author #{author_no} must be an object",
+                f"'{field}' entry #{person_no} must be an object"
             )
             continue
 
-        for field in AUTHOR_REQUIRED_FIELDS:
-            if field not in author:
+        for required_field in PERSON_REQUIRED_FIELDS:
+            if required_field not in person:
                 error(
                     record_no,
-                    f"author #{author_no} missing '{field}'",
+                    f"'{field}' entry #{person_no} "
+                    f"missing '{required_field}'"
                 )
 
-        # ----------------------------------------------------
-        # Author name
-        # ----------------------------------------------------
-
-        name = author.get("name")
+        name = person.get("name")
 
         if not isinstance(name, str):
             error(
                 record_no,
-                f"author #{author_no} 'name' must be a string",
+                f"'{field}' entry #{person_no} "
+                "'name' must be a string"
             )
         elif not name.strip():
             warning(
                 record_no,
-                f"author #{author_no} has an empty name",
+                f"'{field}' entry #{person_no} has an empty name"
             )
 
-        # ----------------------------------------------------
-        # Biography
-        # ----------------------------------------------------
-
-        biography = author.get("biography")
+        biography = person.get("biography")
 
         if biography is None:
             warning(
                 record_no,
-                f"author #{author_no} biography is missing",
+                f"'{field}' entry #{person_no} "
+                "biography is missing"
             )
         elif not isinstance(biography, str):
             error(
                 record_no,
-                f"author #{author_no} biography must be a string",
+                f"'{field}' entry #{person_no} "
+                "biography must be a string"
             )
-        elif not biography.strip():
-            warning(
-                record_no,
-                f"author #{author_no} biography is empty",
-            )
-        else:
+        elif biography.strip():
             check_suspicious_biography_dates(
                 record_no,
-                author_no,
-                biography,
+                field,
+                person_no,
+                biography
             )
 
-        # ----------------------------------------------------
-        # Author links
-        # ----------------------------------------------------
+        biographical_data = person.get("biographical_data")
 
-        links = author.get("links")
+        if biographical_data is None:
+            warning(
+                record_no,
+                f"'{field}' entry #{person_no} "
+                "biographical_data is missing"
+            )
+        elif not isinstance(biographical_data, str):
+            error(
+                record_no,
+                f"'{field}' entry #{person_no} "
+                "biographical_data must be a string"
+            )
+
+        bibliography = person.get("bibliography")
+
+        if bibliography is None:
+            warning(
+                record_no,
+                f"'{field}' entry #{person_no} "
+                "bibliography is missing"
+            )
+        elif not isinstance(bibliography, str):
+            error(
+                record_no,
+                f"'{field}' entry #{person_no} "
+                "bibliography must be a string"
+            )
+
+        links = person.get("links")
 
         if links is None:
             error(
                 record_no,
-                f"author #{author_no} 'links' is missing",
+                f"'{field}' entry #{person_no} 'links' is missing"
             )
             continue
 
         if not isinstance(links, dict):
             error(
                 record_no,
-                f"author #{author_no} 'links' must be an object",
+                f"'{field}' entry #{person_no} "
+                "'links' must be an object"
             )
             continue
 
@@ -207,43 +241,55 @@ def check_authors(record_no, authors):
             if link_field not in links:
                 error(
                     record_no,
-                    f"author #{author_no} missing link field "
-                    f"'{link_field}'",
+                    f"'{field}' entry #{person_no} "
+                    f"missing link field '{link_field}'"
                 )
                 continue
 
             value = links.get(link_field)
 
-            # None is allowed: not every authority exists
             if value is None:
                 continue
 
             if not isinstance(value, str):
                 error(
                     record_no,
-                    f"author #{author_no} link '{link_field}' "
-                    f"must be a string or null",
+                    f"'{field}' entry #{person_no} "
+                    f"link '{link_field}' must be a string or null"
                 )
                 continue
 
             if not is_valid_url(value):
                 warning(
                     record_no,
-                    f"author #{author_no} link '{link_field}' "
-                    f"does not appear to be a valid URL",
+                    f"'{field}' entry #{person_no} "
+                    f"link '{link_field}' does not appear to be a valid URL"
                 )
 
 
 def check_linked_open_data(record_no, value):
+
     if value is None:
         error(record_no, "'linked_open_data' is missing")
         return
 
     if not isinstance(value, dict):
-        error(record_no, "'linked_open_data' must be an object")
+        error(
+            record_no,
+            "'linked_open_data' must be an object"
+        )
         return
 
-    for authority, url in value.items():
+    for field in OPEN_DATA_FIELDS:
+
+        if field not in value:
+            error(
+                record_no,
+                f"linked_open_data missing '{field}'"
+            )
+            continue
+
+        url = value.get(field)
 
         if url is None:
             continue
@@ -251,33 +297,51 @@ def check_linked_open_data(record_no, value):
         if not isinstance(url, str):
             error(
                 record_no,
-                f"linked_open_data '{authority}' must be "
-                f"a string or null",
+                f"linked_open_data '{field}' "
+                "must be a string or null"
             )
             continue
 
         if not is_valid_url(url):
             warning(
                 record_no,
-                f"linked_open_data '{authority}' does not "
-                f"appear to be a valid URL",
+                f"linked_open_data '{field}' "
+                "does not appear to be a valid URL"
             )
 
 
-def check_suspicious_biography_dates(record_no, author_no, biography):
-    """
-    Looks for simple date patterns such as:
-        1521–1583
-        1521-1583
-        5 December 1495 – 5 November 1492
+def check_topics(record_no, topics):
 
-    This is intentionally a WARNING-only test.
-    Historical dates require human/editorial judgement.
-    """
+    if not isinstance(topics, list):
+        error(record_no, "'topics' must be a list")
+        return
+
+    for topic_no, topic in enumerate(topics, start=1):
+
+        if not isinstance(topic, str):
+            error(
+                record_no,
+                f"topic #{topic_no} must be a string"
+            )
+            continue
+
+        if not topic.strip():
+            warning(
+                record_no,
+                f"topic #{topic_no} is empty"
+            )
+
+
+def check_suspicious_biography_dates(
+    record_no,
+    field,
+    person_no,
+    biography
+):
 
     patterns = re.findall(
         r"\b(\d{3,4})\s*[–-]\s*(\d{3,4})\b",
-        biography,
+        biography
     )
 
     for birth, death in patterns:
@@ -294,8 +358,8 @@ def check_suspicious_biography_dates(record_no, author_no, biography):
         if death_year < birth_year:
             warning(
                 record_no,
-                f"author #{author_no} biography contains a "
-                f"suspicious date range: {birth}-{death}",
+                f"{field} entry #{person_no} biography contains "
+                f"a suspicious date range: {birth}-{death}"
             )
 
 
@@ -305,100 +369,132 @@ def check_record(record_no, record):
         error(record_no, "record must be an object")
         return
 
-    # --------------------------------------------------------
-    # Required fields
-    # --------------------------------------------------------
-
     for field in REQUIRED_FIELDS:
+
         if field not in record:
-            error(record_no, f"missing required field '{field}'")
+            error(
+                record_no,
+                f"missing required field '{field}'"
+            )
 
-    # --------------------------------------------------------
-    # Strings
-    # --------------------------------------------------------
+    check_string(
+        record_no,
+        "title",
+        record.get("title")
+    )
 
-    check_string(record_no, "title", record.get("title"))
     check_string(
         record_no,
         "publication_place",
-        record.get("publication_place"),
+        record.get("publication_place")
     )
+
     check_string(
         record_no,
         "publisher_data",
-        record.get("publisher_data"),
+        record.get("publisher_data")
     )
+
     check_string(
         record_no,
         "academic_description",
-        record.get("academic_description"),
+        record.get("academic_description")
     )
+
     check_string(
         record_no,
         "bibliography",
-        record.get("bibliography"),
+        record.get("bibliography")
     )
+
     check_string(
         record_no,
         "institution",
-        record.get("institution"),
+        record.get("institution")
     )
 
-    # --------------------------------------------------------
-    # Lists
-    # --------------------------------------------------------
+    check_list(
+        record_no,
+        "authors",
+        record.get("authors")
+    )
 
-    check_list(record_no, "authors", record.get("authors"))
-    check_list(record_no, "topics", record.get("topics"))
+    check_list(
+        record_no,
+        "publishers",
+        record.get("publishers")
+    )
 
-    # --------------------------------------------------------
-    # Year
-    # --------------------------------------------------------
+    check_list(
+        record_no,
+        "related_names",
+        record.get("related_names")
+    )
+
+    check_topics(
+        record_no,
+        record.get("topics")
+    )
 
     check_publication_year(
         record_no,
-        record.get("publication_year"),
+        record.get("publication_year")
     )
-
-    # --------------------------------------------------------
-    # Source URL
-    # --------------------------------------------------------
 
     source_url = record.get("source_url")
 
     if source_url is None:
-        error(record_no, "'source_url' is missing")
-    elif not is_valid_url(source_url):
-        warning(
+
+        error(
             record_no,
-            "'source_url' does not appear to be a valid URL",
+            "'source_url' is missing"
         )
 
-    # --------------------------------------------------------
-    # Linked Open Data
-    # --------------------------------------------------------
+    elif not is_valid_url(source_url):
+
+        warning(
+            record_no,
+            "'source_url' does not appear to be a valid URL"
+        )
 
     check_linked_open_data(
         record_no,
-        record.get("linked_open_data"),
+        record.get("linked_open_data")
     )
 
-    # --------------------------------------------------------
-    # Authors
-    # --------------------------------------------------------
-
-    check_authors(
+    check_person_list(
         record_no,
-        record.get("authors"),
+        "authors",
+        record.get("authors")
+    )
+
+    check_person_list(
+        record_no,
+        "publishers",
+        record.get("publishers")
+    )
+
+    check_person_list(
+        record_no,
+        "related_names",
+        record.get("related_names")
+    )
+
+
+def normalize_text(value):
+    return " ".join(
+        value.lower().split()
     )
 
 
 def check_duplicates(dataset):
 
-    titles = []
     normalized_titles = {}
 
-    for index, record in enumerate(dataset, start=1):
+    for index, record in enumerate(
+        dataset,
+        start=1
+    ):
 
         if not isinstance(record, dict):
             continue
@@ -408,23 +504,71 @@ def check_duplicates(dataset):
         if not isinstance(title, str):
             continue
 
-        normalized = " ".join(title.lower().split())
-
-        titles.append(normalized)
+        normalized = normalize_text(title)
 
         normalized_titles.setdefault(
             normalized,
-            [],
+            []
         ).append(index)
 
     for title, records in normalized_titles.items():
 
         if len(records) > 1:
+
             warning(
                 "GLOBAL",
-                f"duplicate title detected in records {records}: "
-                f"{title}",
+                f"duplicate title detected in records "
+                f"{records}: {title}"
             )
+
+
+def analyze_topics(dataset):
+
+    topic_counter = Counter()
+
+    for record in dataset:
+
+        if not isinstance(record, dict):
+            continue
+
+        topics = record.get("topics", [])
+
+        if not isinstance(topics, list):
+            continue
+
+        for topic in topics:
+
+            if isinstance(topic, str) and topic.strip():
+                topic_counter[normalize_text(topic)] += 1
+
+    return topic_counter
+
+
+def analyze_people(dataset, field):
+
+    names = Counter()
+
+    for record in dataset:
+
+        if not isinstance(record, dict):
+            continue
+
+        people = record.get(field, [])
+
+        if not isinstance(people, list):
+            continue
+
+        for person in people:
+
+            if not isinstance(person, dict):
+                continue
+
+            name = person.get("name")
+
+            if isinstance(name, str) and name.strip():
+                names[normalize_text(name)] += 1
+
+    return names
 
 
 def main():
@@ -434,112 +578,172 @@ def main():
     print("=" * 70)
     print()
 
-    # --------------------------------------------------------
-    # File existence
-    # --------------------------------------------------------
-
     if not DATASET_FILE.exists():
+
         print("[ERROR] Dataset file not found:")
         print(DATASET_FILE)
+
         sys.exit(1)
 
     print(f"Dataset: {DATASET_FILE}")
     print()
 
-    # --------------------------------------------------------
-    # JSON loading
-    # --------------------------------------------------------
-
     try:
+
         with DATASET_FILE.open(
             "r",
-            encoding="utf-8",
+            encoding="utf-8"
         ) as f:
+
             dataset = json.load(f)
 
     except json.JSONDecodeError as exc:
+
         print("[ERROR] Invalid JSON")
         print(exc)
+
         sys.exit(1)
 
     except Exception as exc:
+
         print("[ERROR] Could not read dataset")
         print(exc)
-        sys.exit(1)
 
-    # --------------------------------------------------------
-    # Top-level structure
-    # --------------------------------------------------------
+        sys.exit(1)
 
     if not isinstance(dataset, list):
-        print("[ERROR] Dataset root must be a list.")
+
+        print(
+            "[ERROR] Dataset root must be a list."
+        )
+
         sys.exit(1)
 
-    print(f"Records found: {len(dataset)}")
-    print()
+    print(
+        f"Records found: {len(dataset)}"
+    )
 
-    # --------------------------------------------------------
-    # Validate records
-    # --------------------------------------------------------
+    print()
 
     for record_no, record in enumerate(
         dataset,
-        start=1,
+        start=1
     ):
+
         check_record(
             record_no,
-            record,
+            record
         )
-
-    # --------------------------------------------------------
-    # Global checks
-    # --------------------------------------------------------
 
     check_duplicates(dataset)
 
-    # --------------------------------------------------------
-    # Statistics
-    # --------------------------------------------------------
+    topic_counter = analyze_topics(
+        dataset
+    )
 
-    author_count = 0
-    unique_authors = set()
+    author_counter = analyze_people(
+        dataset,
+        "authors"
+    )
 
-    for record in dataset:
+    publisher_counter = analyze_people(
+        dataset,
+        "publishers"
+    )
 
-        if not isinstance(record, dict):
-            continue
+    related_counter = analyze_people(
+        dataset,
+        "related_names"
+    )
 
-        authors = record.get("authors", [])
+    author_count = sum(
+        author_counter.values()
+    )
 
-        if not isinstance(authors, list):
-            continue
+    publisher_count = sum(
+        publisher_counter.values()
+    )
 
-        author_count += len(authors)
+    related_count = sum(
+        related_counter.values()
+    )
 
-        for author in authors:
-
-            if isinstance(author, dict):
-
-                name = author.get("name")
-
-                if isinstance(name, str):
-                    unique_authors.add(
-                        " ".join(name.lower().split())
-                    )
-
-    # --------------------------------------------------------
-    # Report
-    # --------------------------------------------------------
+    topic_assignment_count = sum(
+        topic_counter.values()
+    )
 
     print("-" * 70)
     print("SUMMARY")
     print("-" * 70)
 
-    print(f"Records:             {len(dataset)}")
-    print(f"Author occurrences:  {author_count}")
-    print(f"Unique authors:      {len(unique_authors)}")
-    print(f"Errors:              {len(errors)}")
-    print(f"Warnings:            {len(warnings)}")
+    print(
+        f"Records:                       {len(dataset)}"
+    )
+
+    print(
+        f"Author occurrences:            {author_count}"
+    )
+
+    print(
+        f"Unique authors:                {len(author_counter)}"
+    )
+
+    print(
+        f"Publisher occurrences:         {publisher_count}"
+    )
+
+    print(
+        f"Unique publishers:             {len(publisher_counter)}"
+    )
+
+    print(
+        f"Related-name occurrences:      {related_count}"
+    )
+
+    print(
+        f"Unique related names:          {len(related_counter)}"
+    )
+
+    print(
+        f"Topic assignments:             {topic_assignment_count}"
+    )
+
+    print(
+        f"Unique topics:                 {len(topic_counter)}"
+    )
+
+    if len(dataset) > 0:
+
+        average_topics = (
+            topic_assignment_count /
+            len(dataset)
+        )
+
+        print(
+            f"Average topics per record:     "
+            f"{average_topics:.2f}"
+        )
+
+    print(
+        f"Errors:                        {len(errors)}"
+    )
+
+    print(
+        f"Warnings:                      {len(warnings)}"
+    )
+
+    print()
+
+    print("-" * 70)
+    print("TOP TOPICS")
+    print("-" * 70)
+
+    for topic, count in topic_counter.most_common(15):
+
+        print(
+            f"{count:>4}  {topic}"
+        )
+
     print()
 
     if errors:
@@ -566,7 +770,10 @@ def main():
 
     if not errors and not warnings:
 
-        print("✓ Dataset passed all validation checks.")
+        print(
+            "✓ Dataset passed all validation checks."
+        )
+
         print()
 
     elif not errors:
@@ -574,23 +781,23 @@ def main():
         print(
             "✓ No structural errors found."
         )
+
         print(
             "⚠ Review the warnings above."
         )
+
         print()
 
     else:
 
         print(
-            "✗ Dataset contains errors that should be fixed."
+            "✗ Dataset contains errors "
+            "that should be fixed."
         )
+
         print()
 
     print("=" * 70)
-
-    # --------------------------------------------------------
-    # Exit code
-    # --------------------------------------------------------
 
     if errors:
         return 1
