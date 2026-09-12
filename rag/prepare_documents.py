@@ -1,3 +1,4 @@
+import hashlib
 import json
 from pathlib import Path
 
@@ -137,6 +138,15 @@ def main():
 
         document_id = f"work-{record_id}"
 
+        text = build_work_document(record)
+
+        # Stable hash of the document content.
+        # Used later by the vector index to determine
+        # whether an embedding must be recalculated.
+        content_hash = hashlib.sha256(
+            text.encode("utf-8")
+        ).hexdigest()
+
         documents.append({
             "id": document_id,
 
@@ -146,7 +156,10 @@ def main():
                 record.get("title", ""),
 
             "text":
-                build_work_document(record),
+                text,
+
+            "content_hash":
+                content_hash,
 
             "metadata": {
                 "source_id":
