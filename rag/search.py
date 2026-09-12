@@ -2022,8 +2022,6 @@ if __name__ == "__main__":
     main()
 ```
 
-
-
 **Sì: dopo aver sostituito il file, fai commit.** La correzione è mirata: non cambia il ranking, gli alias, la keyword search o il modello; sistema soltanto la compatibilità del formato metadata.
 
 E una volta che la run passa, **il prossimo commit sarà quello per togliere CUDA/NVIDIA inutile e introdurre la cache**. GitHub conferma che la cache può ripristinare un
