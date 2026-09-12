@@ -11,10 +11,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-DOCUMENTS_PATH = (
+DATASET_PATH = (
     ROOT /
-    "rag" /
-    "documents.json"
+    "govi-rare-books-academic-dataset.json"
 )
 
 VECTOR_INDEX_PATH = (
@@ -1928,31 +1927,129 @@ def main():
         sys.exit(1)
 
     # --------------------------------------------------------
-    # LOAD DOCUMENTS
+    # LOAD MASTER DATASET
+    #
+    # The public master JSON is the source of truth.
+    # Search works directly from it; rag/documents.json is
+    # not required.
     # --------------------------------------------------------
 
-    if not DOCUMENTS_PATH.exists():
+    if not DATASET_PATH.exists():
 
         print(
             f"ERROR: "
-            f"{DOCUMENTS_PATH} not found."
-        )
-
-        print(
-            "Run "
-            "rag/prepare_documents.py "
-            "first."
+            f"{DATASET_PATH} not found."
         )
 
         sys.exit(1)
 
-    with DOCUMENTS_PATH.open(
+    with DATASET_PATH.open(
         "r",
         encoding="utf-8",
     ) as file:
 
-        documents = json.load(
+        raw_records = json.load(
             file
+        )
+
+    if not isinstance(raw_records, list):
+
+        print(
+            "ERROR: master dataset must contain a JSON list."
+        )
+
+        sys.exit(1)
+
+    def flatten_value(value):
+
+        if value is None:
+            return ""
+
+        if isinstance(value, dict):
+
+            parts = []
+
+            for key, item in value.items():
+
+                if key in {
+                    "id",
+                    "source_id",
+                }:
+                    continue
+
+                flattened = flatten_value(item)
+
+                if flattened:
+                    parts.append(
+                        f"{key}: {flattened}"
+                    )
+
+            return " | ".join(parts)
+
+        if isinstance(value, list):
+
+            parts = []
+
+            for item in value:
+
+                flattened = flatten_value(item)
+
+                if flattened:
+                    parts.append(flattened)
+
+            return " | ".join(parts)
+
+        return str(value)
+
+    documents = []
+
+    for record in raw_records:
+
+        if not isinstance(record, dict):
+            continue
+
+        metadata = dict(
+            record.get("metadata", {})
+            if isinstance(
+                record.get("metadata", {}),
+                dict,
+            )
+            else {}
+        )
+
+        for field in (
+            "publication_year",
+            "publication_place",
+            "source_url",
+            "institution",
+        ):
+
+            if field in record:
+                metadata[field] = record[field]
+
+        if "topics" in record:
+            metadata["topics"] = record.get(
+                "topics",
+                [],
+            )
+
+        if "source_id" in record:
+            metadata["source_id"] = record["source_id"]
+
+        elif "id" in record:
+            metadata["source_id"] = record["id"]
+
+        documents.append(
+            {
+                "id": record.get("id"),
+                "title": record.get(
+                    "title",
+                    "",
+                ),
+                "text": flatten_value(record),
+                "metadata": metadata,
+                "dataset_record": record,
+            }
         )
 
     # --------------------------------------------------------
@@ -2019,4 +2116,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
