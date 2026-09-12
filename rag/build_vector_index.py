@@ -11,7 +11,9 @@ DOCUMENTS_PATH = ROOT / "rag" / "documents.json"
 VECTOR_INDEX_PATH = ROOT / "rag" / "vector_index.npz"
 VECTOR_METADATA_PATH = ROOT / "rag" / "vector_metadata.json"
 
-VECTOR_MODEL_NAME = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+VECTOR_MODEL_NAME = (
+    "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+)
 
 
 def load_documents():
@@ -21,9 +23,10 @@ def load_documents():
 
 def load_previous_index():
     if not VECTOR_INDEX_PATH.exists() or not VECTOR_METADATA_PATH.exists():
-        return {}, {}
+        return {}
 
     data = np.load(VECTOR_INDEX_PATH)
+
     embeddings = data["embeddings"]
 
     with VECTOR_METADATA_PATH.open("r", encoding="utf-8") as file:
@@ -40,23 +43,26 @@ def load_previous_index():
             "metadata": item,
         }
 
-    return previous, metadata
+    return previous
 
 
 def main():
     documents = load_documents()
 
-    previous_index, _ = load_previous_index()
+    previous_index = load_previous_index()
 
-    current_ids = {document["id"] for document in documents}
+    current_ids = {
+        document["id"]
+        for document in documents
+    }
 
     model = None
+
     embeddings_by_id = {}
 
     new_count = 0
     updated_count = 0
     reused_count = 0
-    removed_count = 0
 
     for document in documents:
         document_id = document["id"]
@@ -64,6 +70,8 @@ def main():
 
         previous = previous_index.get(document_id)
 
+        # Reuse the existing embedding when the document
+        # has not changed.
         if (
             previous is not None
             and previous.get("content_hash") == content_hash
@@ -72,9 +80,15 @@ def main():
             reused_count += 1
             continue
 
+        # Load the model only when an embedding is actually needed.
         if model is None:
-            print(f"Loading embedding model: {VECTOR_MODEL_NAME}")
-            model = SentenceTransformer(VECTOR_MODEL_NAME)
+            print(
+                f"Loading embedding model: {VECTOR_MODEL_NAME}"
+            )
+
+            model = SentenceTransformer(
+                VECTOR_MODEL_NAME
+            )
 
         text = document.get("text", "")
 
@@ -99,29 +113,52 @@ def main():
         print("No documents to index.")
         return
 
-    ordered_ids = [document["id"] for document in documents]
+    # Keep exactly the same document ordering for IDs,
+    # embeddings and metadata.
+    ordered_ids = [
+        document["id"]
+        for document in documents
+    ]
 
     embeddings = np.vstack(
-        [embeddings_by_id[document_id] for document_id in ordered_ids]
+        [
+            embeddings_by_id[document_id]
+            for document_id in ordered_ids
+        ]
     ).astype(np.float32)
+
+    ids = np.array(
+        ordered_ids,
+        dtype=str,
+    )
 
     metadata = []
 
     for document in documents:
-        metadata.append({
-            "id": document["id"],
-            "type": document.get("type"),
-            "title": document.get("title"),
-            "content_hash": document.get("content_hash"),
-            "metadata": document.get("metadata", {}),
-        })
+        metadata.append(
+            {
+                "id": document["id"],
+                "type": document.get("type"),
+                "title": document.get("title"),
+                "content_hash": document.get("content_hash"),
+                "metadata": document.get(
+                    "metadata",
+                    {},
+                ),
+            }
+        )
 
+    # Save both embeddings AND IDs inside the NPZ.
     np.savez_compressed(
         VECTOR_INDEX_PATH,
         embeddings=embeddings,
+        ids=ids,
     )
 
-    with VECTOR_METADATA_PATH.open("w", encoding="utf-8") as file:
+    with VECTOR_METADATA_PATH.open(
+        "w",
+        encoding="utf-8",
+    ) as file:
         json.dump(
             metadata,
             file,
