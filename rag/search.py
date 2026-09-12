@@ -10,9 +10,40 @@ from pathlib import Path
 # ============================================================
 
 ROOT = Path(__file__).resolve().parent.parent
-DOCUMENTS_PATH = ROOT / "rag" / "documents.json"
+
+DOCUMENTS_PATH = (
+    ROOT /
+    "rag" /
+    "documents.json"
+)
+
+VECTOR_INDEX_PATH = (
+    ROOT /
+    "rag" /
+    "vector_index.npz"
+)
+
+VECTOR_METADATA_PATH = (
+    ROOT /
+    "rag" /
+    "vector_metadata.json"
+)
 
 DEFAULT_LIMIT = 10
+
+# Number of semantic candidates considered before
+# hybrid ranking.
+SEMANTIC_TOP_K = 50
+
+# Reciprocal Rank Fusion constant.
+RRF_K = 60
+
+# Must match the embedding model used when building
+# the vector index.
+VECTOR_MODEL_NAME = (
+    "sentence-transformers/"
+    "paraphrase-multilingual-MiniLM-L12-v2"
+)
 
 
 # ============================================================
@@ -146,7 +177,6 @@ STOPWORDS = {
     "libri",
     "livre",
     "livres",
-    "libro",
     "libros",
     "buch",
     "bücher",
@@ -167,58 +197,29 @@ STOPWORDS = {
 
 # ============================================================
 # MULTILINGUAL ALIASES
-#
-# Canonical vocabulary = English dataset taxonomy.
-#
-# Queries may arrive in several languages and are mapped
-# toward the English taxonomy.
 # ============================================================
 
 MULTILINGUAL_ALIASES = {
-
-    # --------------------------------------------------------
-    # ASTROLOGY
-    # --------------------------------------------------------
 
     "astrology": "Astrology",
     "astrologia": "Astrology",
     "astrologie": "Astrology",
     "astrología": "Astrology",
-    "astrologie": "Astrology",
-
-    # --------------------------------------------------------
-    # ASTRONOMY
-    # --------------------------------------------------------
 
     "astronomy": "Astronomy",
     "astronomia": "Astronomy",
     "astronomie": "Astronomy",
     "astronomía": "Astronomy",
-    "astronomie": "Astronomy",
-
-    # --------------------------------------------------------
-    # MEDICINE
-    # --------------------------------------------------------
 
     "medicine": "Medicine",
     "medicina": "Medicine",
     "médecine": "Medicine",
-    "medicina": "Medicine",
     "medizin": "Medicine",
-
-    # --------------------------------------------------------
-    # PHILOSOPHY
-    # --------------------------------------------------------
 
     "philosophy": "Philosophy",
     "filosofia": "Philosophy",
     "philosophie": "Philosophy",
     "filosofía": "Philosophy",
-    "philosophie": "Philosophy",
-
-    # --------------------------------------------------------
-    # THEOLOGY
-    # --------------------------------------------------------
 
     "theology": "Theology",
     "teologia": "Theology",
@@ -226,19 +227,11 @@ MULTILINGUAL_ALIASES = {
     "teología": "Theology",
     "theologie": "Theology",
 
-    # --------------------------------------------------------
-    # HISTORY
-    # --------------------------------------------------------
-
     "history": "History",
     "storia": "History",
     "histoire": "History",
     "historia": "History",
     "geschichte": "History",
-
-    # --------------------------------------------------------
-    # LITERATURE
-    # --------------------------------------------------------
 
     "literature": "Literature",
     "letteratura": "Literature",
@@ -246,29 +239,16 @@ MULTILINGUAL_ALIASES = {
     "literatura": "Literature",
     "literatur": "Literature",
 
-    # --------------------------------------------------------
-    # POETRY
-    # --------------------------------------------------------
-
     "poetry": "Poetry",
     "poesia": "Poetry",
     "poésie": "Poetry",
     "poesía": "Poetry",
     "lyrik": "Poetry",
 
-    # --------------------------------------------------------
-    # PHILOLOGY
-    # --------------------------------------------------------
-
     "philology": "Philology",
     "filologia": "Philology",
     "philologie": "Philology",
     "filología": "Philology",
-    "philologie": "Philology",
-
-    # --------------------------------------------------------
-    # MATHEMATICS
-    # --------------------------------------------------------
 
     "mathematics": "Mathematics",
     "matematica": "Mathematics",
@@ -276,27 +256,15 @@ MULTILINGUAL_ALIASES = {
     "matemáticas": "Mathematics",
     "mathematik": "Mathematics",
 
-    # --------------------------------------------------------
-    # GEOMETRY
-    # --------------------------------------------------------
-
     "geometry": "Geometry",
     "geometria": "Geometry",
     "géométrie": "Geometry",
     "geometría": "Geometry",
     "geometrie": "Geometry",
 
-    # --------------------------------------------------------
-    # ALGEBRA
-    # --------------------------------------------------------
-
     "algebra": "Algebra",
     "algèbre": "Algebra",
     "álgebra": "Algebra",
-
-    # --------------------------------------------------------
-    # PHYSICS
-    # --------------------------------------------------------
 
     "physics": "Physics",
     "fisica": "Physics",
@@ -304,19 +272,11 @@ MULTILINGUAL_ALIASES = {
     "física": "Physics",
     "physik": "Physics",
 
-    # --------------------------------------------------------
-    # CHEMISTRY
-    # --------------------------------------------------------
-
     "chemistry": "Chemistry",
     "chimica": "Chemistry",
     "chimie": "Chemistry",
     "química": "Chemistry",
     "chemie": "Chemistry",
-
-    # --------------------------------------------------------
-    # BOTANY
-    # --------------------------------------------------------
 
     "botany": "Botany",
     "botanica": "Botany",
@@ -324,49 +284,24 @@ MULTILINGUAL_ALIASES = {
     "botánica": "Botany",
     "botanik": "Botany",
 
-    # --------------------------------------------------------
-    # ZOOLOGY
-    # --------------------------------------------------------
-
     "zoology": "Zoology",
     "zoologia": "Zoology",
     "zoologie": "Zoology",
     "zoología": "Zoology",
-    "zoologie": "Zoology",
-
-    # --------------------------------------------------------
-    # AGRICULTURE
-    # --------------------------------------------------------
 
     "agriculture": "Agriculture",
     "agricoltura": "Agriculture",
-    "agriculture": "Agriculture",
     "agricultura": "Agriculture",
     "landwirtschaft": "Agriculture",
 
-    # --------------------------------------------------------
-    # ARCHITECTURE
-    # --------------------------------------------------------
-
     "architecture": "Architecture",
     "architettura": "Architecture",
-    "architecture": "Architecture",
     "arquitectura": "Architecture",
     "architektur": "Architecture",
 
-    # --------------------------------------------------------
-    # ART
-    # --------------------------------------------------------
-
-    "art": "Art",
-    "arte": "Art",
     "art": "Art",
     "arte": "Art",
     "kunst": "Art",
-
-    # --------------------------------------------------------
-    # MUSIC
-    # --------------------------------------------------------
 
     "music": "Music",
     "musica": "Music",
@@ -374,19 +309,11 @@ MULTILINGUAL_ALIASES = {
     "música": "Music",
     "musik": "Music",
 
-    # --------------------------------------------------------
-    # LAW
-    # --------------------------------------------------------
-
     "law": "Law",
     "diritto": "Law",
     "droit": "Law",
     "derecho": "Law",
     "recht": "Law",
-
-    # --------------------------------------------------------
-    # POLITICS
-    # --------------------------------------------------------
 
     "politics": "Politics",
     "politica": "Politics",
@@ -394,18 +321,9 @@ MULTILINGUAL_ALIASES = {
     "política": "Politics",
     "politik": "Politics",
 
-    # --------------------------------------------------------
-    # RELIGION
-    # --------------------------------------------------------
-
     "religion": "Religion",
     "religione": "Religion",
     "religión": "Religion",
-    "religion": "Religion",
-
-    # --------------------------------------------------------
-    # GRAMMAR
-    # --------------------------------------------------------
 
     "grammar": "Grammar",
     "grammatica": "Grammar",
@@ -413,19 +331,11 @@ MULTILINGUAL_ALIASES = {
     "gramática": "Grammar",
     "grammatik": "Grammar",
 
-    # --------------------------------------------------------
-    # LINGUISTICS
-    # --------------------------------------------------------
-
     "linguistics": "Linguistics",
     "linguistica": "Linguistics",
     "linguistique": "Linguistics",
     "lingüística": "Linguistics",
     "linguistik": "Linguistics",
-
-    # --------------------------------------------------------
-    # BIBLIOGRAPHY
-    # --------------------------------------------------------
 
     "bibliography": "Bibliography",
     "bibliografia": "Bibliography",
@@ -433,19 +343,11 @@ MULTILINGUAL_ALIASES = {
     "bibliografía": "Bibliography",
     "bibliografie": "Bibliography",
 
-    # --------------------------------------------------------
-    # PRINTING
-    # --------------------------------------------------------
-
     "printing": "Printing",
     "stampa": "Printing",
     "impression": "Printing",
     "imprenta": "Printing",
     "druck": "Printing",
-
-    # --------------------------------------------------------
-    # TYPOGRAPHY
-    # --------------------------------------------------------
 
     "typography": "Typography",
     "tipografia": "Typography",
@@ -453,19 +355,11 @@ MULTILINGUAL_ALIASES = {
     "tipografía": "Typography",
     "typografie": "Typography",
 
-    # --------------------------------------------------------
-    # ALCHEMY
-    # --------------------------------------------------------
-
     "alchemy": "Alchemy",
     "alchimia": "Alchemy",
     "alchimie": "Alchemy",
     "alquimia": "Alchemy",
     "alchemie": "Alchemy",
-
-    # --------------------------------------------------------
-    # WITCHCRAFT
-    # --------------------------------------------------------
 
     "witchcraft": "Witchcraft",
     "stregoneria": "Witchcraft",
@@ -473,19 +367,10 @@ MULTILINGUAL_ALIASES = {
     "brujería": "Witchcraft",
     "hexerei": "Witchcraft",
 
-    # --------------------------------------------------------
-    # ESOTERICA
-    # --------------------------------------------------------
-
     "esoterica": "Esoterica Books",
     "esoterismo": "Esoterica Books",
     "ésotérisme": "Esoterica Books",
-    "esoterismo": "Esoterica Books",
     "esoterik": "Esoterica Books",
-
-    # --------------------------------------------------------
-    # HUMANISM
-    # --------------------------------------------------------
 
     "humanism": "Humanism",
     "umanesimo": "Humanism",
@@ -493,15 +378,10 @@ MULTILINGUAL_ALIASES = {
     "humanismo": "Humanism",
     "humanismus": "Humanism",
 
-    # --------------------------------------------------------
-    # REFORMATION
-    # --------------------------------------------------------
-
     "reformation": "Reformation",
     "riforma": "Reformation",
     "réforme": "Reformation",
     "reforma": "Reformation",
-    "reformation": "Reformation",
 }
 
 
@@ -511,16 +391,12 @@ MULTILINGUAL_ALIASES = {
 
 PERIOD_ALIASES = {
 
-    # Incunabula
     "incunabula": "Incunabula",
     "incunable": "Incunabula",
     "incunables": "Incunabula",
     "incunaboli": "Incunabula",
     "incunabolo": "Incunabula",
-    "incunables": "Incunabula",
-    "incunables": "Incunabula",
 
-    # Fifteenth century
     "fifteenth century": "Fifteenth Century",
     "15th century": "Fifteenth Century",
     "15th c": "Fifteenth Century",
@@ -530,7 +406,6 @@ PERIOD_ALIASES = {
     "quinzième siècle": "Fifteenth Century",
     "siglo xv": "Fifteenth Century",
 
-    # Sixteenth century
     "sixteenth century": "Sixteenth Century",
     "16th century": "Sixteenth Century",
     "16th c": "Sixteenth Century",
@@ -541,7 +416,6 @@ PERIOD_ALIASES = {
     "siglo xvi": "Sixteenth Century",
     "sechzehntes jahrhundert": "Sixteenth Century",
 
-    # Seventeenth century
     "seventeenth century": "Seventeenth Century",
     "17th century": "Seventeenth Century",
     "17th c": "Seventeenth Century",
@@ -552,7 +426,6 @@ PERIOD_ALIASES = {
     "siglo xvii": "Seventeenth Century",
     "siebzehntes jahrhundert": "Seventeenth Century",
 
-    # Eighteenth century
     "eighteenth century": "Eighteenth Century",
     "18th century": "Eighteenth Century",
     "18th c": "Eighteenth Century",
@@ -563,7 +436,6 @@ PERIOD_ALIASES = {
     "siglo xviii": "Eighteenth Century",
     "achtzehntes jahrhundert": "Eighteenth Century",
 
-    # Nineteenth century
     "nineteenth century": "Nineteenth Century",
     "19th century": "Nineteenth Century",
     "19th c": "Nineteenth Century",
@@ -574,7 +446,6 @@ PERIOD_ALIASES = {
     "siglo xix": "Nineteenth Century",
     "neunzehntes jahrhundert": "Nineteenth Century",
 
-    # Twentieth century
     "twentieth century": "Twentieth Century",
     "20th century": "Twentieth Century",
     "20th c": "Twentieth Century",
@@ -592,41 +463,49 @@ PERIOD_ALIASES = {
 # ============================================================
 
 def normalize(text):
-    """
-    Lowercase, remove accents, punctuation and duplicate spaces.
-    """
 
     if text is None:
         return ""
 
     text = str(text).lower()
 
-    # Normalize Unicode accents.
-    text = unicodedata.normalize("NFKD", text)
+    text = unicodedata.normalize(
+        "NFKD",
+        text,
+    )
+
     text = "".join(
         char
         for char in text
         if not unicodedata.combining(char)
     )
 
-    # Normalize apostrophes.
-    text = text.replace("’", "'")
+    text = text.replace(
+        "’",
+        "'",
+    )
 
-    # Keep letters/numbers/spaces.
-    text = re.sub(r"[^\w\s]", " ", text, flags=re.UNICODE)
+    text = re.sub(
+        r"[^\w\s]",
+        " ",
+        text,
+        flags=re.UNICODE,
+    )
 
-    # Collapse whitespace.
-    text = re.sub(r"\s+", " ", text).strip()
+    text = re.sub(
+        r"\s+",
+        " ",
+        text,
+    ).strip()
 
     return text
 
 
 def tokenize(text):
-    """
-    Return normalized tokens.
-    """
 
-    return set(normalize(text).split())
+    return set(
+        normalize(text).split()
+    )
 
 
 # ============================================================
@@ -634,23 +513,20 @@ def tokenize(text):
 # ============================================================
 
 def build_topic_index(documents):
-    """
-    Extract the canonical topic taxonomy directly from the
-    RAG documents.
-
-    Returns:
-        {
-            normalized_topic: original_topic
-        }
-    """
 
     topics = {}
 
     for document in documents:
 
-        metadata = document.get("metadata", {})
+        metadata = document.get(
+            "metadata",
+            {},
+        )
 
-        for topic in metadata.get("topics", []):
+        for topic in metadata.get(
+            "topics",
+            [],
+        ):
 
             if not topic:
                 continue
@@ -667,41 +543,45 @@ def build_topic_index(documents):
 # TOPIC LOOKUP
 # ============================================================
 
-def find_canonical_topic(candidate, official_topics):
-    """
-    Find a canonical dataset topic.
+def find_canonical_topic(
+    candidate,
+    official_topics,
+):
 
-    First tries exact matching, then a conservative partial
-    match for cases such as:
-
-        Medicine -> Medicine Books
-        Philology -> Philology Books
-    """
-
-    candidate_key = normalize(candidate)
+    candidate_key = normalize(
+        candidate
+    )
 
     if not candidate_key:
         return None
 
-    # Exact match.
     if candidate_key in official_topics:
-        return official_topics[candidate_key]
+        return official_topics[
+            candidate_key
+        ]
 
-    candidate_tokens = set(candidate_key.split())
+    candidate_tokens = set(
+        candidate_key.split()
+    )
 
-    # Conservative partial match.
     possible = []
 
-    for official_key, official_topic in official_topics.items():
+    for (
+        official_key,
+        official_topic,
+    ) in official_topics.items():
 
-        official_tokens = set(official_key.split())
+        official_tokens = set(
+            official_key.split()
+        )
 
         if not candidate_tokens:
             continue
 
-        if candidate_tokens.issubset(official_tokens):
+        if candidate_tokens.issubset(
+            official_tokens
+        ):
 
-            # Prefer the shortest/closest topic.
             possible.append(
                 (
                     len(official_tokens),
@@ -711,7 +591,9 @@ def find_canonical_topic(candidate, official_topics):
 
     if possible:
 
-        possible.sort(key=lambda item: item[0])
+        possible.sort(
+            key=lambda item: item[0]
+        )
 
         return possible[0][1]
 
@@ -722,24 +604,30 @@ def find_canonical_topic(candidate, official_topics):
 # DETECT HISTORICAL PERIODS
 # ============================================================
 
-def detect_period_topics(query, official_topics):
-    """
-    Detect historical periods in multilingual queries.
-    """
+def detect_period_topics(
+    query,
+    official_topics,
+):
 
-    normalized_query = normalize(query)
+    normalized_query = normalize(
+        query
+    )
 
     detected = []
 
     aliases = sorted(
         PERIOD_ALIASES.items(),
-        key=lambda item: len(normalize(item[0])),
+        key=lambda item: len(
+            normalize(item[0])
+        ),
         reverse=True,
     )
 
     for alias, canonical in aliases:
 
-        normalized_alias = normalize(alias)
+        normalized_alias = normalize(
+            alias
+        )
 
         if normalized_alias in normalized_query:
 
@@ -748,7 +636,11 @@ def detect_period_topics(query, official_topics):
                 official_topics,
             )
 
-            if topic and topic not in detected:
+            if (
+                topic
+                and topic not in detected
+            ):
+
                 detected.append(topic)
 
     return detected
@@ -758,34 +650,43 @@ def detect_period_topics(query, official_topics):
 # DETECT SUBJECT TOPICS
 # ============================================================
 
-def detect_subject_topics(query, official_topics):
-    """
-    Detect subject topics from multilingual queries.
+def detect_subject_topics(
+    query,
+    official_topics,
+):
 
-    The dataset taxonomy remains authoritative.
-    """
+    normalized_query = normalize(
+        query
+    )
 
-    normalized_query = normalize(query)
-    query_tokens = tokenize(query)
+    query_tokens = tokenize(
+        query
+    )
 
     detected = []
 
-    # --------------------------------------------------------
-    # Explicit multilingual aliases.
-    # --------------------------------------------------------
+    for alias, canonical in (
+        MULTILINGUAL_ALIASES.items()
+    ):
 
-    for alias, canonical in MULTILINGUAL_ALIASES.items():
-
-        alias_normalized = normalize(alias)
+        alias_normalized = normalize(
+            alias
+        )
 
         if " " in alias_normalized:
 
-            if alias_normalized not in normalized_query:
+            if (
+                alias_normalized
+                not in normalized_query
+            ):
                 continue
 
         else:
 
-            if alias_normalized not in query_tokens:
+            if (
+                alias_normalized
+                not in query_tokens
+            ):
                 continue
 
         topic = find_canonical_topic(
@@ -793,29 +694,25 @@ def detect_subject_topics(query, official_topics):
             official_topics,
         )
 
-        if topic and topic not in detected:
+        if (
+            topic
+            and topic not in detected
+        ):
+
             detected.append(topic)
 
-    # --------------------------------------------------------
-    # Direct match against official English taxonomy.
-    # --------------------------------------------------------
-
-    for official_key, official_topic in official_topics.items():
+    for (
+        official_key,
+        official_topic,
+    ) in official_topics.items():
 
         if official_topic in detected:
             continue
 
         if official_key in normalized_query:
-            detected.append(official_topic)
-
-    # --------------------------------------------------------
-    # Conservative single-token matching.
-    #
-    # Example:
-    #     "astronomy" -> Astronomy
-    #
-    # But generic words such as "books" are excluded.
-    # --------------------------------------------------------
+            detected.append(
+                official_topic
+            )
 
     meaningful_query_tokens = {
         token
@@ -824,7 +721,10 @@ def detect_subject_topics(query, official_topics):
         and len(token) >= 4
     }
 
-    for official_key, official_topic in official_topics.items():
+    for (
+        official_key,
+        official_topic,
+    ) in official_topics.items():
 
         if official_topic in detected:
             continue
@@ -839,13 +739,20 @@ def detect_subject_topics(query, official_topics):
         if not topic_tokens:
             continue
 
-        # Single-word canonical topics.
         if len(topic_tokens) == 1:
 
-            topic_token = next(iter(topic_tokens))
+            topic_token = next(
+                iter(topic_tokens)
+            )
 
-            if topic_token in meaningful_query_tokens:
-                detected.append(official_topic)
+            if (
+                topic_token
+                in meaningful_query_tokens
+            ):
+
+                detected.append(
+                    official_topic
+                )
 
     return detected
 
@@ -854,23 +761,26 @@ def detect_subject_topics(query, official_topics):
 # DETECT ALL TOPICS
 # ============================================================
 
-def detect_topics(query, official_topics):
+def detect_topics(
+    query,
+    official_topics,
+):
 
     detected = []
 
-    # Historical periods first.
     for topic in detect_period_topics(
         query,
         official_topics,
     ):
+
         if topic not in detected:
             detected.append(topic)
 
-    # Subjects.
     for topic in detect_subject_topics(
         query,
         official_topics,
     ):
+
         if topic not in detected:
             detected.append(topic)
 
@@ -878,45 +788,62 @@ def detect_topics(query, official_topics):
 
 
 # ============================================================
-# REMOVE RECOGNIZED TOPICS FROM FREE QUERY
+# REMOVE RECOGNIZED TOPICS
 # ============================================================
 
-def get_free_query_tokens(query, recognized_topics):
+def get_free_query_tokens(
+    query,
+    recognized_topics,
+):
 
-    normalized_query = normalize(query)
+    normalized_query = normalize(
+        query
+    )
 
-    # Remove period aliases.
-    aliases = list(PERIOD_ALIASES.keys())
+    aliases = list(
+        PERIOD_ALIASES.keys()
+    )
 
-    # Remove subject aliases.
-    aliases.extend(MULTILINGUAL_ALIASES.keys())
+    aliases.extend(
+        MULTILINGUAL_ALIASES.keys()
+    )
 
-    # Longest first prevents partial leftovers.
     aliases = sorted(
         aliases,
-        key=lambda value: len(normalize(value)),
+        key=lambda value: len(
+            normalize(value)
+        ),
         reverse=True,
     )
 
     for alias in aliases:
 
-        normalized_alias = normalize(alias)
+        normalized_alias = normalize(
+            alias
+        )
 
         if normalized_alias:
-            normalized_query = normalized_query.replace(
-                normalized_alias,
-                " ",
+
+            normalized_query = (
+                normalized_query.replace(
+                    normalized_alias,
+                    " ",
+                )
             )
 
-    # Remove canonical topic names too.
     for topic in recognized_topics:
 
-        normalized_topic = normalize(topic)
+        normalized_topic = normalize(
+            topic
+        )
 
         if normalized_topic:
-            normalized_query = normalized_query.replace(
-                normalized_topic,
-                " ",
+
+            normalized_query = (
+                normalized_query.replace(
+                    normalized_topic,
+                    " ",
+                )
             )
 
     tokens = [
@@ -934,7 +861,9 @@ def get_free_query_tokens(query, recognized_topics):
 # DOCUMENT TOPICS
 # ============================================================
 
-def get_document_topics(document):
+def get_document_topics(
+    document
+):
 
     return document.get(
         "metadata",
@@ -945,13 +874,24 @@ def get_document_topics(document):
     )
 
 
-def document_has_topic(document, requested_topic):
+def document_has_topic(
+    document,
+    requested_topic,
+):
 
-    requested_key = normalize(requested_topic)
+    requested_key = normalize(
+        requested_topic
+    )
 
-    for topic in get_document_topics(document):
+    for topic in get_document_topics(
+        document
+    ):
 
-        if normalize(topic) == requested_key:
+        if (
+            normalize(topic)
+            == requested_key
+        ):
+
             return True
 
     return False
@@ -961,22 +901,32 @@ def document_has_topic(document, requested_topic):
 # TEXT EXTRACTION
 # ============================================================
 
-def get_document_text(document):
+def get_document_text(
+    document
+):
 
     return normalize(
-        document.get("text", "")
+        document.get(
+            "text",
+            "",
+        )
     )
 
 
-def get_document_title(document):
+def get_document_title(
+    document
+):
 
     return normalize(
-        document.get("title", "")
+        document.get(
+            "title",
+            "",
+        )
     )
 
 
 # ============================================================
-# SCORING
+# KEYWORD SCORING
 # ============================================================
 
 def score_document(
@@ -984,12 +934,6 @@ def score_document(
     requested_topics,
     free_tokens,
 ):
-    """
-    Score a document.
-
-    Topic matches are the strongest signal.
-    Text/title matches are secondary.
-    """
 
     score = 0.0
 
@@ -1026,7 +970,6 @@ def score_document(
                 requested_topic
             )
 
-    # Strong conjunction bonus.
     if requested_topics:
 
         if len(matched_topics) == len(
@@ -1043,7 +986,9 @@ def score_document(
     # TITLE MATCH
     # --------------------------------------------------------
 
-    title = get_document_title(document)
+    title = get_document_title(
+        document
+    )
 
     for token in free_tokens:
 
@@ -1059,22 +1004,24 @@ def score_document(
     # FULL TEXT MATCH
     # --------------------------------------------------------
 
-    text = get_document_text(document)
+    text = get_document_text(
+        document
+    )
 
     for token in free_tokens:
 
         if token in text:
-
             score += 1.0
 
     # --------------------------------------------------------
-    # PENALTY FOR MISSING TOPICS
+    # MISSING TOPIC PENALTY
     # --------------------------------------------------------
 
     if requested_topics:
 
         score -= (
-            len(missing_topics) * 15.0
+            len(missing_topics)
+            * 15.0
         )
 
     return (
@@ -1086,17 +1033,19 @@ def score_document(
 
 
 # ============================================================
-# SEARCH
+# KEYWORD SEARCH
 # ============================================================
 
-def search(
+def keyword_search(
     documents,
     query,
     limit=DEFAULT_LIMIT,
 ):
 
-    official_topics = build_topic_index(
-        documents
+    official_topics = (
+        build_topic_index(
+            documents
+        )
     )
 
     recognized_topics = detect_topics(
@@ -1104,16 +1053,14 @@ def search(
         official_topics,
     )
 
-    free_tokens = get_free_query_tokens(
-        query,
-        recognized_topics,
+    free_tokens = (
+        get_free_query_tokens(
+            query,
+            recognized_topics,
+        )
     )
 
     candidates = []
-
-    # --------------------------------------------------------
-    # SCORE DOCUMENTS
-    # --------------------------------------------------------
 
     for document in documents:
 
@@ -1128,23 +1075,14 @@ def search(
             free_tokens,
         )
 
-        # --------------------------------------------
-        # Topic search
-        # --------------------------------------------
-
         if recognized_topics:
 
-            # If the document has no requested topic
-            # and there are no free terms, ignore it.
             if (
                 not matched_topics
                 and not free_tokens
             ):
-                continue
 
-        # --------------------------------------------
-        # Free-text search
-        # --------------------------------------------
+                continue
 
         else:
 
@@ -1164,6 +1102,7 @@ def search(
                 or token in text
                 for token in free_tokens
             ):
+
                 continue
 
         candidates.append(
@@ -1171,16 +1110,15 @@ def search(
                 "document": document,
                 "score": score,
                 "reasons": reasons,
-                "matched_topics": matched_topics,
-                "missing_topics": missing_topics,
+                "matched_topics":
+                    matched_topics,
+                "missing_topics":
+                    missing_topics,
             }
         )
 
     # --------------------------------------------------------
-    # CONJUNCTIVE SEARCH
-    #
-    # If documents exist that match ALL requested topics,
-    # discard partial matches.
+    # Preserve existing conjunctive behavior.
     # --------------------------------------------------------
 
     if recognized_topics:
@@ -1190,7 +1128,9 @@ def search(
             for result in candidates
             if len(
                 result["matched_topics"]
-            ) == len(recognized_topics)
+            ) == len(
+                recognized_topics
+            )
         ]
 
         if complete:
@@ -1202,7 +1142,9 @@ def search(
 
     def sort_key(result):
 
-        document = result["document"]
+        document = result[
+            "document"
+        ]
 
         year = (
             document
@@ -1215,7 +1157,11 @@ def search(
 
         return (
             result["score"],
-            len(result["matched_topics"]),
+            len(
+                result[
+                    "matched_topics"
+                ]
+            ),
             -year,
         )
 
@@ -1224,7 +1170,9 @@ def search(
         reverse=True,
     )
 
-    total_candidates = len(candidates)
+    total_candidates = len(
+        candidates
+    )
 
     return (
         candidates[:limit],
@@ -1232,6 +1180,399 @@ def search(
         recognized_topics,
         free_tokens,
     )
+
+
+# ============================================================
+# VECTOR INDEX
+# ============================================================
+
+def vector_index_available():
+
+    return (
+        VECTOR_INDEX_PATH.exists()
+        and VECTOR_METADATA_PATH.exists()
+    )
+
+
+def semantic_search(
+    documents,
+    query,
+    limit=SEMANTIC_TOP_K,
+):
+
+    if not vector_index_available():
+
+        return []
+
+    try:
+
+        import numpy as np
+
+        from sentence_transformers import (
+            SentenceTransformer,
+        )
+
+    except ImportError:
+
+        print(
+            "WARNING: semantic search "
+            "dependencies are not installed."
+        )
+
+        print(
+            "Falling back to keyword search."
+        )
+
+        return []
+
+    # --------------------------------------------------------
+    # Load vector index.
+    # --------------------------------------------------------
+
+    data = np.load(
+        VECTOR_INDEX_PATH,
+        allow_pickle=True,
+    )
+
+    embeddings = data[
+        "embeddings"
+    ]
+
+    document_ids = data[
+        "ids"
+    ]
+
+    # --------------------------------------------------------
+    # Load metadata.
+    # --------------------------------------------------------
+
+    with VECTOR_METADATA_PATH.open(
+        "r",
+        encoding="utf-8",
+    ) as file:
+
+        vector_metadata = json.load(
+            file
+        )
+
+    indexed_ids = {
+        str(document_id)
+        for document_id in document_ids
+    }
+
+    documents_by_id = {
+        str(document.get("id")):
+            document
+        for document in documents
+    }
+
+    # --------------------------------------------------------
+    # Load embedding model.
+    # --------------------------------------------------------
+
+    model = SentenceTransformer(
+        VECTOR_MODEL_NAME
+    )
+
+    query_embedding = model.encode(
+        [query],
+        normalize_embeddings=True,
+        convert_to_numpy=True,
+    )[0]
+
+    # --------------------------------------------------------
+    # Ensure document vectors are normalized.
+    # --------------------------------------------------------
+
+    norms = np.linalg.norm(
+        embeddings,
+        axis=1,
+        keepdims=True,
+    )
+
+    norms[
+        norms == 0
+    ] = 1.0
+
+    normalized_embeddings = (
+        embeddings / norms
+    )
+
+    # --------------------------------------------------------
+    # Cosine similarity.
+    #
+    # Because both vectors are normalized,
+    # dot product = cosine similarity.
+    # --------------------------------------------------------
+
+    similarities = (
+        normalized_embeddings
+        @ query_embedding
+    )
+
+    # --------------------------------------------------------
+    # Rank.
+    # --------------------------------------------------------
+
+    ranked_indices = np.argsort(
+        similarities
+    )[::-1]
+
+    results = []
+
+    for index in ranked_indices:
+
+        document_id = str(
+            document_ids[index]
+        )
+
+        document = documents_by_id.get(
+            document_id
+        )
+
+        if document is None:
+            continue
+
+        similarity = float(
+            similarities[index]
+        )
+
+        metadata = vector_metadata.get(
+            document_id,
+            {},
+        )
+
+        results.append(
+            {
+                "document": document,
+                "semantic_score":
+                    similarity,
+                "vector_metadata":
+                    metadata,
+            }
+        )
+
+        if len(results) >= limit:
+            break
+
+    return results
+
+
+# ============================================================
+# RECIPROCAL RANK FUSION
+# ============================================================
+
+def hybrid_search(
+    documents,
+    query,
+    limit=DEFAULT_LIMIT,
+):
+
+    # --------------------------------------------------------
+    # Existing deterministic search.
+    # --------------------------------------------------------
+
+    keyword_results = keyword_search(
+        documents,
+        query,
+        limit=max(
+            limit,
+            SEMANTIC_TOP_K,
+        ),
+    )[0]
+
+    # --------------------------------------------------------
+    # Semantic search.
+    # --------------------------------------------------------
+
+    semantic_results = semantic_search(
+        documents,
+        query,
+        limit=SEMANTIC_TOP_K,
+    )
+
+    # --------------------------------------------------------
+    # If vector index does not exist yet,
+    # return exactly the existing search behavior.
+    # --------------------------------------------------------
+
+    if not semantic_results:
+
+        return keyword_results
+
+    # --------------------------------------------------------
+    # RRF scores.
+    # --------------------------------------------------------
+
+    fused = {}
+
+    keyword_by_id = {}
+
+    for rank, result in enumerate(
+        keyword_results,
+        start=1,
+    ):
+
+        document = result[
+            "document"
+        ]
+
+        document_id = str(
+            document.get("id")
+        )
+
+        keyword_by_id[
+            document_id
+        ] = result
+
+        fused.setdefault(
+            document_id,
+            {
+                "document": document,
+                "hybrid_score": 0.0,
+                "keyword_rank": None,
+                "semantic_rank": None,
+                "keyword_score": None,
+                "semantic_score": None,
+                "reasons": [],
+                "matched_topics": [],
+                "missing_topics": [],
+            },
+        )
+
+        fused[
+            document_id
+        ][
+            "keyword_rank"
+        ] = rank
+
+        fused[
+            document_id
+        ][
+            "keyword_score"
+        ] = result[
+            "score"
+        ]
+
+        fused[
+            document_id
+        ][
+            "matched_topics"
+        ] = result[
+            "matched_topics"
+        ]
+
+        fused[
+            document_id
+        ][
+            "missing_topics"
+        ] = result[
+            "missing_topics"
+        ]
+
+        fused[
+            document_id
+        ][
+            "reasons"
+        ] = result[
+            "reasons"
+        ]
+
+        fused[
+            document_id
+        ][
+            "hybrid_score"
+        ] += (
+            1.0 /
+            (
+                RRF_K
+                + rank
+            )
+        )
+
+    # --------------------------------------------------------
+    # Semantic rankings.
+    # --------------------------------------------------------
+
+    for rank, result in enumerate(
+        semantic_results,
+        start=1,
+    ):
+
+        document = result[
+            "document"
+        ]
+
+        document_id = str(
+            document.get("id")
+        )
+
+        if document_id not in fused:
+
+            fused[
+                document_id
+            ] = {
+                "document": document,
+                "hybrid_score": 0.0,
+                "keyword_rank": None,
+                "semantic_rank": None,
+                "keyword_score": None,
+                "semantic_score": None,
+                "reasons": [],
+                "matched_topics": [],
+                "missing_topics": [],
+            }
+
+        fused[
+            document_id
+        ][
+            "semantic_rank"
+        ] = rank
+
+        fused[
+            document_id
+        ][
+            "semantic_score"
+        ] = result[
+            "semantic_score"
+        ]
+
+        fused[
+            document_id
+        ][
+            "hybrid_score"
+        ] += (
+            1.0 /
+            (
+                RRF_K
+                + rank
+            )
+        )
+
+    # --------------------------------------------------------
+    # Sort hybrid results.
+    # --------------------------------------------------------
+
+    results = list(
+        fused.values()
+    )
+
+    results.sort(
+        key=lambda result: (
+            result["hybrid_score"],
+            result["semantic_score"]
+                if result["semantic_score"]
+                is not None
+                else -1.0,
+            result["keyword_score"]
+                if result["keyword_score"]
+                is not None
+                else -9999.0,
+        ),
+        reverse=True,
+    )
+
+    return results[:limit]
 
 
 # ============================================================
@@ -1248,11 +1589,16 @@ def print_results(
 
     print()
     print("=" * 80)
-    print("GOVI RARE BOOKS — INTERNATIONAL SEARCH")
+    print(
+        "GOVI RARE BOOKS — "
+        "HYBRID INTERNATIONAL SEARCH"
+    )
     print("=" * 80)
 
     print()
-    print(f'Query: "{query}"')
+    print(
+        f'Query: "{query}"'
+    )
 
     print()
     print("Recognized topics:")
@@ -1260,7 +1606,10 @@ def print_results(
     if recognized_topics:
 
         for topic in recognized_topics:
-            print(f"  - {topic}")
+
+            print(
+                f"  - {topic}"
+            )
 
     else:
 
@@ -1273,7 +1622,9 @@ def print_results(
 
         print(
             "  - "
-            + ", ".join(free_tokens)
+            + ", ".join(
+                free_tokens
+            )
         )
 
     else:
@@ -1286,28 +1637,30 @@ def print_results(
     )
 
     print(
-        f"Results displayed: {len(results)}"
+        f"Results displayed: "
+        f"{len(results)}"
     )
 
     print()
 
     if not results:
 
-        print("No results found.")
+        print(
+            "No results found."
+        )
+
         print()
 
         return
-
-    # --------------------------------------------------------
-    # RESULTS
-    # --------------------------------------------------------
 
     for index, result in enumerate(
         results,
         start=1,
     ):
 
-        document = result["document"]
+        document = result[
+            "document"
+        ]
 
         metadata = document.get(
             "metadata",
@@ -1344,33 +1697,104 @@ def print_results(
             f"{index}. {title}"
         )
 
-        print(
-            f"   Score: {result['score']:.2f}"
-        )
+        # ----------------------------------------------------
+        # Hybrid score.
+        # ----------------------------------------------------
 
-        if result["matched_topics"]:
+        if "hybrid_score" in result:
+
+            print(
+                "   Hybrid score: "
+                f"{result['hybrid_score']:.6f}"
+            )
+
+        # ----------------------------------------------------
+        # Keyword score.
+        # ----------------------------------------------------
+
+        if result.get(
+            "keyword_score"
+        ) is not None:
+
+            print(
+                "   Keyword score: "
+                f"{result['keyword_score']:.2f}"
+            )
+
+        # ----------------------------------------------------
+        # Semantic score.
+        # ----------------------------------------------------
+
+        if result.get(
+            "semantic_score"
+        ) is not None:
+
+            print(
+                "   Semantic score: "
+                f"{result['semantic_score']:.4f}"
+            )
+
+        # ----------------------------------------------------
+        # Ranks.
+        # ----------------------------------------------------
+
+        if result.get(
+            "keyword_rank"
+        ) is not None:
+
+            print(
+                "   Keyword rank: "
+                f"{result['keyword_rank']}"
+            )
+
+        if result.get(
+            "semantic_rank"
+        ) is not None:
+
+            print(
+                "   Semantic rank: "
+                f"{result['semantic_rank']}"
+            )
+
+        # ----------------------------------------------------
+        # Existing match information.
+        # ----------------------------------------------------
+
+        if result.get(
+            "matched_topics"
+        ):
 
             print(
                 "   Matched topics: "
                 + ", ".join(
-                    result["matched_topics"]
+                    result[
+                        "matched_topics"
+                    ]
                 )
             )
 
-        if result["missing_topics"]:
+        if result.get(
+            "missing_topics"
+        ):
 
             print(
                 "   Missing topics: "
                 + ", ".join(
-                    result["missing_topics"]
+                    result[
+                        "missing_topics"
+                    ]
                 )
             )
 
-        if result["reasons"]:
+        if result.get(
+            "reasons"
+        ):
 
             print("   Match:")
 
-            for reason in result["reasons"]:
+            for reason in result[
+                "reasons"
+            ]:
 
                 print(
                     f"     - {reason}"
@@ -1388,7 +1812,9 @@ def print_results(
 
             print(
                 "   Topics: "
-                + ", ".join(topics)
+                + ", ".join(
+                    topics
+                )
             )
 
         print(
@@ -1411,7 +1837,8 @@ def main():
     if len(sys.argv) < 2:
 
         print(
-            'Usage: python rag/search.py "your query"'
+            'Usage: python rag/search.py '
+            '"your query"'
         )
 
         print()
@@ -1419,27 +1846,33 @@ def main():
         print("Examples:")
 
         print(
-            '  python rag/search.py "astrology"'
+            '  python rag/search.py '
+            '"astrology"'
         )
 
         print(
-            '  python rag/search.py "astrology sixteenth century"'
+            '  python rag/search.py '
+            '"astrology sixteenth century"'
         )
 
         print(
-            '  python rag/search.py "medicine sixteenth century"'
+            '  python rag/search.py '
+            '"medicine sixteenth century"'
         )
 
         print(
-            '  python rag/search.py "astronomy seventeenth century"'
+            '  python rag/search.py '
+            '"astronomy seventeenth century"'
         )
 
         print(
-            '  python rag/search.py "incunabula"'
+            '  python rag/search.py '
+            '"incunabula"'
         )
 
         print(
-            '  python rag/search.py "witchcraft"'
+            '  python rag/search.py '
+            '"witchcraft"'
         )
 
         print()
@@ -1452,21 +1885,27 @@ def main():
 
     if not query:
 
-        print("Query cannot be empty.")
+        print(
+            "Query cannot be empty."
+        )
+
         sys.exit(1)
 
     # --------------------------------------------------------
-    # LOAD RAG DOCUMENTS
+    # LOAD DOCUMENTS
     # --------------------------------------------------------
 
     if not DOCUMENTS_PATH.exists():
 
         print(
-            f"ERROR: {DOCUMENTS_PATH} not found."
+            f"ERROR: "
+            f"{DOCUMENTS_PATH} not found."
         )
 
         print(
-            "Run rag/prepare_documents.py first."
+            "Run "
+            "rag/prepare_documents.py "
+            "first."
         )
 
         sys.exit(1)
@@ -1476,21 +1915,57 @@ def main():
         encoding="utf-8",
     ) as file:
 
-        documents = json.load(file)
+        documents = json.load(
+            file
+        )
 
     # --------------------------------------------------------
     # SEARCH
     # --------------------------------------------------------
 
-    (
-        results,
-        total_candidates,
-        recognized_topics,
-        free_tokens,
-    ) = search(
+    official_topics = (
+        build_topic_index(
+            documents
+        )
+    )
+
+    recognized_topics = detect_topics(
+        query,
+        official_topics,
+    )
+
+    free_tokens = (
+        get_free_query_tokens(
+            query,
+            recognized_topics,
+        )
+    )
+
+    results = hybrid_search(
         documents,
         query,
         limit=DEFAULT_LIMIT,
+    )
+
+    # --------------------------------------------------------
+    # Candidate count.
+    #
+    # Keep the deterministic keyword candidate count
+    # for transparency.
+    # --------------------------------------------------------
+
+    (
+        _keyword_results,
+        total_candidates,
+        _,
+        _,
+    ) = keyword_search(
+        documents,
+        query,
+        limit=max(
+            DEFAULT_LIMIT,
+            SEMANTIC_TOP_K,
+        ),
     )
 
     # --------------------------------------------------------
