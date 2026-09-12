@@ -1,3 +1,4 @@
+```python
 import json
 import re
 import sys
@@ -1255,15 +1256,57 @@ def semantic_search(
             file
         )
 
-    indexed_ids = {
-        str(document_id)
-        for document_id in document_ids
-    }
+    # --------------------------------------------------------
+    # Normalize metadata format.
+    #
+    # The current vector builder writes metadata as a list:
+    #
+    # [
+    #     {"id": "work-123", ...},
+    #     {"id": "work-456", ...}
+    # ]
+    #
+    # Convert it to a dictionary indexed by document ID.
+    #
+    # Dictionary-formatted metadata is also accepted for
+    # backwards compatibility.
+    # --------------------------------------------------------
+
+    if isinstance(
+        vector_metadata,
+        list,
+    ):
+
+        vector_metadata = {
+            str(item.get("id")): item
+            for item in vector_metadata
+            if isinstance(item, dict)
+            and item.get("id") is not None
+        }
+
+    elif isinstance(
+        vector_metadata,
+        dict,
+    ):
+
+        vector_metadata = {
+            str(key): value
+            for key, value in vector_metadata.items()
+        }
+
+    else:
+
+        print(
+            "WARNING: invalid vector metadata format."
+        )
+
+        vector_metadata = {}
 
     documents_by_id = {
         str(document.get("id")):
             document
         for document in documents
+        if document.get("id") is not None
     }
 
     # --------------------------------------------------------
@@ -1406,8 +1449,6 @@ def hybrid_search(
 
     fused = {}
 
-    keyword_by_id = {}
-
     for rank, result in enumerate(
         keyword_results,
         start=1,
@@ -1420,10 +1461,6 @@ def hybrid_search(
         document_id = str(
             document.get("id")
         )
-
-        keyword_by_id[
-            document_id
-        ] = result
 
         fused.setdefault(
             document_id,
@@ -1983,3 +2020,10 @@ def main():
 
 if __name__ == "__main__":
     main()
+```
+
+
+
+**Sì: dopo aver sostituito il file, fai commit.** La correzione è mirata: non cambia il ranking, gli alias, la keyword search o il modello; sistema soltanto la compatibilità del formato metadata.
+
+E una volta che la run passa, **il prossimo commit sarà quello per togliere CUDA/NVIDIA inutile e introdurre la cache**. GitHub conferma che la cache può ripristinare un
