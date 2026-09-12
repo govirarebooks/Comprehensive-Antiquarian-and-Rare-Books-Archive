@@ -30,20 +30,37 @@ jobs:
         with:
           python-version: "3.14"
 
+      - name: Install RAG dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install sentence-transformers numpy
+
       - name: Validate dataset
         run: python scripts/validate_dataset.py
 
       - name: Prepare RAG documents
         run: python rag/prepare_documents.py
 
+      - name: Build vector index
+        run: python rag/build_vector_index.py
+
       - name: Test RAG search
         run: |
           python rag/search.py "astrologia"
           python rag/search.py "astrologia XVI secolo"
           python rag/search.py "libri medicina cinquecento"
+          python rag/search.py "books concerning occult practices and celestial predictions"
 
       - name: Upload RAG documents
         uses: actions/upload-artifact@v4
         with:
           name: rag-documents
           path: rag/documents.json
+
+      - name: Upload vector index
+        uses: actions/upload-artifact@v4
+        with:
+          name: rag-vector-index
+          path: |
+            rag/vector_index.npz
+            rag/vector_metadata.json
