@@ -1,0 +1,1170 @@
+[
+  {
+    "id": "01KXK41YRR3VATHGW03N9CQG8R",
+    "hashes": {
+      "full": "a96621eb70664c00a704bc1c8eaf3d1940add5f50fc7857f9201d64e3d910cda",
+      "intellectual": "28e8a5cf5727a38d187a22fa710c55bc973c2b0caa1f344ffcd5650a62954281",
+      "bibliographic": "91ee407428b4720abeb58798ca56d2d29372bd8209ded559e4c10880df6a6712"
+    }
+  },
+  {
+    "id": "01KXQQZHJH6B0BY3KX1VVMA0TJ",
+    "hashes": {
+      "full": "64ecc881635bc8dd5ce9d5550623cf3a5f993b1ad82a6aaafabed7671059fcb0",
+      "intellectual": "ffc6f7a66ea280a114aa6a2302a84048494f4842fa33465dd148574e87afce64",
+      "bibliographic": "005e1c62404dbf14855df79c9eafaa67238e5cc07b1b7e8a0a68a07f230eae7e"
+    }
+  },
+  {
+    "id": "01KXX5HY6AT2ZE56G41Z6HDAV6",
+    "hashes": {
+      "full": "32c79b361763414f7f1917cc15c2876c850c5102133b429a337e84e13f4f12e2",
+      "intellectual": "b8559e3369362791859a3adfae79c87f9a5c5197ebe868722e1d79a05c80ef10",
+      "bibliographic": "de0c0f2668894f92058df322d9f1a7bcd44c3f6fadb86997460a6f42cc65a707"
+    }
+  },
+  {
+    "id": "01KXXEC0QDA8AG7AHBDN2Q72DA",
+    "hashes": {
+      "full": "2c10f4032583c5e572e0093d7f9f783f5aa7b921608990b7d1a33bae1ed6bd43",
+      "intellectual": "f1ce4713c13de6a57fcc54db63e7510a2944e3c6e9a2b31f9c58777f505750a5",
+      "bibliographic": "8675cf0f49809dc93e2a1d77ef47d153aa4e55d5e33569855ebae11e71ece5b1"
+    }
+  },
+  {
+    "id": "01KY03JT0MXMVYPQA6CPTC0F0S",
+    "hashes": {
+      "full": "4e552ccb33d05054d05667a3f054aabb04c074632177eb600d57c580919faa04",
+      "intellectual": "893d1c6884233e0cd9852745acf858a8fab767cc90a9f142cb2ba33002a56484",
+      "bibliographic": "dcb71f5da246ae4ec292500e3e4991ab2de2b5c45f0488d540f976fc37ea7aab"
+    }
+  },
+  {
+    "id": "01KY1YR0A0M6BDYQF1CSNAJYSK",
+    "hashes": {
+      "full": "b92ab9e57abc739571ecdf387940f193404a284cde2ada476dc4a84dfed58bf7",
+      "intellectual": "a85e6a424a712a9ee9c193d6425a072c4c72cd230147b6a9a783b02716dd1a81",
+      "bibliographic": "294a122d2fa8507b02e750133c27bbb7b484024d0236a326c176b2e546a909d0"
+    }
+  },
+  {
+    "id": "01KY20PPXRWPPJRK8ZJQQHCN1N",
+    "hashes": {
+      "full": "c29fac3dab7b4b59e7e017bc0d708e636ef3f609b9b8ff69ad40c8175220f9a1",
+      "intellectual": "37d83c0e035fa3a8e432af5ccdd71d893a7f1aa0309861c1a2774cd74a8b9eb2",
+      "bibliographic": "f5f9f9765f1c3334af1ab3118cc014b3fc84d7c653b98733891ddd81eea167c8"
+    }
+  },
+  {
+    "id": "01KY23KBHC932D0P2TKAGE7BM4",
+    "hashes": {
+      "full": "e8c6b94fb067f327e831e001ec32f1f16f72e8d1aeba4923bd6f41dc40120922",
+      "intellectual": "0709f5e13efda441c7f1c96e76bda339da6ede7f54bb32512c21544e67f75db3",
+      "bibliographic": "2ec981019529813e0a272cd165498ec12eb0f65a68dc7b0ce40f3fae7c9db6c0"
+    }
+  },
+  {
+    "id": "01KY2431PT59AJYNV6A4KN464H",
+    "hashes": {
+      "full": "f7976184d94c7ee9c0376a30879995cdf620d67596346576b93f5a596fd587d6",
+      "intellectual": "33ebc4968d197cdf04c2c20186bcb28b2031229607eee539cbe89920821c405c",
+      "bibliographic": "760c6dcf4018a0d24b5868b55de99aeb8b876c32a8b20296b51969bb7d6a6547"
+    }
+  },
+  {
+    "id": "01KY2575BMX207CP3P390GWB52",
+    "hashes": {
+      "full": "ff7acc0d1735e86eec0829346f751e3bbf721d47fda38f6e5bec583d3ae5f462",
+      "intellectual": "a4442da26ee04d0c4629e32c2910830c71b051e21fc0eae0146353fa48f7bcf9",
+      "bibliographic": "b00d34d1994eb66b066ffc41cd17a3c0a8de11a5dd4e3c8e2386b6d8c0127c83"
+    }
+  },
+  {
+    "id": "01KY25SEMXHBP1Y6EMQ46ZFHTQ",
+    "hashes": {
+      "full": "780062b2b93e3162bed6f8b5d91fd178f1f19c4144c25f29b4790299bb7ed242",
+      "intellectual": "7dfe2b6e1999058de893bd05511ce0ce84683332959b4d3d37a24010a738337d",
+      "bibliographic": "3c8b543317a43bf11def95e832e0477f8e649d774035f3a7414b133bbb0422b3"
+    }
+  },
+  {
+    "id": "01KY267NEMVWZNRCEHD04YRTYB",
+    "hashes": {
+      "full": "708bee184412edf6f100547c7a7c4490ac8155d2cdd0514624a1246c16187999",
+      "intellectual": "6610a88a822d27d63b9597b9af7785aa4f75b6c9db0e63fa3c090bb26dfae823",
+      "bibliographic": "c6611b3cf22b34740302ae834f5a694872c3279aacbb68cf96ca84e36e5fb7fe"
+    }
+  },
+  {
+    "id": "01KY2E94MZ3RB9DWTGF0D5MRQ0",
+    "hashes": {
+      "full": "bd3ab3158604f6f381e0bfb996995d2c263cfa3310382e67989a82821d0bf47a",
+      "intellectual": "a7418241708a05996182091a5b0e7576558ce4bedbd79e34806bba1590a30243",
+      "bibliographic": "86f6e60d48d5f7b3b938f8366940891c66e5b660fc312e5f5decf87cede48fd1"
+    }
+  },
+  {
+    "id": "01KY2F38FAJJGAA7DH46N2Y2YW",
+    "hashes": {
+      "full": "448cdeac117941ca02ee745e8f3758760e0dcf8006c02cd7790b5474aa80abef",
+      "intellectual": "38ec451d6fd5c34f79786352ebee0f05cec00fb39e1217999e739610e164eab1",
+      "bibliographic": "f93dcacc7efc4b888ddcb428c4923dd8a493b79babb271e105dc888ad0df1713"
+    }
+  },
+  {
+    "id": "01KY2JD41Y78YERSSHW315NYDE",
+    "hashes": {
+      "full": "9c8159e7cb645ec94cf4f7c3ba435b1edcd5e025dfc8f185fca874670412607f",
+      "intellectual": "5cb183179042847bcf646c07c75a7241f7d33a321e4c493d58c7cd08627bb1f9",
+      "bibliographic": "c45b55b43be64d12f48520b98c1eae34c9198531b100d3d74a05da0031526215"
+    }
+  },
+  {
+    "id": "01KY4FQKWG0WFSAKKS2HN5BTYH",
+    "hashes": {
+      "full": "f54d07d06eaf9c869d458e3d780e75c9b75c9eeafe5a3bb2914414a3311b4a5f",
+      "intellectual": "2987ff52d4c8b56901a7efaaf306107639cbce2cd154edd66717e09fcf6f1187",
+      "bibliographic": "40f2adf3663b96d5c17198d5ccff6af820601f1f9e5a8d5e7cda849ffd5243eb"
+    }
+  },
+  {
+    "id": "01KY51V9Q8M14WCG0RK978ZJNQ",
+    "hashes": {
+      "full": "d350a4ff3d9381a855f1b2b6833f1ce9aedbfc380f703a96ffe87319da71071b",
+      "intellectual": "8d97bfabf1add984c7d9d3fb056bd2322c9f4bf60af6dadf8ee4849d2ad68fee",
+      "bibliographic": "62c7f94c450327be6b52925e14ab8e2c812840ab2767ff2f77d1db45d9defe56"
+    }
+  },
+  {
+    "id": "01KY7TRFXSAMQMJ572GPHFZE3K",
+    "hashes": {
+      "full": "441aca6c7355ed7f78836e10b18d380fc2ba7926e4bcf2f51b0bfd583469be6e",
+      "intellectual": "7561eb92ff1319f0440a7647c82b1f7f00e00c9214896bf18c1fdbf6198c44d5",
+      "bibliographic": "432730367efccfb0a1e757ee90ac75048a39221dc71d3d0408a7fe9df5d64982"
+    }
+  },
+  {
+    "id": "01KY9S80N2AHPY4X24B47YCCJS",
+    "hashes": {
+      "full": "5a54d306b353c6c543b813f2d6567cc71a82cc8077aaf1c2995a660b7e2b4c76",
+      "intellectual": "7c4791960e96df8e85a5725a9aed4ba2d7a31397c6c44fff979dac8ca8ba8622",
+      "bibliographic": "bef2d059f0d67f5d2b5cebaad8687324999d10b6e490f57e2cbf1a6a655ae416"
+    }
+  },
+  {
+    "id": "01KYC9NEM9NA0KQWERY71RHNG5",
+    "hashes": {
+      "full": "612483e953ab772b67a0aa21429d929b43cd7f3e21efdda0f0660dbfcc760040",
+      "intellectual": "6a0228407d979f7964e9d6520f05183f9db40c683e3ad32f3b2127311ed5f9c5",
+      "bibliographic": "0817092924b8223d92d09aedc3e6c63db6a750b2d958cb6e1e19bc0b04b27d57"
+    }
+  },
+  {
+    "id": "01KYHQQSBG52ZV23HGJRJAQPM6",
+    "hashes": {
+      "full": "cdcecda695e9fe057b135fbf2736e3b2948e3058c69a00570fb613962f0c7471",
+      "intellectual": "f0319ffac8f5156987b80701d0d2e1b576ca2632a93b20e2e7cd943d03f9af06",
+      "bibliographic": "027c433796c4ea3157f92a8e74de882b86b668a1e11e1928fc5b88ea7c34ef2f"
+    }
+  },
+  {
+    "id": "01KYKTQ272JPJG6JWGKKD93ZHK",
+    "hashes": {
+      "full": "6bdc8e4577b450d34fb8e1fcf56ae1277983a6d72b4468944c7281151ca5a8f6",
+      "intellectual": "3096ee062209cabdea5180e4268796586d1e40572636864b7c4363216fff7663",
+      "bibliographic": "14dbbdeb1699c1599749cf4c21ae579e3b7dd8a21b490066fd655847b0c39aa0"
+    }
+  },
+  {
+    "id": "01KYKZ5Y4REFRA5SN9GA4JW01J",
+    "hashes": {
+      "full": "477f8c345a79ce996d319979abd2759d995689080cff58a6ab1a8da15821118d",
+      "intellectual": "b9468a42deb25c6c2ad5dc2cf213279e0239bcd771d0a9dbe01da4a82357fc19",
+      "bibliographic": "05059c0dda4067f1bf73d9390d2f398e876a257ac6e47498824320ea5b976a17"
+    }
+  },
+  {
+    "id": "01KYM5GKS5PS6NKYGPABWWRFM7",
+    "hashes": {
+      "full": "eb2ade57777de6d419013441aed4a0eda231530415d93d699a720df62e6367e9",
+      "intellectual": "67014cc92ccaf84f6be55312ad959a683a49ed71ac0045f869dee6e0b77d555c",
+      "bibliographic": "11aee93527645f7c143d9ac8d19aa4f70f5e08bd2206a8142398efb04a9996ae"
+    }
+  },
+  {
+    "id": "01KYM61GFQJGH4ASV3MV7GPZE7",
+    "hashes": {
+      "full": "440ab265c28e81876661337bdd8d77ac7e57c182742a992492b3ac512b2ca201",
+      "intellectual": "20c628fd57bfb4087da0f99d5bb4bb270d2a4d1927c3490bbdf570d3aad33b97",
+      "bibliographic": "6a642de4640be0bd33f71c6f5d7b8d1f9c54d3a2d366d4b41f748aff38a3f78c"
+    }
+  },
+  {
+    "id": "01KYM6NNMFXHCCQTTRPY16ADQC",
+    "hashes": {
+      "full": "1b7e2ce27a8f95043a3e5af90fbf905954265fc2eb0cda61353521f3491a7f2e",
+      "intellectual": "4c4e80c176935b82162f391a4a47781f7f26f76caf87ae6c1d9d0af902081263",
+      "bibliographic": "1b8ad83f29aafcb865ebe829db957e669dc7f8c8a9eb6db088aa8c9194e02f5e"
+    }
+  },
+  {
+    "id": "01KYMADS3H45WX2D8W668DAP22",
+    "hashes": {
+      "full": "c4ab863e4d72acdf0ef35df8b6dedd4054b03d749d08d3010922e4ba42a35486",
+      "intellectual": "3ab0de89ee9e5535f09f4e86a3edfb764d7fdc056964e22bf4a91987f8ad678f",
+      "bibliographic": "48420186faa486bfef1ef42d28ac059a964d61b1739b80516337170cf864979b"
+    }
+  },
+  {
+    "id": "01KYMB4KJRGJDWH48Q8SPVVXNV",
+    "hashes": {
+      "full": "89c1fa2211de0f31e722b7282daf796ce0731197d87592cbbb3e55e0a1a372b2",
+      "intellectual": "ff08da5d2177128c0fc25de4d8970406ef67c02b9e821005f87c4b0987f73433",
+      "bibliographic": "d47103541b498679e5c2bc57d8377b32d64e5034e0baf69e8bb67d1299efe8cc"
+    }
+  },
+  {
+    "id": "01KYMBG04C1XZ9PRM82306RM6K",
+    "hashes": {
+      "full": "c1083a6c6b447cfaa5e687c35c5cb92103caf1c93dd6ae4fdaa1ef6b8e04e6a0",
+      "intellectual": "ff9a8edb9597189c8c1f000ed76281824341d06ee689cb0df524171d9c2246e5",
+      "bibliographic": "0d74faf9d93355caaea6b87f0cb0afa74061d15f4397d5812337bf09bb9a3466"
+    }
+  },
+  {
+    "id": "01KYMBVVBHEDMS08XFFWFY03T0",
+    "hashes": {
+      "full": "372d2366d6c48c5dbdb494c3e2ad7831619e3f66ed0423a63dccc131e61f5838",
+      "intellectual": "ecd232540c958e102cd7c96401b7049825e09bc7412ec39b9e4cb87585e79d05",
+      "bibliographic": "9fd5cd35ee723acd046a7d8b83244faa8b18de456ea9c190eb9bdaf6258017fb"
+    }
+  },
+  {
+    "id": "01KYMC4KY7MH7GHMB88FMC4XMR",
+    "hashes": {
+      "full": "8cf3c38463e9180a7db658e0ae8ff119f03cf82538ff95b9765862c5a8417f0f",
+      "intellectual": "59739cb77f4af2a79ccf35f31879c38d34a4649fd7ebb9e7f1e3a36c3ed62ad3",
+      "bibliographic": "457fb23d363cd45d294056a56db6a875b3c93a1b69d8b369d4271cc97408f288"
+    }
+  },
+  {
+    "id": "01KYMCH2F3WKGBEABGK6RJPSCR",
+    "hashes": {
+      "full": "9853fdf93ac049ffdbcb3926232892b7e939d9ecf0179d08116826a70725df89",
+      "intellectual": "3b5c94409070fbc22c1f49c79e3e886fb865c1a2a0b8d031aad4fbcfc44dab07",
+      "bibliographic": "ba50f86ef72ec646b924fd55b2f343cec746065ca39ca87cf749110f3a572a11"
+    }
+  },
+  {
+    "id": "01KYMD92KWZDT5P7A9B04BJT4G",
+    "hashes": {
+      "full": "0bc73d80cf086fe15dc8546ce9f16093092e673e70e2be0c56f207eb4cea181e",
+      "intellectual": "f85a920570635715a2cb1a84456a8ef924c8226421e39ca6f3a27d926410c996",
+      "bibliographic": "9bbf52d937ed5b63c9f39689699cf2644219a18d10103fe0ad406b33c429261f"
+    }
+  },
+  {
+    "id": "01KYPFXN1Y2XM1KXD5D8X98XZY",
+    "hashes": {
+      "full": "efeed470e318c5d029f500d0e415af72a006e90464dddfd90a44dfcf0d6ad477",
+      "intellectual": "9a74547fa1546f8d1a23c4d5eba6707af050d1f7e8939ba566290276b46d8413",
+      "bibliographic": "e56559f36b1463ac217190a6a1b6ad86f1ffce1dc63c8095773737cba769d536"
+    }
+  },
+  {
+    "id": "01KYPHZ6G6MRKBFMM4KEHGSGAN",
+    "hashes": {
+      "full": "7ba2fdfedee962896d2b73c9e490859d0e03505d81f599b7ac19930285040b64",
+      "intellectual": "eb354337eee0889e8cb9c63c297884d86a559a72737480f035bcfe5d3edea429",
+      "bibliographic": "a562028133b519159dab287f5f594c674b3d893c676a87f91fc78a828786c79d"
+    }
+  },
+  {
+    "id": "01KYPJDRCJYGRW0C3TVC5WSMXT",
+    "hashes": {
+      "full": "bf8dbf7f5456503eb57a20758a73c330bb0abf8fd8cba51926010e19b073b35a",
+      "intellectual": "da8ba6724c89299321a5a260c446e4787eaa0d6b54400ff847e098b20c25ef7e",
+      "bibliographic": "66ebf224696a4451fadb7f40bdaa9f4f724f017f742e413322498f18b3545f6d"
+    }
+  },
+  {
+    "id": "01KYPJW5FGR6AEESBF19BP23T0",
+    "hashes": {
+      "full": "fc18f7d98c93e59acaa15cc548c5905b9776da0c8272fe3cc3de17450f835b2a",
+      "intellectual": "3ddef785f2ba89db7fc1533b930358b951ec6daf69d47b5bd5f80c50efc513d7",
+      "bibliographic": "0320e296028aaf6b183e3a06ab7dba28a7559536055818cc79f2973f519b073d"
+    }
+  },
+  {
+    "id": "01KYPX6B0QESTMQC05M4RQ7T92",
+    "hashes": {
+      "full": "c07de1b4fdd31048520b0e5a7adc26b9100345721633885dbe7cda1026d1a85e",
+      "intellectual": "9037b6739996fd842c21103baf5cb1aeb129e9157e36cb7e3c299ca4c3209759",
+      "bibliographic": "bfd54998ee541b4561102dabdd8d4923ca967de10bdc18fb66a7fcef2c6aa5ae"
+    }
+  },
+  {
+    "id": "01KYQ0PPWE689KHHZX2N8KF5WN",
+    "hashes": {
+      "full": "44348a9832459a230f22e7422254d5f6f6dbd738bde28b70ac480eab615a42e4",
+      "intellectual": "716be24c2ddbcf0dd8faf839fd28c84502b4c64e163601a94975ec53d5a2dd97",
+      "bibliographic": "75f70a18b22f6e9567fe968a7325eab4c11078ad48e2c1c53874f08bf563a6bb"
+    }
+  },
+  {
+    "id": "01KYQ1157RSC7TF9HSRABMYTFH",
+    "hashes": {
+      "full": "ddca5431cc5aeb9af4bb33f5ba79a4c09f24288530bb006750c986287f1ce554",
+      "intellectual": "8d468eb6c469e5d30b624105fe4e209c1b003dcaed19e1fe911ca7894ff5ee70",
+      "bibliographic": "9fdc79b2ac874632c420a0ac51775f651095d49203a7414bf4b065a04ab21c1a"
+    }
+  },
+  {
+    "id": "01KYQ730HP99Y8HZ1RM697BDEX",
+    "hashes": {
+      "full": "6af87858d93f6a0cb8e7e5838e15b19a02284d5089b66956f642509e3683ef5a",
+      "intellectual": "1a6e843a56535f696893e74127ee367c95e2e2a6c4276bc57f6a93826f267a8e",
+      "bibliographic": "75e25d4bb5a8ff3dad6a622d4d3aa7e9c7b4d6d1531bfa40cf86d33f585f69e4"
+    }
+  },
+  {
+    "id": "01KYQ7P0QEH3G6KG3FTSZKD4MF",
+    "hashes": {
+      "full": "a094743e0326a10fd33da4aefa109d0a312229b7468ddde8511bd295f51b57e6",
+      "intellectual": "fa675971f210b35267dcea5e8672012dcd8656a3a7fb7e083050d9143f3263ca",
+      "bibliographic": "aa9fadc1bce0d07c27925bba2666136b3f8b8f32d4ceac0ada2f59a239584d20"
+    }
+  },
+  {
+    "id": "01KYRX0PB5DC16D1TT0EQ3PAC5",
+    "hashes": {
+      "full": "ae89a0b05592bd4bbc0cb15c6c4f02d6238c33f9dd952b711d6f569365e40f93",
+      "intellectual": "e1d4a198ba5edfa2e9b90ec53c3e3021576f131489c0f0073d1ff840b8ab1dbe",
+      "bibliographic": "ba07c88270e1533aea5e10ca205ade8c179ae37577fd8a0fceb73dc3f221e664"
+    }
+  },
+  {
+    "id": "01KYS9Q84P8MFFX77DFCWVV8ZR",
+    "hashes": {
+      "full": "e40fc6cc563f5f706b61f98867d7618106eb6ee0f106d0ddb2c1fbafa8d721ff",
+      "intellectual": "505e46348298b1be5ad608803a7906685c56d46ceed3026cce6c975422db2e8a",
+      "bibliographic": "b95402461bd65c79c301fa4d883a3047315139596b78dfbf5b1785c6c7f66b6e"
+    }
+  },
+  {
+    "id": "01KYSAP3B3VRRG01H6NYWFD3B3",
+    "hashes": {
+      "full": "5e339cdbae516dd30fee9bfa1620481f766cb56c128070fbd6e38fdbd0e69553",
+      "intellectual": "1f26be7edb8b1e5715a98cd2c0a0b8da149f9fb64e1cd7f0e31899ae3bcfab49",
+      "bibliographic": "42452a1a2e3ad62f461e6ab3adb85fdfc8df199a1faa816e28d9c3454673d7a8"
+    }
+  },
+  {
+    "id": "01KYSEC37Y7E762Q2TGAKK09M5",
+    "hashes": {
+      "full": "56ec6ee8abceaaa6eb11a5cf457e28c16abb15a98e243ecd8a9401369c4a419d",
+      "intellectual": "1b216c0373df940a95fab68cc3ab9fe72e64ed8f2c203d704899b5c9a5a29aa7",
+      "bibliographic": "35281092f74769985474e5f5efdcb79842c6046fe05b6f5938b33a219096f221"
+    }
+  },
+  {
+    "id": "01KYSF7V4YJZFT496RX2JW3GDW",
+    "hashes": {
+      "full": "6d37eb461eab8f052fd793be61c314ae83d0f454f32b2edff59e0a18be646e39",
+      "intellectual": "8930375b4fc5145ce71f00715fd723ca4efd1ec49bd4a215ed9149d1eaaa96ab",
+      "bibliographic": "925609cf06cfdb27780068be2d545113e2cf7ee27cbe940ad1c08165b81986a2"
+    }
+  },
+  {
+    "id": "01KYSG54FC90F6G1BMKA5WCJJ0",
+    "hashes": {
+      "full": "c6643735a3cae6dbae93944d07d421ee9fea69ae7f10a51e716af324e1238ed3",
+      "intellectual": "c39700fc82a08a05933645c2d9ba3bbc50dab682c747687319ae22130956ba46",
+      "bibliographic": "e2e1f67892f46188c904ea35962f3cb3fee742a8b7ae67d860aeee970f90d524"
+    }
+  },
+  {
+    "id": "01KYSGNDJXSGAMR8YGEBMJYM0Q",
+    "hashes": {
+      "full": "f0684d6e81fa7e817299660cdfeabe5c6516b9c99cb66b7ce1486c24ef1f339c",
+      "intellectual": "4eefbb44865a43767b8c12039e95b841b05ea64b11d88212af63c4655f251879",
+      "bibliographic": "af2807d5b0f67b3b5850f0b653fbfc13bf094b0fac8b792ac0436e56f80eb9e1"
+    }
+  },
+  {
+    "id": "01KYSH0M33S3V5CG7YR40VEC22",
+    "hashes": {
+      "full": "59a7514b41f3b103e4c4bf4244b79879b500b946e831f5d8f25a2902c3cf1c71",
+      "intellectual": "2b3179bce34b114b0ec66fdf8153da945c7beabc7bbbb4f6bc98c2eada51b336",
+      "bibliographic": "2113ca2c57fed8e1c1b8ca53190b861f5ceb862b9f946cfe77e936f66a08f828"
+    }
+  },
+  {
+    "id": "01KYSHCGYRMEDZ4HRXB7PZDNA3",
+    "hashes": {
+      "full": "2adadf4eda0d0458a1f69fcfc3c94a9d481d55a36a6bed7339a18676b60c1874",
+      "intellectual": "871313a3f7d9843e106c94a7d55ec311acbe2a88180d55e75b64010890919f7f",
+      "bibliographic": "ed5300769e9b9c1791c105d0c7786abe6dc792ce6a60e7cff8722e416dc6f3bd"
+    }
+  },
+  {
+    "id": "01KYSJCX6CR8KQYK3272CYW56C",
+    "hashes": {
+      "full": "1af634e09eea7764093226678b82ae1c1b70833c052057c594c5e27849b2ccdf",
+      "intellectual": "c6d000a9f067b0b8276160411df51033bf9b2c8155924ae9afceb45447c68c96",
+      "bibliographic": "ba5caad7ae8a8b60e3ce3d3a1660449e4d716720d9689bee408a0f88a5028ac9"
+    }
+  },
+  {
+    "id": "01KYSN1QH99TJZ9WCXRXRHXJFT",
+    "hashes": {
+      "full": "c12238cdaa0f9a74f5578d65a7d525743c58dbb1c74e74f20c427e78204bc545",
+      "intellectual": "5ef4f2e7199e8a68466f1163228ad54ec34f92cf59ae7a5006365996674e77ec",
+      "bibliographic": "469e8e5cb10d9128ba49500dfe53f8b5849479e419e1a1e1c5e378ea9e069107"
+    }
+  },
+  {
+    "id": "01KYSNRQ3QREPS1KDQEAB1TPNH",
+    "hashes": {
+      "full": "f36ab173935dd26937cbd77f7a28909459c1fdde2bdf04d26e802e205afacc96",
+      "intellectual": "9255e43179822a4a2876057f08638970851f458b94fb4fa16efb48882fcd7827",
+      "bibliographic": "eaef5cd6062c4b6d54a2f5b335ba44bcdae8ff994af25d400c8ba17e1254c316"
+    }
+  },
+  {
+    "id": "01KYSPEQCG4669VFF8KP5B9B3P",
+    "hashes": {
+      "full": "2e3d3e7103c3374bc7af24f863cc9ba5a48f91bb5a085d5f457f8bf9fceff4d8",
+      "intellectual": "9c67565e47d1520fbbc0bbccd431a2ca010a6dfb4619083b2d0ac689bc1920c6",
+      "bibliographic": "62b44bf227e7bb856cd3e349e3a8c3a52918a209e03211a19dad7ff2d44db87c"
+    }
+  },
+  {
+    "id": "01KYSQB92N19NHP1Y6WYK5Y92H",
+    "hashes": {
+      "full": "49f5e99b108982e8c08b6d6cc9ee60d01f3a437bf6052aedaf353a0d3f335544",
+      "intellectual": "551fb0f39623f0e21b32d81022126674a4123d4f4c81450ec0a9677a5f3aff5f",
+      "bibliographic": "3d79b7fd7e9b8c56eb0eb3bbe3e08cb6b20a577a51b0807a539fcff726df0940"
+    }
+  },
+  {
+    "id": "01KYSQMQAT57TPE6X25Y665QPR",
+    "hashes": {
+      "full": "a8c780229585af73f84708adecd623a4ffc4b6402f230a6f958fcdea4481de04",
+      "intellectual": "7c069fa561aec34f643fd3394e78b75793fc5402d9a20cb26e661e417272e0d0",
+      "bibliographic": "bcd96bc079841834892fedd835acb65f90bda8e5c467ad27b835f3c4c1ba545a"
+    }
+  },
+  {
+    "id": "01KYSRC18YGRPGNY3EZXGJ0YAX",
+    "hashes": {
+      "full": "e81b5859641d716245e9259f62dd09b7f94ecf06b8396c51b3d522f925809ac4",
+      "intellectual": "d0f6eb370a93140725a9981bb53b6709b05517de87f51f1025e65c8a356de746",
+      "bibliographic": "baf51c5cc0a6141a5a2e94e83fc88ee274016b531af2a756b3a2ce4649b86167"
+    }
+  },
+  {
+    "id": "01KYVKYQFYXTVFCJ348C9KSZDJ",
+    "hashes": {
+      "full": "cea6254dec9f4e70f90b652ed9d5a295a96ef98018fbdf3b2d9df8104fb80616",
+      "intellectual": "f0ee0dc7faaa5afdcf9233ba3ae7645885312f1b67fae8bcadd3f82467338ee9",
+      "bibliographic": "ee2858b6fc4bafe7aa04987dc214d66b12a7b6a2a1cc2a437bd6d5b44e81de22"
+    }
+  },
+  {
+    "id": "01KYVMFQ08PFHHCQE64HY7JRRP",
+    "hashes": {
+      "full": "9adba2c853261bbf0634266089c007302c86d1eca10ed70e3f5d27d9d8191555",
+      "intellectual": "d7e3a5dacd01fe420664e387fe59dbb5009a01584f9ad815a578f71ed3769e96",
+      "bibliographic": "f9081877acc21ee51d1f4ecf5690e7425e50629f25ba389edd8e77f7908a87ea"
+    }
+  },
+  {
+    "id": "01KYVPNWXW03KT915J3GK2CY3A",
+    "hashes": {
+      "full": "4031d67e3dc61eaacb78ec5f5410ba0b7bf4eccdb35be0254894743750bd16b0",
+      "intellectual": "3e3d4674eac5fe768e0c85f65a9152a26aac9741da99a5733f280e1133b77966",
+      "bibliographic": "bb68da6ea87fc7cab427266dd7abddef282632b04187ddc7106ef0c1f8908419"
+    }
+  },
+  {
+    "id": "01KYVQ918ENREKY1N9S543NK93",
+    "hashes": {
+      "full": "c6bed01b1488755b49d4e7c999e86ebe2f7a203c35e718dc1cad39eafea839d7",
+      "intellectual": "7b911f305027c7a31c561b3410ce8e3ed61b06d8bfd571763a9e0c3059baf018",
+      "bibliographic": "a8b7d4e0aaff9e2abeb5f59b71a6962cc7b31a3239fd760e01ba4fdca0251d15"
+    }
+  },
+  {
+    "id": "01KYVQZ1K3MQ6KVEVGTDQ9FTPQ",
+    "hashes": {
+      "full": "a341693c3793f3f4761a4953401a9e947cc292159b69003e1eec65b0fbd0dcdd",
+      "intellectual": "364497a8f76cb8d4def1703128233d93ceba085a8e36c95ffd53e17c64502532",
+      "bibliographic": "8c6dcb6d4c80bf5d0140d70d4f2cf2f10374f6ba94d4a7fb9b9c4b2c2f3e0ee7"
+    }
+  },
+  {
+    "id": "01KYVRHCW1AZERAWN8Q9Q6ZXJ2",
+    "hashes": {
+      "full": "51ce6c76022453d482174cf2634753f472a105b2f8a8d4d67233ef8a42f6c436",
+      "intellectual": "260d67b7149d4e66c95877be2170c204ade4c919365672307745a5140fcd5a1d",
+      "bibliographic": "35d60e7f57375a058625e7fce14475105cfc1d4132218d9fcdbb90eb739f6347"
+    }
+  },
+  {
+    "id": "01KYVS5T6SAD3GAEWAK6KQHNQ7",
+    "hashes": {
+      "full": "835da192cf5ffd0f2b7fcf4e69e5fe2fe8cbb3b5c092323a69af67692c8ba27f",
+      "intellectual": "e9857db6fba655ffac77ca91e24e2aa6cd957e2caa5c4e01d3954bed464e3a62",
+      "bibliographic": "cddce18cafd2bd3f7d85c51d06ad853afd9d0ca6c4cd9c1eb416c554c6396b04"
+    }
+  },
+  {
+    "id": "01KYVSS78BKK2834DPPB0K21S8",
+    "hashes": {
+      "full": "8c8805c9538a3469a14b234478acd3785699ba2da31fa107745c722cea3ef0b3",
+      "intellectual": "0e752fe04c45fe9df633a392e661def4d0c2d90029fff120bf7483bbfa17dbe3",
+      "bibliographic": "337d2cc41b5233de24ff76b5b14afe67f8cb26ad6b1a0b18bec0ee4031d0584f"
+    }
+  },
+  {
+    "id": "01KYVTB9YC1MVVX5XBBVZFAGXK",
+    "hashes": {
+      "full": "1bd97d972d1dc1705277d129b04d5910e03f5a7b9de549b012068128ba98b8fc",
+      "intellectual": "527b3bdf43bb623f3ea62bdc3898112e3bc89b9b25741b81af833eab3141eff3",
+      "bibliographic": "3ca6e36a3854206ada45f0cebe67c806d437194e43ad97c7567a4d54d8daa83a"
+    }
+  },
+  {
+    "id": "01KYVVRNWCZT6E54ZHJ89RGNZH",
+    "hashes": {
+      "full": "5517f2dd49ef080c84b476980319413d17f0f652f6e9dda2fcc7982d3eef7b01",
+      "intellectual": "f23c6d27e3798410e57beab4718bf3d197f8e2ee6f0cf02abeb1047570bdfffb",
+      "bibliographic": "2891891740325ec6994196b1e377d00bce3aee198352cadbe4d70bac404773e1"
+    }
+  },
+  {
+    "id": "01KYW1KPSNCK0X8D26NHTQK59Z",
+    "hashes": {
+      "full": "64e819a85fcd1b455c0526d7c3e325a04873bf228d785001f33cfbb673d14ec0",
+      "intellectual": "e8d85998014ffa208318224126c1f9b984d84a98c7bcb0dc6231bd319eb3bbc6",
+      "bibliographic": "8f36d25cf83a311aa29d65b7d8f5375d1d0b4c2b0633dea2ebfe0ba62e6c7ad1"
+    }
+  },
+  {
+    "id": "01KYW2M4T8HH6B7NN743415MQC",
+    "hashes": {
+      "full": "bb2cfabd85e78f1711cd04337662927cf23f6245cac3bf6656236953329e01d3",
+      "intellectual": "59f0a5e852450dfad6e9fee29d7469c20cefc84728bad2987f71b780b00e744d",
+      "bibliographic": "6679aaa5442fc787f9e1d177fce21434dd72a093c236177ed71f73cf7667adf2"
+    }
+  },
+  {
+    "id": "01KYW48KS1WVS0QTYBCQJPFVTW",
+    "hashes": {
+      "full": "1803e81e285341c200b7879a0216ab1c16c1d12a56e4d570f1bf767162325e71",
+      "intellectual": "ac10c6696dfe2f6e28c6c7939b350aedaef6bcffee372b2c8e87a5cb92d069f9",
+      "bibliographic": "97246abe7bbe179c888935d3596a9522cdae10e3209b31ea31712de22250ff35"
+    }
+  },
+  {
+    "id": "01KYW4Y8DNT5QPG10NM2390YP4",
+    "hashes": {
+      "full": "7c782b3f342dff22c012359b207b8f2da9368e33689e173c565fac6ea07ec67a",
+      "intellectual": "bdc1174cf9f39f6b6f6d4045cb51252c6152b080ced799511a0ea18399c10038",
+      "bibliographic": "f72b0318b1b2c939e41ae445cb1684e259b37ffccb1b69ccc9186911ee338850"
+    }
+  },
+  {
+    "id": "01KYW5GEBGES96QRQ9Y1DJ03JV",
+    "hashes": {
+      "full": "3b2cdf82087f199cf9bd88155fba3f5f617ce630a52657132c23cf6f4a88e34a",
+      "intellectual": "6832070c0b95596d66c29c0a4dda2595501ac0ac0933987346d5c6227f232977",
+      "bibliographic": "8b59d495db3ec8726ee6791472e9a0a977646420a85cb406761698250ce8bc50"
+    }
+  },
+  {
+    "id": "01KYW6GCQ4V320SA4HK737W7V4",
+    "hashes": {
+      "full": "0f88b2c3d0f4d32dfe422e35a829423c64e42e620d8c0643a21022b673084acc",
+      "intellectual": "89dbf1d009acd278dd103840663b9bf6b9bfe728d3c9534269d2aaba5f723aaf",
+      "bibliographic": "cba6f3319fa6adf368908edbae7e38b104d0e125ca2d8cb0033aa834992e7a96"
+    }
+  },
+  {
+    "id": "01KYWB3W7MAWJJ8TN84CY0JY4J",
+    "hashes": {
+      "full": "a049a34db02538486e29d498de130a3ab20bec2f72f7c71f45f99d470287cf6a",
+      "intellectual": "8165876be991197d2f9b7a781803ea4e2e99a0e2d55ae6ecc1353b17e1dc6439",
+      "bibliographic": "9a1502e892089834bdf4ae07c048f08d6f7638ad88dd3496fabd9312a1b16a83"
+    }
+  },
+  {
+    "id": "01KYWG4PJ45EBZKXSJVE6RBTY6",
+    "hashes": {
+      "full": "f631abb57a46f133723185d0009c96571b7c6da27b919dd39b59cfa0393dee0d",
+      "intellectual": "cad1e8f173df7307008ac46cd13e82fc97c7bcba707d22f2602e3d5f5b8a48ad",
+      "bibliographic": "06459e2ebf0a76c2e78d5759f5a4c17fa77cb11c57ddf5b1a8b2a2a4ee8f1687"
+    }
+  },
+  {
+    "id": "01KYWJ06XAKR13ABCBVHD3WYK2",
+    "hashes": {
+      "full": "9a4de0e442e65db728a64cd6c59904c9455c571dc76ad5f8bc97af694ace089c",
+      "intellectual": "76a8a2757987d5058a7df2922c465764589649448674a44c48e193c7963ca0eb",
+      "bibliographic": "b60adfab8faa7e80e1af512fca69b096ed5ac15df8ae97256c2a07e3ed88c0bf"
+    }
+  },
+  {
+    "id": "01KYWJX41G3DPW66HN350JQSX9",
+    "hashes": {
+      "full": "caf86a58a020e96b09bcf65eccf9a1051432ad54202d26bbc5bc21f34b0a6368",
+      "intellectual": "9e85860ad385561882d92b61e2e8fb6656e52d0d1256f396c6cc6a87df70bf92",
+      "bibliographic": "38d6f7cbd0e87754bf0a39dbdb4a958616fb9ec18a4df9f5220fde602fb60c6b"
+    }
+  },
+  {
+    "id": "01KYY3M76X7YM0WGN11SVJRMR4",
+    "hashes": {
+      "full": "d22fe8e1ad80d2efa4f11e06c414314d408447073e760de2b23bff7fcb548c74",
+      "intellectual": "871035e64f1c78db8504bda77c957603f48d9afe42fe983d4ac5ecd7a65e1953",
+      "bibliographic": "2ac42b83200cdd4ea9812420762214cb504d6cc4b888b0dc166224c1e966d774"
+    }
+  },
+  {
+    "id": "01KYY4JG0G42NAQXVCCH6998RT",
+    "hashes": {
+      "full": "51a12acd5bd3881a9b45dd3fd131a0e7dca7ddd649ae7d16d8970453cb54725f",
+      "intellectual": "d5a730d657ba3f975b196420f247295365d7e7acd16e25a4a2e67eefb7d14095",
+      "bibliographic": "e621c1fd725c14b9982c8cc8de4ee28d7363c93e74bbaa73337cf1ed4cc3727f"
+    }
+  },
+  {
+    "id": "01KYY5W6SMW5E0ATX469GJB3GR",
+    "hashes": {
+      "full": "c238ae663a1198e99e0f70fdb26a974d83980b422a9d529f35a75940c1dfdf4a",
+      "intellectual": "b327d8d70046109259516dc16ca1bf466b6d5a9465434f120fa5b14a457ef24a",
+      "bibliographic": "a80e3a99ddf2607f9d851e2f72ed8d4a6e573c918f12f91eaf0bc8f5c5fa9a01"
+    }
+  },
+  {
+    "id": "01KYY6YXRGY3GC9H6F8ZJJDMBQ",
+    "hashes": {
+      "full": "d3f8a9cf97ead54e18dce2653b331590f69266fc5549387a41e292281b7b689e",
+      "intellectual": "1f2ffbd745dc68989a31e74299c0ed82978c8bac0619ca2790bb22765218d11b",
+      "bibliographic": "5a16fdd6302de992ebb27df5eaa32bb83c56ad13979a67ec60eb58a03b3ee161"
+    }
+  },
+  {
+    "id": "01KYY7P70PHRTHD8SVP3KFVH3N",
+    "hashes": {
+      "full": "f4a89500fe8d147e329b2fc827a9f5f6e9a43a96f571a4751b72bfd85eb272af",
+      "intellectual": "d9f42b9963e8f40272c3d3fe4493454fea2faf6d62160ee888b67a1a63067083",
+      "bibliographic": "6e4d48c8ea31b049bfa90d1dc6ee7793a105465cb039756717fbc9646923a30e"
+    }
+  },
+  {
+    "id": "01KZ3D51BTX39KD871ADXG2MYB",
+    "hashes": {
+      "full": "a4198b807cc750ed4277b6558a70539d2ac9dc9db59b87bdc32ce3bb6cfa6548",
+      "intellectual": "c91d105f104d78cf5d11e707d5a25535535ba3f1e035c799219595a7c4eb42b1",
+      "bibliographic": "236b389a4e7d4ecc52031ab1566359083102282f1ca5e6ddc09cdf34365d2cce"
+    }
+  },
+  {
+    "id": "01KZ3DM9QK637Q1GG258W8HYZ0",
+    "hashes": {
+      "full": "80fd094750e527b36ade1d6270173b5fa9f0c071d107f7d2daeaaf6951fad1a3",
+      "intellectual": "9cd8cb9dff17b22bb116ccfc5cf87edcb8a92138b47b552e8ac2b4743880bac0",
+      "bibliographic": "f1f419881b20154c45ab83a42d07300e0c46019a2601c8ef10c19fe0d5a4008d"
+    }
+  },
+  {
+    "id": "01KZ3F3KTBWBMZSYSSW0VHGTVH",
+    "hashes": {
+      "full": "6f7f2d5c98995b3bffd66f1628b999711db6dc9cb66b6d4389f79b7beea3a867",
+      "intellectual": "b68143b1c8a73672a9cf03840ad7da1922c529e9b99c5d7517b25cc141bdb4ef",
+      "bibliographic": "060a21a4c984ace2e9c88a91c62eb826b392af054d4ff66d3fca1a802b560679"
+    }
+  },
+  {
+    "id": "01KZ3TERWHPG9NWMMM6DSMAA4F",
+    "hashes": {
+      "full": "769eef89ff81afb27c47b936712fb0303b8c71a3ce280c907ae296c04ea075cd",
+      "intellectual": "c84886d5e2b9f4e989a5f5e36745e9e645c6435c105decd585a2bc7ef11b91cc",
+      "bibliographic": "0dcdba721040bbec32b9c8672ef8897846fe4183c2ab10a6ce595c197fd9196a"
+    }
+  },
+  {
+    "id": "01KZ3YH3VV1ZD1K441W64EWPKA",
+    "hashes": {
+      "full": "15ce54ed7e166c181cce7d184116535ab6a7c1b62698a2d73445cb98c955a441",
+      "intellectual": "19251941ec14fc23457c3969d642a0ae5654933de059ffe154628dda195c08e7",
+      "bibliographic": "cb159004310273ca5f043ff9a9cdd0f63910ed91376225cf3cecfce1d04e54c8"
+    }
+  },
+  {
+    "id": "01KZ3Z2Y70R71AGVYM2ZTMRC0D",
+    "hashes": {
+      "full": "e6a227426b1811c1fd7d5b99785ab18f1be78469705aee1a29ca17c472d23238",
+      "intellectual": "905678056063cef8eb34da84fbb00c19ff15f070146433a46a763f9c85091b6c",
+      "bibliographic": "c66d63edfaff83feb4dcfb8655594fd730f695caf99ac64fc6eb40153a0ae3d0"
+    }
+  },
+  {
+    "id": "01KZ3ZXTQJV90V4YMZDBKZB93J",
+    "hashes": {
+      "full": "6a2398661aedb177a43ff839f57746c16f25c58c7940dcfd32ab340895c72077",
+      "intellectual": "4a6438b9bcc494dfdbf5a7b4139ac57fe861d93cb5c73cc551118f566865b3a2",
+      "bibliographic": "adfc11e5228c4c4916044703cdccbe32746510fa7381657d50adcca2e1a9a51b"
+    }
+  },
+  {
+    "id": "01KZ40DQ2ECH1NMFZV45QQTW80",
+    "hashes": {
+      "full": "1c46aebd08a04c7dd4faa07be7653f23d2aa425e8fc352cbf35dc7623ac6100d",
+      "intellectual": "cf4e75dbe29bde9533c3fed9c432ab11adc854ee611a8f21d712bde2de2b2afb",
+      "bibliographic": "c44928c22030c0eb29e24d05c0e2dfc2d938f0adb61d691e9b2e07899304c746"
+    }
+  },
+  {
+    "id": "01KZ42F9SJSXER5K685P4CDSBP",
+    "hashes": {
+      "full": "5cf1e9fffc04de428fcaec39989355e832fa71865ca7ae716cfa3734dad576c6",
+      "intellectual": "bc28f056c52cdfde272bfb9f577dea71005765889b993b286d9cb4d41f7f3118",
+      "bibliographic": "d47bffeeff95f377749a417c5eb12beb27052309fb25f1615a9c2a399f06fa44"
+    }
+  },
+  {
+    "id": "01KZ437MEHBT3742EK7HGC9WE8",
+    "hashes": {
+      "full": "946675418bd1dabd189da148c7127dd96ba07f8cdb658fb68e40a9ae15824861",
+      "intellectual": "c27159c05bc35a99f34a7bf616964a7b75d4f43bc0e71975862eb784d9ca68de",
+      "bibliographic": "8f1a57de3717f646811d27d66e91e2631464f2d369098016776c646399238565"
+    }
+  },
+  {
+    "id": "01KZ5SM6GHNTGP2RZXV7CBDS69",
+    "hashes": {
+      "full": "14bec7e27c99362df4606fd3a4fd641aefed6451ddbaeebe5f2c6e6da8988e50",
+      "intellectual": "f1c099228f3cff90d9b92b60331ef1f610fd7229b7a4640c2e945797af06509d",
+      "bibliographic": "c6cb9345e258dce0a84745dffac6d5f107d65393941494dd714af88560fd4a1e"
+    }
+  },
+  {
+    "id": "01KZ5X4RPHT8C2F073BZG6EDFC",
+    "hashes": {
+      "full": "bfd4c295407f5132dc5318cfe71ee66272b386590db29df3e67706ad27e20570",
+      "intellectual": "a4bec8dc38991739de54050939d4522877e73de7b6bcd15ce9b763b8d4930ba4",
+      "bibliographic": "1397b27d99ad9297cc5b9ea3b5242bd963cc473c75002a062fbbc6b25e3e9567"
+    }
+  },
+  {
+    "id": "01KZ5XNGR1Y9JSXA2YHA2Y8X4Z",
+    "hashes": {
+      "full": "3e6d2c0006e17a894dc623aa7eadc39ec086ca2356bf164f9dac50dcd316a456",
+      "intellectual": "b21b37741c8eb94126ff187d56e6808cbe9bddedd68fd84e19bb9327bb837d34",
+      "bibliographic": "18cbb6f85b54aeafa493704bd39e9ccaa2cc4f7f00ec7e976f386178148f3a3e"
+    }
+  },
+  {
+    "id": "01KZ5YEXJ0YS4Y2B3QGHMQTY13",
+    "hashes": {
+      "full": "697ae9c1f996454cd9aaaf2221b4e8a555f134cd369a7e968c78c85ae415cfe1",
+      "intellectual": "5b425cecd835843a27a07da0313c02f170c54c1e0d54b619580788a5f04a54f2",
+      "bibliographic": "ce64c6ae30d4df6bd259d68332d1abf1712877f13f5a8afdb94269a9b3e8d00b"
+    }
+  },
+  {
+    "id": "01KZ60H8GYST41AMT27M5NZGVS",
+    "hashes": {
+      "full": "c24afba9edc1142f683ee558ab524f6099454f086a6264725a5f8e500db8838a",
+      "intellectual": "4bc6adbef1a10bc5eaa0db4d7e30fff637e4f5a7d99bbdd37497bff87c66c565",
+      "bibliographic": "19fdbbb14b87e2aaae660c982d8cfdb0fd3f35240f3338a271e2019c1455641e"
+    }
+  },
+  {
+    "id": "01KZ61XAG9N1VFM936JG9QZH5D",
+    "hashes": {
+      "full": "c431c9501b281d87e1b58cbc11b434c0b33e512b8b4ee6879a32e82d75e75d60",
+      "intellectual": "64666749dcd5c5e573b567ccf3e280b50c6451b9635252a6bbce46869d631de0",
+      "bibliographic": "4a12f04ed56792dd13331af55ec136c0e09d4aab7644736ae5c5b03267e7506f"
+    }
+  },
+  {
+    "id": "01KZ62P6A7Y1ZFV28TJPCJVDFD",
+    "hashes": {
+      "full": "5828d665c6bab8b5d4bd8a1401dbc3449c020526f137afe7e16a1881dc5ae578",
+      "intellectual": "7ebe710f399f95a7c312511bd3da5f886b59c1c283ae0ae57e08b8eac2b79260",
+      "bibliographic": "74df000d5ba87eb77c28f4cb45a9027257ede0e369ac2f58b25045ca090d5ec8"
+    }
+  },
+  {
+    "id": "01M07E7HFB5BTZK866ZQZTCSMN",
+    "hashes": {
+      "full": "20efb39dbc605de25db84c7b67baeb52778ad956ea2b4f8d78f0d4087b89d608",
+      "intellectual": "65c7678b076fae892433e014441fb4b2fa8392f7f8cfdb456f1036373b015efc",
+      "bibliographic": "e0951751b7ecda02ed049897b3ec0fb8c1612e1ec5b42776f98a9f0fe033076d"
+    }
+  },
+  {
+    "id": "01M0YQBBNSBKHNY948B0RASF4K",
+    "hashes": {
+      "full": "a5c17ced2d8165e4ee3add01addfa51e832cf02698f8457f6d25f7a7895db7d3",
+      "intellectual": "37be2adb999d161871839040e5c109ca62a1483ed50d1e0a5f07442a7c15efca",
+      "bibliographic": "f8bafb0be750436ae1133485f0928666aca33d145616fb410763eafa4cb0e153"
+    }
+  },
+  {
+    "id": "01M0YSXPN11Z4ZEBB0GDAQP8G1",
+    "hashes": {
+      "full": "1766b96a2180f757e261ed8dd8debb2d9d5b8c95af26d7b4cb821b1bddae05f6",
+      "intellectual": "e4441161ddda8da31e5ca373301063207aeb21ac4d3921a7147918802d109bb6",
+      "bibliographic": "72d95b9338c1a139bf4188418ab1541a30410ed218abcaff23b9b1b1e4418706"
+    }
+  },
+  {
+    "id": "01M0YTXNXDZ7F51XMW866S2ZZT",
+    "hashes": {
+      "full": "41ea269f10d466609121d756e07c21e7f25b8b447ccf5b6a7f41e99e4143ef3a",
+      "intellectual": "8d83220385b608c73c2dcb31c7b006b8328c50c7dedc72cd56d33838d00441e5",
+      "bibliographic": "4acced468d340f32f7ded6225d6826a018657310b14042bf536ebca583926d43"
+    }
+  },
+  {
+    "id": "01M0YX88N7KHWKYHSZCVPYE9G7",
+    "hashes": {
+      "full": "5b6a922fc43bbbf6dbace2c096f0a49a53ca164ff44d8d1d3f7b90094459c7fb",
+      "intellectual": "4c1d44e75eb160df4f5dab77a70ed01fcf0e005fa1d567afcafb41f8a622a11e",
+      "bibliographic": "2c3f8108f034263ddf0b5c290f42c287e81ee15ff658e753a8f9ac8df95980e6"
+    }
+  },
+  {
+    "id": "01M0Z0K7814WDRBX58K91X0J2B",
+    "hashes": {
+      "full": "dbf088900d68f9a351a259b657bf23a6c1c49f15e925f06ca14a48bd8c4decdd",
+      "intellectual": "31c2ae6b0d597411c3b2d6ef2d587dfaa0bf42051891be5c906b0f604d7b9b09",
+      "bibliographic": "cb1de9daafbaa0eba0ef26acdf76e5227fa841cd8d8d2c1d9e224944926b49c9"
+    }
+  },
+  {
+    "id": "01M0Z18SBMACQ4Z18MQ227J06V",
+    "hashes": {
+      "full": "f1590b5ac8b861c9d352b58f632027b4e2d8349f567a61826bf8c175888f46ba",
+      "intellectual": "d483fbf793837ca2319f9667e4338448169dc4046bbd3b05bf67d5b36a1d4b16",
+      "bibliographic": "198ddbb4353995b5c05453aa8418959881b0321ba69817e05f91b5c725c7391d"
+    }
+  },
+  {
+    "id": "01M0Z2GSMC3FTCNE6352YB22W6",
+    "hashes": {
+      "full": "56dee91bcbba0d08679ac780df1c591f68c0268a6cd99bd9c55e1f928f50bc79",
+      "intellectual": "09553a4bf17d776f6ec8a13e0b3edefc051b6de9befa74b2cccdb213f0208787",
+      "bibliographic": "58d16bfee6612475c10b7ba972368f31b5f79f5306a7b021365c60f9c0e435d1"
+    }
+  },
+  {
+    "id": "01M0ZFND94KGTAVJA39A071PND",
+    "hashes": {
+      "full": "019b2362591edc0c544e96e461ff07cf1e22bca833f64792bfa18bf141815f97",
+      "intellectual": "c6722ed31d3951adcce85b32ca2d423d64c2703647f062230c78939f6e3bc08c",
+      "bibliographic": "ca5b251793ac9090986f8945191ff69548a4ab49fcacc97fd781cc8b4674d5c5"
+    }
+  },
+  {
+    "id": "01M0ZH4FVDTSJMDR632T4R5HG6",
+    "hashes": {
+      "full": "386a50d8507dea4164fff34a29986fbea95f19354bc5e7e5d394710480086d69",
+      "intellectual": "054797e46b43fd136498079ab8a6fe6affc314f73d7bf6f3e5c6e6c0a225609e",
+      "bibliographic": "0e8696b0ed239909a8b7a642bbaaa736f50b42ecfdc99b5a38fe719eb142cf59"
+    }
+  },
+  {
+    "id": "01M113Q5GQ5QW1JCK56Q2XSZJY",
+    "hashes": {
+      "full": "bee78ad48b2c60b3357e3fb683641d680b7a897b15f206468822c8ff402e1bbf",
+      "intellectual": "fce27874e5a20508c0a0e8c4416bf03dfc9d933ee59450fa56ca1df1525943f5",
+      "bibliographic": "dc35d24aa43b5aa7386ef40bab9e90693fbe5441abc45fc12450cab8d1718796"
+    }
+  },
+  {
+    "id": "01M116660FP5CEYG9ZYVJXTFKW",
+    "hashes": {
+      "full": "8f2ed2d259ccdc6694e66cf7a769c902320709968a2bd4779596d5520ead16b6",
+      "intellectual": "48af55515fbcf86f810b406368a5bed7daa6cabd170f7a43475ffc5fa68f2db1",
+      "bibliographic": "fcbe5e2577c092f86fbd5325868a2a540ef848b7de0f979ba552073617566c03"
+    }
+  },
+  {
+    "id": "01M117KJED07E1XVA8PDXSZ0QZ",
+    "hashes": {
+      "full": "a73d8a2c6c4718ae7d31e8f135bcea4915098d8fe8f04362b63eed8269fb0c50",
+      "intellectual": "312b6eaabc626b66a97eaf928d6d275e995506d7c27af11293f23124235596ae",
+      "bibliographic": "95d512a70a32a51a2dbaf5ea011f8b093565beb44b744b7479eb487fe6d744cc"
+    }
+  },
+  {
+    "id": "01M11DGNN9KFQSF6P22G497J2H",
+    "hashes": {
+      "full": "833ca10ee5ea77028b2bb284def6fd06b85e5c6268b3a0ba8b4b7f12a18af19e",
+      "intellectual": "a98a777755922b6a2a6a49d0d5cb913410cbf424f70cd24b7cb372f9d6b36522",
+      "bibliographic": "307e3880e150ae34add78cf2ac00b7ef767575f030fbe05c43a867863eb05f04"
+    }
+  },
+  {
+    "id": "01M11FQBWYSPRDSHXWNFFFHFDD",
+    "hashes": {
+      "full": "a1819216b30116aca746c876ca8f25896d12758921cfea655faab93424443141",
+      "intellectual": "8adfcf0ec86b88875c478f8e811267aac9af50f3af6259b140c88ffefc15750f",
+      "bibliographic": "b0e3b588416eca8182ec75ddf0c81b2a96fd1a855422abf3bd020160d79a45e3"
+    }
+  },
+  {
+    "id": "01M11RCGH4HWWNJ4MPP60NBTF4",
+    "hashes": {
+      "full": "8a6f5ec9b13becc781e8d14414841552db5bedf57af19bffabbe004a53524924",
+      "intellectual": "67862eba7312cd070e640951f7563736bff7a63848379c94f0cecb8b672a2576",
+      "bibliographic": "9e68c92d814b69768fa268b834d5b80a7bdedb8dc4efec8d5009efefd15c1839"
+    }
+  },
+  {
+    "id": "01M11T0ZJ29FA8X2PRYKHW1F60",
+    "hashes": {
+      "full": "7eb40dd3886faaa24dc6487ddc61e56f0e318a979975cec3807099c5b7938440",
+      "intellectual": "c39dd65a9c1290484895b41d60ce9670681cc011a95f687d43ed4d7064f442ce",
+      "bibliographic": "351185203fdbcc9fef152c9c0c814333e3d680d1eec2442fed9fefd91c693e8c"
+    }
+  },
+  {
+    "id": "01M11TR094X9YW39AYF9NKHRSQ",
+    "hashes": {
+      "full": "be973a92bd8030185f281d00984f0688adaf7c636881ee371ff42ca20a5bb0a1",
+      "intellectual": "6ee198cb19fa7a01daef6b044a7119af1c8ed28b39d0275b63effb7859cf8a8a",
+      "bibliographic": "e009208a0d55cb7189d2564e7097290c6ed4b4fd624856081a8f7740611383c1"
+    }
+  },
+  {
+    "id": "01M11VGBJVPS6A890DDV499CDA",
+    "hashes": {
+      "full": "cbc5008db4a277aff4d205ee9c6c375c2bf7cc629ed7c147ae2ba54bde6e21b3",
+      "intellectual": "2afca5fafbf08803ba9582c4771d1933b75461210cf278ff4a847cd34537fe55",
+      "bibliographic": "02f4a3c0d37411767d1feb281244d70003725c7173d51a81d02a2382f660d345"
+    }
+  },
+  {
+    "id": "01M11XB15Y8YSG3HRFPB1GRRCC",
+    "hashes": {
+      "full": "f05ac3ed2efb1f4aa0630763b38f09f839aaf885a3b59ff278d6e4d80b956270",
+      "intellectual": "c2a926862bf9113ba7c27735200707a590394bc92c6dfdc8acc1490b7c7fc528",
+      "bibliographic": "18857985ed4d62e7e5880a79f0e07128c27513407762acfaec48f95ce18a91da"
+    }
+  },
+  {
+    "id": "01M13RRMK8FF4J4ADF1H56P8VK",
+    "hashes": {
+      "full": "1cc8fa23872ca1694b7e905a7697126b0984d393c3ab43f060b577a61864afb5",
+      "intellectual": "e3151cbb120078ae57ea828cda86ca4b13526548aa260d30f0403814b3660d5b",
+      "bibliographic": "ecfbf451dcc1e64cf5dda196db78503d764ce31b3152b4b132dd6c671e0a7433"
+    }
+  },
+  {
+    "id": "01M16C4GF0TQGAW20625HZ1P3H",
+    "hashes": {
+      "full": "b1d19a57a2cd4800ca4aa05811dd6b991c7d1a6f6d3b9c1068dc54ddf5ccd407",
+      "intellectual": "ad5e3c21455af2975e6132cd69f584c901e2dba3beb28f3cdcf7d2f21e1827f5",
+      "bibliographic": "a53ea03c16f6fc2348c01613e43d2a930cb167b5d5d1975efd21947355017f66"
+    }
+  },
+  {
+    "id": "01M193F8888PJT5BCC4VXJZ6GQ",
+    "hashes": {
+      "full": "f05fba48a3298a76ddd174817b11e411a6067f27e1f45bc3a05f7054ceb135da",
+      "intellectual": "fb54f593fdebc76139b08b82fc9a0dd453721667be90d2e0d2569a228ccbbe20",
+      "bibliographic": "53e8ca97d063b09887679926b41f930e5c44ca7e26f9c422e77bab4a8080d9d0"
+    }
+  },
+  {
+    "id": "01M195DBY2CJM6YZDMQGRT7HRF",
+    "hashes": {
+      "full": "bb3b7bc002abcd11fdd2e3e8b28ecc96df59971bb2f8e3956c7b6e6724992a98",
+      "intellectual": "fc19c2fc76d625557b79f6d5098536fb2469b37b012404fa5137f3b0f77d1073",
+      "bibliographic": "eed290498ff2e74d8ffafcacbfefdfe02c7601277fc538b5bd354814f14ed42f"
+    }
+  },
+  {
+    "id": "01M1C83YZFXEQ0GHH543XYWDVZ",
+    "hashes": {
+      "full": "7706f58e7857b5f07ab81a30003bd22b6badffa0e4e450d3ce144fef03509cf4",
+      "intellectual": "da8ec2e6f827184dcd42b9acab38435d5bdbf51ae37484fcd961f9f16ee95fe6",
+      "bibliographic": "722fcd5bade5fd299ebd6e8f173bfdfef34b2a167fddc84245ffc26cbe1c81af"
+    }
+  },
+  {
+    "id": "01M1E52MQAKZBV0QV1PMX0XKFZ",
+    "hashes": {
+      "full": "e3e601acfac5ccc8fc2270da05be7b29599d93000799164f8cb000c495183606",
+      "intellectual": "81955bae3f57bf3ee5a5d651e95f9e8c271554f1773050d30b4c9ba9083295af",
+      "bibliographic": "8d2bd19d9ec76a9030c20586d9f37fe4c8938a662019996b8552e0260e7d8fc3"
+    }
+  },
+  {
+    "id": "01M1PCECZH4HPKJHGJ9RN122H5",
+    "hashes": {
+      "full": "42e4244a1ea7965eb114715347f5641a97c05c3dc6d25388b91c9b69c4aa963c",
+      "intellectual": "1df763477d7c6f5f09cdb93cf9c3a23478adc620ecce9701363d04bec7bb7800",
+      "bibliographic": "b788fcbdfef333844e4c9333c2c8cd7d33c7083a94d9c0a76dbcb935fd0e90d0"
+    }
+  },
+  {
+    "id": "01M1PE38XM2R5JY27356EYCDCK",
+    "hashes": {
+      "full": "be76256d12f8e632880c92d11c95cdfbad5601ec48677d6681d248b91311cf3b",
+      "intellectual": "999eca09e4d3aefb02735275290e0514284e60337ce1a3080b6fb4173d151037",
+      "bibliographic": "e42da6730f3a401e9e64e673bd71c088222736ba2e914d673a774159620d0132"
+    }
+  },
+  {
+    "id": "01M1PGVDE42RYFDEJ6SZ63JGFF",
+    "hashes": {
+      "full": "284217f8becfb8966406a4a9a2a049d72b7d7aab9ce6405227aa7d03b9b6bcaa",
+      "intellectual": "7ba9b7897da5fd42193db833ff20f272277b857716f3d59ca8766a6dfa176e53",
+      "bibliographic": "0b5ca481c58a29fec32d7a37795fe6831d252475b784627fb7be9d80c6d20fdf"
+    }
+  },
+  {
+    "id": "01M1X8N4E43MBFJCP3PPTFSJ2X",
+    "hashes": {
+      "full": "07a885b5ebc2c61adea03f1c718b6d404ebbcd227de78181b602c3f28558f980",
+      "intellectual": "1eca602ea98ffb5d9023842cfd107e427d6561296a058cc0537fbfba1c721b5d",
+      "bibliographic": "7514ca88d9cbd1323a7863931837c6f92d39d708c91a67b3d1c726d9dbab9baa"
+    }
+  },
+  {
+    "id": "01M1XS3KME24SWFB28PASK85TC",
+    "hashes": {
+      "full": "0f7c4c3cf179b49395d16a1633effddaa38cc8c7eb3ec3c28627f4968e011ec0",
+      "intellectual": "2dc80c1e545f9fb52b2eff8a9a8f9a470ef055f080d0cc3fa2282a29a48c2b65",
+      "bibliographic": "4bc337ae06f0e29c05b4ca9b921c17afdb41b6c7a0b4efa951ae2b4e3849ad1b"
+    }
+  },
+  {
+    "id": "01M1XSXF02YSJ5CVHE7E8PG296",
+    "hashes": {
+      "full": "8c1015773a8943313aaf80ff1ef118ca83bcb32bf5439023e664a38fa7d59969",
+      "intellectual": "18baa3aed4942a79d6a98b588e7d5a97b6d61fbb61f1e78dc5bd40ddcdca75a3",
+      "bibliographic": "72600d81e51c9d271ff0a6925dc9f673a7c107ccf8a0535d6e6d85aecdced213"
+    }
+  },
+  {
+    "id": "01M1Y0YT3VC62BC38W3S3R6DE8",
+    "hashes": {
+      "full": "3195188c39b9788e06d2cd9b93953cb006b422583aabf68f2b0cc6d90df51975",
+      "intellectual": "81058dec7837f374c05a542f6579e053266149afc6c5a30312cea3a8594281f9",
+      "bibliographic": "d804f30fe35ccf5e72ec5122b96a42158108becd8eb532f28cdaf3cac88b5727"
+    }
+  },
+  {
+    "id": "01M1Y17E21AGG1GJWWF2DY3754",
+    "hashes": {
+      "full": "ff553a3e79d2f0c9e18eae14a0b5a9c28cacb72816eab440af1defb532e5a392",
+      "intellectual": "7bda49adf357337300231149a6c13475a0ba362626ff89fe73388c80dad4b124",
+      "bibliographic": "4fa53200bb8b199a7dfb51fad8f26d8d70f38e1cbf88fd3f6c28b813ae67f498"
+    }
+  },
+  {
+    "id": "01M1Y26JVXYQ1MQQDPTNP8NCVK",
+    "hashes": {
+      "full": "0525c51d467ee3999c49c6e5ecc788db987bdf559e04f781a9e5f7b73da4e305",
+      "intellectual": "d855fa3490379fca847babe31063fb810e811ddae0dccb6161f0152784442b8c",
+      "bibliographic": "d724ab6da4256a03df60974c1473ac7119eb9c96d2903efbcec3d1fdc0803a7c"
+    }
+  },
+  {
+    "id": "01M1Y2ZF2AFB8DGD3Q5X7218X6",
+    "hashes": {
+      "full": "45545c4e8817a57d707f3f74fc59614c7d7dacfba9210acd72e48773058d7e57",
+      "intellectual": "e477f9064d69eeac85763acccac3f056736f48c0abb7526e223143bbef2824b8",
+      "bibliographic": "1f78ae20a3ae2c61eea55e89f2ec3c059cee241ce7e8994993ba169d5d90b025"
+    }
+  },
+  {
+    "id": "01M1Y4AMYTZ990N7VXSNB4MBC3",
+    "hashes": {
+      "full": "48a3033cc1e65acde20591e1fa76f14385aacacba3de586d0ee7f2645632dd3f",
+      "intellectual": "8179392d687b88213faa29d16795fca9a0aaaa5214909afbd65e3bf6ddcdcf63",
+      "bibliographic": "26057fe83531bbed57f0142d1d6c5444d8a29c44f73bb2c98c0b6d73443671e4"
+    }
+  },
+  {
+    "id": "01M1Y6861FB9TPYXRTHN5PM2G5",
+    "hashes": {
+      "full": "82bdc0686f0e30bf32e13cf5de95870aa95adac45a8564aef8f5a81484c3ef1a",
+      "intellectual": "fcce0968dc9a31c441f18e963eca8180e3730452ef2eae92f578a1a214ea768f",
+      "bibliographic": "3fc9dee0b4260782e25cfad738caf775177cc0c9219cfefe28a8562cac211a4f"
+    }
+  },
+  {
+    "id": "01M1Y7Q3T1G68XXP84TXXSZFHY",
+    "hashes": {
+      "full": "9d1674b9c24beb47ece737741ffede585704251d3cacfe1da45b84ad4e9e159d",
+      "intellectual": "03c2d1cc4ec1830905c9ba2b8d8e654fb3c80848ad1894dbce41cf0493554d1c",
+      "bibliographic": "ab297aa5bb4f5252575449016c77275e37fd045dfc3f5de1ea8b2d185a2985c2"
+    }
+  },
+  {
+    "id": "01M22F25CBFVQ09JDW666B7ZYD",
+    "hashes": {
+      "full": "fcc04c84d798baed830da9d6d6e0e8e334a30f9a42d9806b2e22f4491547600b",
+      "intellectual": "c83ae5d622057b4a70a3788179951a05fd84252a49e88172af3ccf39b29f5953",
+      "bibliographic": "b5a4ba960cc2767549e281dc26187eaad5a8eb61c244ac26a50e8dfae51d7328"
+    }
+  },
+  {
+    "id": "01M22FRGW9BVQHAJTFCR87PFNJ",
+    "hashes": {
+      "full": "de707287bee1c470de5d5bcab25f567e969d1a553d3bb4756a918c084cee0b48",
+      "intellectual": "6ca9d923def1d410b83bb7749614361b1b6eeee3703e209d932f7ba312adfe0c",
+      "bibliographic": "c43de000524aff897d35f6bb63b5ba66f805af50681cc1de0344f85f68764b2a"
+    }
+  },
+  {
+    "id": "01M22GX0N9D45XZE2N4ETECG8S",
+    "hashes": {
+      "full": "d1ebaaee96e644d4b059818b6ed61ffab5ab9753f2f2ea44266db63015a7dd9b",
+      "intellectual": "1eaa653ccb612f09f265b900f9bb564ac492a5778f52abda79d02c09becbcfba",
+      "bibliographic": "93f3f0ff25abf4699905603597842c93a5891adf1b2b2ea6d2270101a37f44ce"
+    }
+  },
+  {
+    "id": "01M22M4GJ33CY0WSYBSWTSZVB3",
+    "hashes": {
+      "full": "03816766a77b6bd6a1ffc1cd7fd608a84e02ffb28bbc27af98a0fe64783a6070",
+      "intellectual": "4df8309903461294a04335f327514ba53fc94ff26c8a36798e5b57e3d43276f5",
+      "bibliographic": "1b1fac84fc2dbe42b547c7b56702f0443105e2ec0205c9eb785c24eedcf006dc"
+    }
+  },
+  {
+    "id": "01M22WAD9AVVEFRZ7AS7WEPBK5",
+    "hashes": {
+      "full": "a03741266c0035ff2c6a7e293599a1ab146cf4cf3e59717360b6775f8c14801c",
+      "intellectual": "381437732274c758b95c82540cc84daea9c40aecf0ede8673bb7a6ee806c5de3",
+      "bibliographic": "a4ecc188ce77a7d4fac7c3b51ab3ccdf674b30d5d854ebca9b678ffe3188a8de"
+    }
+  },
+  {
+    "id": "01M22Z4Z8B5J48CHKA6ENF7QM0",
+    "hashes": {
+      "full": "a92a68e343bccc3dbbf3109db15aa403be7b31a4a7671b5d711d2d480ba108b1",
+      "intellectual": "5337fd9f278b73e3c9dc8e8e9776da65eb68633043aef8a1bd858bffd376d2ca",
+      "bibliographic": "42ee13be10d61ee05c38a2b1171e388a7976e29d78f25cd55e66bd8cbdf1beb8"
+    }
+  },
+  {
+    "id": "01M23C7NGY3P76Q0F5PY6Q9KVG",
+    "hashes": {
+      "full": "27f1858f366bbc2b03d062bc2d266f024acd18c91212b8a5b2645ff8370c187f",
+      "intellectual": "b90cc54ff79d8b6b996838bf5b4391153d68c692ecf0a6113546330a8577ea11",
+      "bibliographic": "72bb356ac9dd28b81b2975105f40d330be1d103f1699ee4e04428b3aa45faef1"
+    }
+  }
+]

@@ -1,0 +1,5 @@
+rag/vector_index.npz
+rag/vector_metadata.json
+rag/__pycache__/
+__pycache__/
+*.pyc
