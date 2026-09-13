@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from sentence_transformers import CrossEncoder
+from scholar_engine import ScholarEngine
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -855,12 +856,67 @@ def recommendation_reason(
     )
 
 
+
+def build_scholar_context(scholar_engine, record_id):
+    """Return concise scholar-layer context for a recommendation."""
+    try:
+        profile = scholar_engine.collector_profile(record_id)
+        _, similar = scholar_engine.book_similarity(record_id, limit=4)
+    except Exception:
+        return {
+            "period": None,
+            "concepts": [],
+            "collector_signals": [],
+            "hidden_connections": [],
+        }
+
+    connections = []
+
+    for item in similar:
+        reasons = []
+        if item.get("shared_concepts"):
+            reasons.append("concetti condivisi: " + ", ".join(item["shared_concepts"][:4]))
+        if item.get("conceptual_links") and not item.get("shared_concepts"):
+            links = item["conceptual_links"][:3]
+            rendered = [f"{x['from']} → {x['to']}" for x in links]
+            reasons.append("ponte concettuale: " + ", ".join(rendered))
+        if item.get("shared_authors"):
+            reasons.append("autore condiviso: " + ", ".join(item["shared_authors"][:2]))
+        if item.get("shared_related_names"):
+            reasons.append("nomi correlati: " + ", ".join(item["shared_related_names"][:2]))
+        if item.get("shared_topics"):
+            reasons.append("temi condivisi: " + ", ".join(item["shared_topics"][:3]))
+        if item.get("period") and item.get("period") == profile.get("period"):
+            reasons.append("stesso periodo storico")
+
+        if not reasons:
+            continue
+
+        connections.append({
+            "book_id": item["id"],
+            "title": item["title"],
+            "score": item["score"],
+            "why_connected": reasons,
+        })
+
+        if len(connections) >= 2:
+            break
+
+    return {
+        "period": profile.get("period"),
+        "concepts": [c for c in profile.get("concepts", []) if c not in {"rarity", "printing", "religion", "humanism", "medicine", "history_of_science", "illustration", "censorship"}],
+        "collector_signals": profile.get("collector_signals", []),
+        "hidden_connections": connections,
+    }
+
+
 def build_result(
     query,
     record,
     evidence,
     bib_item,
     discovery_relation,
+    scholar_context,
 ):
     bibliographic_highlights = (
         extract_bibliographic_highlights(
@@ -895,6 +951,7 @@ def build_result(
             bibliographic_highlights
         ),
         "highlight": record.get("highlight", ""),
+        "scholar_context": scholar_context,
     }
 
 
@@ -922,6 +979,27 @@ def print_result(
 
     print("PERCHÉ TE LO SUGGERIAMO:")
     print(result["why_recommended"])
+
+    scholar = result.get("scholar_context", {})
+    concepts = scholar.get("concepts", [])
+    period = scholar.get("period")
+
+    if period or concepts:
+        print()
+        print("LETTURA SCHOLAR:")
+        if period:
+            print(f"- periodo: {period}")
+        if concepts:
+            print("- nucleo concettuale: " + ", ".join(concepts[:8]))
+
+    connections = scholar.get("hidden_connections", [])
+    if connections:
+        print()
+        print("CONNESSIONI SCHOLAR:")
+        for connection in connections:
+            print(f"- {connection['title']}")
+            for why in connection["why_connected"]:
+                print(f"  {why}")
 
     print()
 
@@ -1019,6 +1097,8 @@ def run(query: str):
         CROSS_ENCODER_MODEL
     )
 
+    scholar_engine = ScholarEngine()
+
     results = []
 
     for book_id in candidate_ids:
@@ -1049,6 +1129,10 @@ def run(query: str):
                 discovery_relations.get(
                     book_id,
                     {},
+                ),
+                build_scholar_context(
+                    scholar_engine,
+                    book_id,
                 ),
             )
         )

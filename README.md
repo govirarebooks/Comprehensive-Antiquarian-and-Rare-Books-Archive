@@ -50,3 +50,29 @@ To enrich the historical Knowledge Graph, the author biographies and scholarly b
 All records have been manually curated, verified, and semantically structured by the antiquarian specialists at the **Govi Rare Books Archive**. The dataset is provided strictly for academic research, cultural preservation, and algorithmic training.
 
 **Official Authority & Source:** [Govi Rare Books](https://www.govirarebooks.com)
+
+## Scholar layer
+
+The repository now includes a derived **Scholar Layer** designed to reason across the catalogue rather than treating each record as an isolated document.
+
+It connects authors, periods, topics, publishers and related historical figures, and derives evidence-backed collector signals from the current catalogue record. It is intentionally derived from the master JSON and does not replace it.
+
+Useful commands:
+
+```bash
+python rag/build_scholar_index.py
+python rag/scholar_engine.py author-similar "Corvus Andreas"
+python rag/scholar_engine.py book-similar "BOOK_ID"
+python rag/scholar_engine.py collector "BOOK_ID"
+```
+
+## Scholar research cycle
+
+The repository now separates catalogue truth from external scholar context.
+
+- `govi-rare-books-academic-dataset.json` remains the authoritative catalogue source.
+- `rag/build_external_knowledge.py` incrementally resolves Govi authors/related names against Wikidata, Wikipedia/Wikimedia and DBpedia.
+- `rag/build_scholar_context.py` maps that external context back onto Govi authors and records without modifying the catalogue.
+- `rag/research_cycle.py <BOOK_ID>` runs the complete loop for a single work: Govi record → external context → scholar graph → return to Govi → similar books.
+
+External knowledge is derived and retains source identifiers/URLs; it never changes edition, rarity, provenance, or ownership facts from the Govi catalogue.

@@ -140,7 +140,7 @@
             },
             {
               "match": "only one copy",
-              "sentence": "In 1514 Grüninger also issued a Latin edition of this text, of which only one copy is know in Bamberg (cf",
+              "sentence": "",
               "evidence": "nationale et universitaire of Strasbourg and the other at the University of Amsterdam (cf. OCLC, 491221309 and 1262642211). G. Sabbatini (Bio-bibliografia chiromantica, Reggio Emilia, 1946, no. 102) mentions a copy of the 1515 issue sold by the Antiquariat J. Halle of Munich in 1934, but doesn’t seem to be aware of the existence of the 1514 issue. In 1514 Grüninger also issued a Latin edition of this text, of which only one copy is know in Bamberg (cf. VD16, ZV-33904). Finally, he published Corvo’s treatise again in 1524 together with Cocles’ Physiognomie.A French edition of the original Latin text and another edition of the text in the French translation by Jehan de Verdellay, both undated, are usually ascribed to the Lyon presses of Jean Pivard or Jean de Vingle, and variably dated between 1500 and 1515. The Lyon Latin edition, in which t",
               "context_strength": 3,
               "current_copy": true,
@@ -190,24 +190,24 @@
           "first_edition": [
             {
               "match": "first edition",
-              "sentence": "The Dal Gesù brothers also printed in 1519 the first edition in Italian of the text",
+              "sentence": "The Dal Gesù brothers",
               "evidence": "nger editions. Debated it is also whether the 1513 Venetian edition by Agostino de Zannis may be the first or, as stated by Th. Musper (Das Original des Titelholzschnittes von Andreas Corvos ‘Chiromantia’, in: “Gutenberg-Jahrbuch”, 1944/49, pp. 126-127), the undated Niccolò & Domenico dal Gesù Venice edition was printed before (cf. ISTC, ic00942500; Edit 16, CNCE14018). The Dal Gesù brothers also printed in 1519 the first edition in Italian of the text. The work is dedicated by the author, of whose life very little is known, to Gianfrancesco II Gonzaga (1466-1519), Marquess of Mantua. Corvo’s seems to be the second printed book in German on palmistry after J. Hartlieb’s Buch von der Hand (Augsburg, ca. 1488-1490).Andrea Corvo was born in Carpi around the middle of the 15th century and settled in Mirandola, probably in 1470 when Antonio de’ C",
               "context_strength": 2,
               "current_copy": false,
               "secondary_edition": true,
-              "historical_edition": true,
+              "historical_edition": false,
               "composite_record": false
             }
           ],
           "first_in_language": [
             {
               "match": "first edition in Italian",
-              "sentence": "The Dal Gesù brothers also printed in 1519 the first edition in Italian of the text",
+              "sentence": "The Dal Gesù brothers",
               "evidence": "nger editions. Debated it is also whether the 1513 Venetian edition by Agostino de Zannis may be the first or, as stated by Th. Musper (Das Original des Titelholzschnittes von Andreas Corvos ‘Chiromantia’, in: “Gutenberg-Jahrbuch”, 1944/49, pp. 126-127), the undated Niccolò & Domenico dal Gesù Venice edition was printed before (cf. ISTC, ic00942500; Edit 16, CNCE14018). The Dal Gesù brothers also printed in 1519 the first edition in Italian of the text. The work is dedicated by the author, of whose life very little is known, to Gianfrancesco II Gonzaga (1466-1519), Marquess of Mantua. Corvo’s seems to be the second printed book in German on palmistry after J. Hartlieb’s Buch von der Hand (Augsburg, ca. 1488-1490).Andrea Corvo was born in Carpi around the middle of the 15th century and settled in Mirandola, probably in 1470 when Antonio de’ Corvi da Car",
               "context_strength": 2,
               "current_copy": false,
               "secondary_edition": true,
-              "historical_edition": true,
+              "historical_edition": false,
               "composite_record": false
             }
           ]
@@ -1545,7 +1545,7 @@
           "first_edition": [
             {
               "match": "first edition",
-              "sentence": "Although most of Morata's writing had been lost, her friends gathered up all they could find and in 1558 one of them, Celio Curio, published the first edition of her works, along with letters to her from others and laudatory poems; other items were found and added in later editions",
+              "sentence": "Although most of Morata's writing had been lost, her friends gathered up all they could find and",
               "evidence": "tin.However, the fever that Morata caught in Schweinfurt never subsided, and a few months later she died. She was not quite 29 years old. Less than two months later, Grundler and Emilio also died, most likely of the plague that had taken hold of the residents of Heidelberg. Although most of Morata's writing had been lost, her friends gathered up all they could find and in 1558 one of them, Celio Curio, published the first edition of her works, along with letters to her from others and laudatory poems; other items were found and added in later editions.From these, we can hear the voice of a woman trying to balance her humanist ideals with her religious beliefs, and trying both to live in an uncertain world and to help her friends to do the same. For her, learning was not a mere ornament, but her true identity. She also was one of the very fir",
               "context_strength": 2,
               "current_copy": true,
@@ -1806,7 +1806,7 @@
             },
             {
               "match": "collection of",
-              "sentence": "In 1535 he published his first work, a collection of Latin epigrams Hisabella (Naples, Matteo Cancer)",
+              "sentence": "",
               "evidence": "ovember 2, 1538 (l. 116r)Bartolino, Leonardo. Venezia, November 4, 1538 (l. 117r)Giordano, Camillo. Venezia, 1538 (l. 117r)Pistola di M. Nicolò Franco, ne la quale scrive a la Invidia. (l. 117) Nicolò Franco, born of a modest family in Benevento, was first tutored by his brother Vincenzo, a schoolmaster, and later sought his fortune in the literary circles of the nearby Naples. In 1535 he published his first work, a collection of Latin epigrams Hisabella (Naples, Matteo Cancer). One year later he moved to Venice, where through his friendship with the typographer Francesco Marcolini and the poet Quinto Gherardo, he was introduced in the circle of Pietro Aretino. The latter took him as a secretary and entrusted to him the publication of his first book of letters, in which he repeatedly praised the qualities of his new protégé, predicting him a",
               "context_strength": 0,
               "current_copy": false,
@@ -1860,7 +1860,7 @@
             },
             {
               "match": "collection of",
-              "sentence": "In 1535 he published his first work, a collection of Latin epigrams Hisabella (Naples, Matteo Cancer)",
+              "sentence": "",
               "evidence": "Pompeo Spatafora (2nd ed. l. 50r) (cf. F.R. De' Angelis, Appendice. Per la tradizione a stampa delle lettere di Franco, in: N. Franco, “Le pistole vulgari”, Sala Bolognese, 1986, pp. LV-LXIII). Nicolò Franco, born of a modest family in Benevento, was first tutored by his brother Vincenzo, a schoolmaster, and later sought his fortune in the literary circles of the nearby Naples. In 1535 he published his first work, a collection of Latin epigrams Hisabella (Naples, Matteo Cancer). One year later he moved to Venice, where through his friendship with the typographer Francesco Marcolini and the poet Quinto Gherardo, he was introduced in the circle of Pietro Aretino. The latter took him as a secretary and entrusted to him the publication of his first book of letters, in which he repeatedly praised the qualities of his new protégé, predicting him a",
               "context_strength": 0,
               "current_copy": false,
@@ -2875,7 +2875,7 @@
             },
             {
               "match": "collection of",
-              "sentence": "In 1570 Peucer published a second collection of Melanchthon's letters, a libellus tertius was issued by Christoph Pezel in 1590 and a liber quartus was edited by Johannes Saubert in 1640, followed by the liber quintus et ultimus in 1646 and by a sixth book edited by Ludwig Camerarius (Leiden, 1647)",
+              "sentence": "",
               "evidence": "tion was sharply criticized by Melanchthon's son-in-law and editor of his Opera Omnia, Caspar Peucer, who quickly countered with his own letter collection (Epistolae selectiores, Wittenberg, 1565, see item no. XXX). Soon thereafter in 1569 Joachim Camerarius provided a rich resource with a volume of some six hundred letters, which he had personally received from Melanchthon himself. In 1570 Peucer published a second collection of Melanchthon's letters, a libellus tertius was issued by Christoph Pezel in 1590 and a liber quartus was edited by Johannes Saubert in 1640, followed by the liber quintus et ultimus in 1646 and by a sixth book edited by Ludwig Camerarius (Leiden, 1647).The volume contains 422 pieces (70 of which are not by Melanchthon) and opens with a prefatory letter by Manlius to Christoph Jonas, Thomas Matthias, and Christoph Mei",
               "context_strength": 0,
               "current_copy": false,
@@ -3180,7 +3180,7 @@
             },
             {
               "match": "collection of",
-              "sentence": "In 1514 were published at Leipzig his Sylvae, a collection of local, historical and military poems, idylls, epigrams and occasional pieces he wrote in the preceding years in Prussia",
+              "sentence": "",
               "evidence": "shed De amantium infoelicitate and a year later his Bucolicon and was recognized at once by Mutianus Rufus and Ulrich von Hutten to be unrivalled among the Latin poets of Germany.In autumn of 1509 Eobanus entered the service of a former pupil, Job von Dobeneck, who had since become bishop of Pomesiana in East Prussia and resided in the latter's residence at Riesenburg. In 1514 were published at Leipzig his Sylvae, a collection of local, historical and military poems, idylls, epigrams and occasional pieces he wrote in the preceding years in Prussia. In the same year appeared his best work of poetry, a most original volume with the title Heroides in imitation of Ovid, consisting of letters from holy women, from the Virgin Mary down to Kunigunde, wife of Emperor Henry II.After his return to Erfurt in July 1514, he was soon the center of a circl",
               "context_strength": 0,
               "current_copy": false,
@@ -3210,7 +3210,7 @@
             },
             {
               "match": "first edition",
-              "sentence": "In 1572 he published the first edition of his successful Rime, followed a year later by a volume with a commentary to them (Dichiaratione di alcuni componimenti del S",
+              "sentence": "",
               "evidence": "ernor, Don Gonzalo Fernández de Córdoba, who in 1560 wanted him at his side during a long sojourn at the Spanish court.In August 1567 Goselini was involved in a dubious plot and imprisoned by order of governor Gabriel de la Cueva, Duke of Alburquerque. With the help of Cesare Gonzaga and Emanuele Filiberto, Duke of Savoy, in June 1568, he was finally released and acquitted of all accusation. In 1572 he published the first edition of his successful Rime, followed a year later by a volume with a commentary to them (Dichiaratione di alcuni componimenti del S. Giuliano Gosellini). In 1574 he issued his main historical work, Vita del principe don Ferrante Gonzaga, a tribute to his patron and benefactor. Goselini died in Milan in February 1587 (cf. F. Pagella, Un poligrafo alessandrino del Cinquecento: Giuliano Goselini, in: “Rivista di storia, ar",
               "context_strength": 2,
               "current_copy": true,
@@ -3250,7 +3250,7 @@
             },
             {
               "match": "first edition",
-              "sentence": "a relation on Abyssinia and a dissertation on locusts; the second edition of his Lexicon Aethiopico-Latinum and Grammatica Aethiopica, the first ever Ethiopian (Ge'ez)-Latin dictionary and Ge'ez grammar; and finally the first edition of the first Amharic grammar and dictionary ever published",
+              "sentence": "a relation on Abyssinia and a dissertation on locusts;",
               "evidence": "bisch Hall. Some occasional light browning, all in all a good, genuine copy.The volume contains in first edition two appendixes to Ludolf's major work, the Historia Aethiopica (Frankfurt, 1681), i.e. a relation on Abyssinia and a dissertation on locusts; the second edition of his Lexicon Aethiopico-Latinum and Grammatica Aethiopica, the first ever Ethiopian (Ge'ez)-Latin dictionary and Ge'ez grammar; and finally the first edition of the first Amharic grammar and dictionary ever published.Ludolf's dictionaries and grammars of the two main Ethiopian languages are the result of his multilingual collaboration with the Ethiopian monk Abba Gorgoryos (1595-1658) and the Ethiopian-Portuguese cleric Antonio d'Andrade (1610-1670). Ludolf became the leading Ethiopic scholar of his generation by introducing to a European audience the history and languag",
               "context_strength": 3,
               "current_copy": true,
@@ -3772,7 +3772,7 @@
           "first_edition": [
             {
               "match": "first edition",
-              "sentence": "Scarce first edition, dedicated to the King of France Francis I, of Philandrier commentary on Vitruvius, that was reprinted in Paris in 1545 and later issued accompanying Vitruvius's actual text in Strasbourg in 1550 in 16mo and in De Tournes' enlarged 4to format in Lyons in 1552",
+              "sentence": "Scarce first edition, dedicated to the King of France Francis I, of Philandrier commentary on Vitruvius, that was reprinted in Paris",
               "evidence": "early 16th century, was a professor of Greek at the University of Rome from around 1553 until 1582. Alongside teaching, he was also active as a translator and editor of Greek and Hebrew texts. In 1583, he published in Rome a translation of the Gregorian calendar into Greek. He probably died around 1590 (cf. E. Del Gallo, Gabia, Giovan Battista, in: “Dizionario Biografico degli Italiani”, vol. 51, 1998, s.v.).Scarce first edition, dedicated to the King of France Francis I, of Philandrier commentary on Vitruvius, that was reprinted in Paris in 1545 and later issued accompanying Vitruvius's actual text in Strasbourg in 1550 in 16mo and in De Tournes' enlarged 4to format in Lyons in 1552.The edition opens with a note to the scholars (“studiosis”), a six-page long list of quoted authors, and a short life of Vitruvius based on the autobiographica",
               "context_strength": 4,
               "current_copy": true,

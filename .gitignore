@@ -3,3 +3,10 @@ rag/vector_metadata.json
 rag/__pycache__/
 __pycache__/
 *.pyc
+rag/external_knowledge/external_knowledge.json
+rag/external_knowledge/__pycache__/
+*.cache.json
+rag/external_knowledge/scholar_context_index.json
+Comprehensive-Antiquarian-and-Rare-Books-Archive-scholar-*.zip
+rag/external_knowledge/external_queue.json
+rag/external_knowledge/external_metrics.json

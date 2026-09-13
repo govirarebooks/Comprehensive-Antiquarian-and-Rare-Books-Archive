@@ -248,6 +248,39 @@ def load_dataset():
         return json.load(f)
 
 
+
+def clean_current_copy_sentence(text: str) -> str:
+    """Keep only the current-copy statement and cut later-edition history."""
+    text = normalize(text)
+    cut_patterns = [
+        r"\bA second issue\b",
+        r"\bThe second issue\b",
+        r"\bA second edition\b",
+        r"\bThe second edition\b",
+        r"\bA later edition\b",
+        r"\bAnother edition\b",
+        r"\bAlso issued\b",
+        r"\bAlso printed\b",
+        r"\bAlso published\b",
+        r"\bIn \d{4} .*? issued\b",
+        r"\bIn \d{4} .*? published\b",
+        r"\bIn \d{4} .*? printed\b",
+        r"\bA Latin edition\b",
+        r"\bThe Latin edition\b",
+        r"\bA French edition\b",
+        r"\bThe French edition\b",
+        r"\bAn Italian edition\b",
+        r"\bThe Italian edition\b",
+    ]
+    positions=[]
+    for pattern in cut_patterns:
+        m=re.search(pattern,text,flags=re.IGNORECASE)
+        if m:
+            positions.append(m.start())
+    if positions:
+        text=normalize(text[:min(positions)])
+    return text
+
 def sentence_for_match(
     text: str,
     match,
@@ -525,6 +558,10 @@ def extract_signals(
                 sentence = sentence_for_match(
                     text,
                     match,
+                )
+
+                sentence = clean_current_copy_sentence(
+                    sentence
                 )
 
                 evidence = context_for_match(
