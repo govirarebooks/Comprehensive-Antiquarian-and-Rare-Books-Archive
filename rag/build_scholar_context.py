@@ -110,6 +110,8 @@ def build_context(dataset, scholar, external):
             "external_description": wd.get("description"),
             "wikipedia": (ext.get("sources") or {}).get("wikipedia"),
             "dbpedia": (ext.get("sources") or {}).get("dbpedia"),
+            "external_concepts": sorted(set(ext.get("external_concepts") or [])),
+            "external_text": ext.get("external_text", ""),
             "context": context,
             "govi_crosslinks": unique_crosslinks(crosslinks),
         }
@@ -140,6 +142,12 @@ def build_context(dataset, scholar, external):
         "version": 1,
         "catalogue_truth": "govi-rare-books-academic-dataset.json",
         "external_context_cache": str(EXTERNAL_PATH.name),
+        "source_policy": {
+            "catalogue_facts": "authoritative",
+            "external_context": "contextual_only",
+            "priority": ["institutional_catalogues", "authority_records", "Wikidata", "Wikipedia", "DBpedia"],
+            "rule": "External context can suggest relationships but never changes catalogue facts or collector signals."
+        },
         "authors": authors,
         "records": record_context,
         "external_relations": unique_crosslinks(external_relations),

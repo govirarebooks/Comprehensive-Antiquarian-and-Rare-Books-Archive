@@ -18,44 +18,7 @@ CONTEXT_PATH = ROOT / "rag" / "external_knowledge" / "scholar_context_index.json
 AI_INDEX_PATH = ROOT / "rag" / "ai_index.npz"
 
 
-GENERIC_CONCEPTS = {"rarity", "printing", "religion", "humanism", "medicine", "history_of_science", "illustration", "censorship"}
-
-CONCEPT_TERMS = {
-    "astrology": {"astrology", "astrological", "astrologer", "planet", "zodiac", "eclipse", "conjunction"},
-    "divination": {"divination", "divinatory", "prophecy", "oracle", "prognostication", "prediction", "practica"},
-    "omens": {"omen", "omens", "portent", "signs", "foreshadow", "future calamities"},
-    "chiromancy": {"chiromancy", "palmistry", "palm reading", "palmists"},
-    "physiognomy": {"physiognomy", "physiognomic"},
-    "natural_magic": {"natural magic", "occult sciences", "magic", "magical"},
-    "witchcraft": {"witchcraft", "witches", "witch trials", "sorcery", "witch craze"},
-    "medicine": {"medicine", "medical", "physician", "surgery", "anatomy"},
-    "printing": {"printer", "printing", "press", "typography", "bookshop", "bookseller"},
-    "humanism": {"humanist", "humanism", "renaissance", "classical", "philology"},
-    "religion": {"church", "theology", "religious", "reformation", "catholic", "lutheran", "protestant"},
-}
-
-CONCEPT_RELATIONS = {
-    # Strong intellectual neighbourhoods: these are not assertions of identity,
-    # but useful scholarly bridges for finding non-obvious analogues.
-    "astrology": {"astrology": 1.0, "divination": 0.95, "omens": 0.90, "astronomy": 0.86, "natural_magic": 0.82, "history_of_science": 0.72},
-    "astronomy": {"astronomy": 1.0, "astrology": 0.86, "history_of_science": 0.90, "natural_philosophy": 0.82},
-    "divination": {"divination": 1.0, "astrology": 0.95, "omens": 0.92, "natural_magic": 0.84, "witchcraft": 0.68},
-    "omens": {"omens": 1.0, "divination": 0.92, "astrology": 0.90, "natural_magic": 0.78, "witchcraft": 0.66},
-    "chiromancy": {"chiromancy": 1.0, "physiognomy": 0.90, "divination": 0.86, "natural_magic": 0.74, "medicine": 0.65},
-    "physiognomy": {"physiognomy": 1.0, "chiromancy": 0.90, "divination": 0.84, "medicine": 0.62, "natural_magic": 0.70},
-    "natural_magic": {"natural_magic": 1.0, "astrology": 0.82, "divination": 0.84, "omens": 0.78, "witchcraft": 0.72, "chiromancy": 0.74, "medicine": 0.68, "history_of_science": 0.58},
-    "witchcraft": {"witchcraft": 1.0, "natural_magic": 0.72, "divination": 0.68, "omens": 0.66, "religion": 0.60},
-    "medicine": {"medicine": 1.0, "chiromancy": 0.65, "physiognomy": 0.62, "natural_magic": 0.68, "history_of_science": 0.78},
-    "history_of_science": {"history_of_science": 1.0, "medicine": 0.78, "astronomy": 0.90, "astrology": 0.72, "natural_philosophy": 0.92, "natural_magic": 0.58},
-    "natural_philosophy": {"natural_philosophy": 1.0, "history_of_science": 0.92, "astronomy": 0.82, "medicine": 0.70, "natural_magic": 0.28},
-    "printing": {"printing": 1.0, "humanism": 0.42},
-    "humanism": {"humanism": 1.0, "printing": 0.42, "religion": 0.25},
-    "religion": {"religion": 1.0, "witchcraft": 0.60, "censorship": 0.55, "humanism": 0.25},
-    "censorship": {"censorship": 1.0, "religion": 0.55, "witchcraft": 0.48},
-}
-
-
-
+from scholar_taxonomy import GENERIC_CONCEPTS, CONCEPT_TERMS, CONCEPT_RELATIONS, conceptual_affinity
 
 def norm(text):
     text = str(text or "").lower()

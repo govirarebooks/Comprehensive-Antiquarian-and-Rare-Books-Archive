@@ -24,6 +24,8 @@ import time
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Any
+
+from scholar_taxonomy import concepts_from_text
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urlencode
 from urllib.request import Request, urlopen
@@ -385,6 +387,16 @@ def build_entity(name: str, roles: list[str], refresh: bool) -> dict[str, Any]:
     time.sleep(SLEEP_SECONDS)
     dbpedia = dbpedia_lookup(name)
 
+    external_text_parts = []
+    for payload in (wikidata_payload, wiki, dbpedia):
+        if not payload:
+            continue
+        for key in ("label", "description", "extract"):
+            value = payload.get(key) if isinstance(payload, dict) else None
+            if value:
+                external_text_parts.append(str(value))
+    external_text = " ".join(external_text_parts)
+
     return {
         "entity": name,
         "roles": roles,
@@ -399,6 +411,8 @@ def build_entity(name: str, roles: list[str], refresh: bool) -> dict[str, Any]:
             "wikipedia": wiki,
             "dbpedia": dbpedia,
         },
+        "external_concepts": concepts_from_text(external_text),
+        "external_text": external_text[:12000],
         "scholar_context": {
             "periods": [c["label"] for c in claims.get("time_period", [])],
             "movements": [c["label"] for c in claims.get("movement", [])],
