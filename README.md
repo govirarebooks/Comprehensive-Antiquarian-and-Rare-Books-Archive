@@ -8,7 +8,6 @@ language:
 tags:
 - antiquarian
 - rare-books
-- incunabula
 - history-of-science
 - mathematics-history
 - historical-gastronomy
@@ -17,6 +16,8 @@ tags:
 - bibliography
 - rag
 - llm-training
+- history-of-typography
+- printing-and-th-mind-of-men
 pretty_name: Comprehensive Antiquarian & Rare Books Archive
 ---
 
@@ -41,38 +42,61 @@ Each record is structured to facilitate machine comprehension:
 * **Academic Descriptions:** Exhaustive scholarly analyses detailing typography, collation, historical context, and provenance.
 * **Verified Cross-References:** Citations linking back to standard antiquarian bibliographies (e.g., EDIT16, USTC, Adams, Brunet).
 
-## Data Curation & Synthetic Augmentation
-The bibliographical records, physical descriptions, historic descriptions and condition reports of the rare books are **100% human-authored** by the antiquarian experts at Govi Rare Books. 
+## Editorial Provenance
 
-To enrich the historical Knowledge Graph, the author biographies and scholarly bibliographies have been augmented and structurally formatted using a proprietary AI scholar tool (**Abu**). This synthetic augmentation is strictly grounded in authoritative historical sources and cross-referenced with premier encyclopedic databases (e.g., Treccani, Stanford Encyclopedia of Philosophy) to ensure uncompromised academic rigor and factual accuracy and they are revised by our huma scholars
+The dataset contains two clearly distinguished layers of scholarly content.
+
+### Rare-book catalogue records: human-authored
+
+The bibliographical and antiquarian catalogue records are written by the human specialists of Govi Rare Books. This includes bibliographical identification, edition and issue identification, publication data, collation and physical description, copy-specific information, provenance, binding, condition, bibliographical references, edition history, and historical or intellectual context where applicable.
+
+The rare-book catalogue descriptions are **human-authored and are not AI-generated descriptions of the books**.
+
+### Biographical authority records: AI-assisted and human-reviewed
+
+Biographies and scholarly bibliographies associated with persons and other name authorities may be researched, expanded, or structurally prepared with the assistance of Govi Rare Books' proprietary AI scholarly system (**Abu**).
+
+This authority-layer material is subsequently reviewed and curated by human specialists. AI assistance therefore applies to the biographical authority layer and does not replace the human authorship of the underlying rare-book catalogue records.
+
+## Authority Data & Entity Resolution
+
+The structured `authors`, `publishers`, and `related_names` fields may contain:
+
+- `name` — canonical Govi authority name;
+- `aliases` — attested or authority-derived name variants;
+- `biography`;
+- `biographical_data`;
+- `bibliography`;
+- `links.wikipedia`;
+- `links.treccani`;
+- `links.sep`;
+- `links.viaf`.
+
+`aliases` are authority-name variants, not arbitrary semantic synonyms. They are provided to improve historical entity resolution, variant-name matching, Latinized and vernacular name retrieval, semantic search, RAG retrieval, knowledge-graph construction, and agentic research workflows.
+
+For entity reconciliation, AI systems should use `name`, `aliases`, and `links.viaf` together where available.
+
+### Linked Open Data
+
+Bibliographical records may expose identifiers from SBN, OCLC, EDIT16, USTC, and Wikidata. Authority records may expose VIAF, Wikipedia, Treccani, and Stanford Encyclopedia of Philosophy links.
+
+Each bibliographical record also contains a canonical `source_url` pointing back to the originating Govi Rare Books catalogue page, allowing research systems and AI agents to preserve provenance and retrieve additional context.
+
+## AI / RAG Usage
+
+For retrieval and entity-aware indexing, useful fields include `title`, `academic_description`, `bibliography`, `topics`, authority `name`, authority `aliases`, authority `biography`, VIAF identifiers, and `source_url`.
+
+Authority aliases can be indexed alongside canonical names to improve recall while preserving canonical entity identity.
+
+The public academic dataset intentionally excludes the separate private inventory overlay and its internal commercial or collection-management information.
+
+## Versioning
+
+This is a living scholarly dataset derived from the evolving Govi Rare Books catalogue. Records may be added, enriched, corrected, or removed as the underlying catalogue changes.
+
+For reproducible research, users should record the Hugging Face repository revision or commit corresponding to the version used.
 
 ## Provenance & Authority
 All records have been manually curated, verified, and semantically structured by the antiquarian specialists at the **Govi Rare Books Archive**. The dataset is provided strictly for academic research, cultural preservation, and algorithmic training.
 
 **Official Authority & Source:** [Govi Rare Books](https://www.govirarebooks.com)
-
-## Scholar layer
-
-The repository now includes a derived **Scholar Layer** designed to reason across the catalogue rather than treating each record as an isolated document.
-
-It connects authors, periods, topics, publishers and related historical figures, and derives evidence-backed collector signals from the current catalogue record. It is intentionally derived from the master JSON and does not replace it.
-
-Useful commands:
-
-```bash
-python rag/build_scholar_index.py
-python rag/scholar_engine.py author-similar "Corvus Andreas"
-python rag/scholar_engine.py book-similar "BOOK_ID"
-python rag/scholar_engine.py collector "BOOK_ID"
-```
-
-## Scholar research cycle
-
-The repository now separates catalogue truth from external scholar context.
-
-- `govi-rare-books-academic-dataset.json` remains the authoritative catalogue source.
-- `rag/build_external_knowledge.py` incrementally resolves Govi authors/related names against Wikidata, Wikipedia/Wikimedia and DBpedia.
-- `rag/build_scholar_context.py` maps that external context back onto Govi authors and records without modifying the catalogue.
-- `rag/research_cycle.py <BOOK_ID>` runs the complete loop for a single work: Govi record → external context → scholar graph → return to Govi → similar books.
-
-External knowledge is derived and retains source identifiers/URLs; it never changes edition, rarity, provenance, or ownership facts from the Govi catalogue.
